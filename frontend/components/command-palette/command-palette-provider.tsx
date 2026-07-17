@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
-import { KeyRound, Lock, StickyNote } from "lucide-react";
+import { FileText, KeyRound, Lock, StickyNote } from "lucide-react";
 
 import {
   CommandDialog,
@@ -69,7 +69,7 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
     <CommandPaletteContext.Provider value={{ openPalette: () => setOpen(true) }}>
       {children}
       <CommandDialog open={open} onOpenChange={setOpen} title="Command palette" description="Search Forge">
-        <CommandInput placeholder="Search tools, secrets, notes…" value={query} onValueChange={setQuery} />
+        <CommandInput placeholder="Search tools, secrets, notes, documents…" value={query} onValueChange={setQuery} />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
 
@@ -83,7 +83,8 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
             ))}
           </CommandGroup>
 
-          {results.data && (results.data.secrets.length > 0 || results.data.notes.length > 0) ? (
+          {results.data &&
+          (results.data.secrets.length > 0 || results.data.notes.length > 0 || results.data.documents.length > 0) ? (
             <>
               <CommandSeparator />
               {results.data.secrets.length > 0 ? (
@@ -102,6 +103,16 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
                     <CommandItem key={n.id} value={`note-${n.id}`} onSelect={() => go(`/notes?open=${n.id}`)}>
                       <StickyNote className="h-4 w-4" />
                       <span>{n.title}</span>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              ) : null}
+              {results.data.documents.length > 0 ? (
+                <CommandGroup heading="Documents">
+                  {results.data.documents.map((d) => (
+                    <CommandItem key={d.id} value={`document-${d.id}`} onSelect={() => go(`/documents?open=${d.id}`)}>
+                      <FileText className="h-4 w-4" />
+                      <span>{d.title}</span>
                     </CommandItem>
                   ))}
                 </CommandGroup>

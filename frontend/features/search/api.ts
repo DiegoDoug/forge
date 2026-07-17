@@ -13,9 +13,15 @@ export interface SearchNoteResult {
   excerpt: string;
 }
 
+export interface SearchDocumentResult {
+  id: string;
+  title: string;
+}
+
 export interface SearchResults {
   secrets: SearchSecretResult[];
   notes: SearchNoteResult[];
+  documents: SearchDocumentResult[];
 }
 
 export const searchApi = {
