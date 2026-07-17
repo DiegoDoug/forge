@@ -1,0 +1,37 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      FORGE_MASTER_KEY: "${FORGE_MASTER_KEY:?Set FORGE_MASTER_KEY in your .env file, e.g. via `openssl rand -base64 32`}"
+      FORGE_DATA_DIR: /data
+      FORGE_ENVIRONMENT: production
+      FORGE_SESSION_COOKIE_SECURE: ${FORGE_SESSION_COOKIE_SECURE:-false}
+      FORGE_VISION_ENABLED: ${FORGE_VISION_ENABLED:-0}
+      FORGE_VISION_API_KEY: ${FORGE_VISION_API_KEY:-}
+      FORGE_VISION_BASE_URL: ${FORGE_VISION_BASE_URL:-}
+    volumes:
+      - forge-data:/data
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    environment:
+      BACKEND_INTERNAL_URL: http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "${FORGE_PORT:-8585}:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+      - frontend
+    restart: unless-stopped
+
+volumes:
+  forge-data:
