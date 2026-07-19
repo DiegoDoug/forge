@@ -1,7 +1,6 @@
 "use client";
 
-import { DndContext, type DragEndEvent, type DragMoveEvent } from "@dnd-kit/core";
-import { useState } from "react";
+import { DndContext, type DragEndEvent } from "@dnd-kit/core";
 
 import { EmptyState } from "@/components/empty-state";
 import { StickyNote } from "lucide-react";
@@ -11,15 +10,9 @@ import { NoteCard } from "./note-card";
 
 export function NotesBoard({ notes }: { notes: Note[] }) {
   const { update } = useNoteMutations();
-  const [dragging, setDragging] = useState<{ id: string; delta: { x: number; y: number } } | null>(null);
-
-  function handleDragMove(event: DragMoveEvent) {
-    setDragging({ id: String(event.active.id), delta: event.delta });
-  }
 
   function handleDragEnd(event: DragEndEvent) {
     const note = notes.find((n) => n.id === event.active.id);
-    setDragging(null);
     if (!note) return;
     update.mutate({
       id: note.id,
@@ -46,15 +39,11 @@ export function NotesBoard({ notes }: { notes: Note[] }) {
   const maxY = Math.max(...notes.map((n) => n.pos_y + n.height), 800);
 
   return (
-    <DndContext onDragMove={handleDragMove} onDragEnd={handleDragEnd}>
+    <DndContext onDragEnd={handleDragEnd}>
       <div className="relative overflow-auto" style={{ height: "calc(100dvh - 7.5rem)" }}>
         <div className="relative" style={{ width: maxX + 400, height: maxY + 400 }}>
           {notes.map((note) => (
-            <NoteCard
-              key={note.id}
-              note={note}
-              dragDelta={dragging?.id === note.id ? dragging.delta : null}
-            />
+            <NoteCard key={note.id} note={note} />
           ))}
         </div>
       </div>
