@@ -1,6 +1,7 @@
 "use client";
 
 import { useDraggable } from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -15,8 +16,8 @@ import { NOTE_COLORS } from "./note-colors";
 const MIN_WIDTH = 200;
 const MIN_HEIGHT = 160;
 
-export function NoteCard({ note, dragDelta }: { note: Note; dragDelta: { x: number; y: number } | null }) {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: note.id });
+export function NoteCard({ note }: { note: Note }) {
+  const { attributes, listeners, setNodeRef, isDragging, transform } = useDraggable({ id: note.id });
   const { update, remove } = useNoteMutations();
 
   const [editing, setEditing] = useState(false);
@@ -70,23 +71,21 @@ export function NoteCard({ note, dragDelta }: { note: Note; dragDelta: { x: numb
     window.addEventListener("pointerup", onUp);
   }
 
-  const left = note.pos_x + (isDragging && dragDelta ? dragDelta.x : 0);
-  const top = note.pos_y + (isDragging && dragDelta ? dragDelta.y : 0);
-
   return (
     <div
       ref={setNodeRef}
       style={{
-        left,
-        top,
+        left: note.pos_x,
+        top: note.pos_y,
         width: size.width,
         height: size.height,
         backgroundColor: note.color,
         zIndex: isDragging ? 50 : note.z_index,
+        transform: CSS.Translate.toString(transform),
       }}
       className={cn(
-        "absolute flex flex-col overflow-hidden rounded-lg text-neutral-900 shadow-md ring-1 ring-black/5 transition-shadow",
-        isDragging && "shadow-xl",
+        "absolute flex flex-col overflow-hidden rounded-lg text-neutral-900 shadow-md ring-1 ring-black/5",
+        isDragging ? "shadow-xl" : "transition duration-150 ease-out",
       )}
     >
       <div
@@ -103,7 +102,10 @@ export function NoteCard({ note, dragDelta }: { note: Note; dragDelta: { x: numb
           placeholder="Untitled"
           className="min-w-0 flex-1 truncate bg-transparent text-sm font-medium outline-none placeholder:text-neutral-900/40"
         />
-        <div className="flex shrink-0 items-center gap-0.5">
+        <div
+          onPointerDown={(e) => e.stopPropagation()}
+          className="flex shrink-0 items-center gap-0.5"
+        >
           <IconAction
             label={note.pinned ? "Unpin" : "Pin"}
             onClick={() => update.mutate({ id: note.id, input: { pinned: !note.pinned } })}
