@@ -42,8 +42,7 @@ Converters/Utilities):
 - No placeholder/mocked implementations. If something's genuinely
   out of scope for a change, leave it out rather than stub it — see
   [DecisionLog.md](DecisionLog.md) for examples of intentionally-deferred
-  scope (PGP, YAML/XML/CSV converters) and how that was communicated instead
-  of faked.
+  scope (PGP) and how that was communicated instead of faked.
 
 ## Code style
 
