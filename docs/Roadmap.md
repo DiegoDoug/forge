@@ -6,10 +6,6 @@
   PGP/GPG. A correct implementation needs a real keyring model (not just a
   keypair), which is a meaningfully larger feature than the others; see
   [DecisionLog.md](DecisionLog.md).
-- **YAML / XML / CSV converters** — JSON, regex, URL, Unicode, cron, diff,
-  and timestamp converters are in; YAML↔JSON, XML↔JSON, and CSV↔JSON are
-  not yet. Same shape as the JSON tool once added (see
-  [Contributing.md](Contributing.md)).
 - **Pagination** — Vault and Notes list endpoints return everything in one
   response. Fine at the scale of a personal vault; would need cursor-based
   pagination before it's fine at thousands of entries.
