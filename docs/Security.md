@@ -17,7 +17,7 @@ unlocked session are both available in-process anyway.
 
 ## Encryption at rest
 
-Vault secret values and metadata are encrypted with **PyNaCl's SecretBox**
+Secret values and metadata are encrypted with **PyNaCl's SecretBox**
 (XSalsa20-Poly1305, authenticated) before they're written to SQLite. The key
 is derived from `FORGE_MASTER_KEY` via BLAKE2b (`app/core/security.py`) —
 any string works, but a high-entropy random value

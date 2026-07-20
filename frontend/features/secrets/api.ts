@@ -72,67 +72,67 @@ export interface SecretUpdateInput {
   favorite?: boolean;
 }
 
-export const vaultApi = {
+export const secretsApi = {
   listSecrets: (params?: { folder_id?: string; tag_id?: string; q?: string }) => {
     const search = new URLSearchParams();
     if (params?.folder_id) search.set("folder_id", params.folder_id);
     if (params?.tag_id) search.set("tag_id", params.tag_id);
     if (params?.q) search.set("q", params.q);
     const qs = search.toString();
-    return api.get<SecretSummary[]>(`/api/vault/secrets${qs ? `?${qs}` : ""}`);
+    return api.get<SecretSummary[]>(`/api/secrets/secrets${qs ? `?${qs}` : ""}`);
   },
   getSecret: (id: string, reveal = false) =>
-    api.get<SecretDetail>(`/api/vault/secrets/${id}${reveal ? "?reveal=true" : ""}`),
-  createSecret: (input: SecretCreateInput) => api.post<SecretDetail>("/api/vault/secrets", input),
-  updateSecret: (id: string, input: SecretUpdateInput) => api.patch<SecretDetail>(`/api/vault/secrets/${id}`, input),
-  deleteSecret: (id: string) => api.delete<void>(`/api/vault/secrets/${id}`),
-  listVersions: (id: string) => api.get<SecretVersion[]>(`/api/vault/secrets/${id}/versions`),
+    api.get<SecretDetail>(`/api/secrets/secrets/${id}${reveal ? "?reveal=true" : ""}`),
+  createSecret: (input: SecretCreateInput) => api.post<SecretDetail>("/api/secrets/secrets", input),
+  updateSecret: (id: string, input: SecretUpdateInput) => api.patch<SecretDetail>(`/api/secrets/secrets/${id}`, input),
+  deleteSecret: (id: string) => api.delete<void>(`/api/secrets/secrets/${id}`),
+  listVersions: (id: string) => api.get<SecretVersion[]>(`/api/secrets/secrets/${id}/versions`),
   revealVersion: (id: string, versionId: string) =>
-    api.get<{ id: string; value: string; created_at: string }>(`/api/vault/secrets/${id}/versions/${versionId}`),
+    api.get<{ id: string; value: string; created_at: string }>(`/api/secrets/secrets/${id}/versions/${versionId}`),
 
-  listFolders: () => api.get<Folder[]>("/api/vault/folders"),
+  listFolders: () => api.get<Folder[]>("/api/secrets/folders"),
   createFolder: (name: string, parentId?: string | null) =>
-    api.post<Folder>("/api/vault/folders", { name, parent_id: parentId ?? null }),
-  deleteFolder: (id: string) => api.delete<void>(`/api/vault/folders/${id}`),
+    api.post<Folder>("/api/secrets/folders", { name, parent_id: parentId ?? null }),
+  deleteFolder: (id: string) => api.delete<void>(`/api/secrets/folders/${id}`),
 
-  listTags: () => api.get<Tag[]>("/api/vault/tags"),
-  createTag: (name: string, color?: string) => api.post<Tag>("/api/vault/tags", { name, color }),
-  deleteTag: (id: string) => api.delete<void>(`/api/vault/tags/${id}`),
+  listTags: () => api.get<Tag[]>("/api/secrets/tags"),
+  createTag: (name: string, color?: string) => api.post<Tag>("/api/secrets/tags", { name, color }),
+  deleteTag: (id: string) => api.delete<void>(`/api/secrets/tags/${id}`),
 };
 
 export function useSecrets(params?: { folder_id?: string; tag_id?: string; q?: string }) {
-  return useQuery({ queryKey: ["vault", "secrets", params], queryFn: () => vaultApi.listSecrets(params) });
+  return useQuery({ queryKey: ["secrets", "secrets", params], queryFn: () => secretsApi.listSecrets(params) });
 }
 
 export function useFolders() {
-  return useQuery({ queryKey: ["vault", "folders"], queryFn: vaultApi.listFolders });
+  return useQuery({ queryKey: ["secrets", "folders"], queryFn: secretsApi.listFolders });
 }
 
 export function useTags() {
-  return useQuery({ queryKey: ["vault", "tags"], queryFn: vaultApi.listTags });
+  return useQuery({ queryKey: ["secrets", "tags"], queryFn: secretsApi.listTags });
 }
 
-export function useVaultMutations() {
+export function useSecretsMutations() {
   const qc = useQueryClient();
-  const invalidate = () => qc.invalidateQueries({ queryKey: ["vault"] });
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["secrets"] });
 
   return {
-    createSecret: useMutation({ mutationFn: vaultApi.createSecret, onSuccess: invalidate }),
+    createSecret: useMutation({ mutationFn: secretsApi.createSecret, onSuccess: invalidate }),
     updateSecret: useMutation({
-      mutationFn: ({ id, input }: { id: string; input: SecretUpdateInput }) => vaultApi.updateSecret(id, input),
+      mutationFn: ({ id, input }: { id: string; input: SecretUpdateInput }) => secretsApi.updateSecret(id, input),
       onSuccess: invalidate,
     }),
-    deleteSecret: useMutation({ mutationFn: vaultApi.deleteSecret, onSuccess: invalidate }),
+    deleteSecret: useMutation({ mutationFn: secretsApi.deleteSecret, onSuccess: invalidate }),
     createFolder: useMutation({
       mutationFn: ({ name, parentId }: { name: string; parentId?: string | null }) =>
-        vaultApi.createFolder(name, parentId),
+        secretsApi.createFolder(name, parentId),
       onSuccess: invalidate,
     }),
-    deleteFolder: useMutation({ mutationFn: vaultApi.deleteFolder, onSuccess: invalidate }),
+    deleteFolder: useMutation({ mutationFn: secretsApi.deleteFolder, onSuccess: invalidate }),
     createTag: useMutation({
-      mutationFn: ({ name, color }: { name: string; color?: string }) => vaultApi.createTag(name, color),
+      mutationFn: ({ name, color }: { name: string; color?: string }) => secretsApi.createTag(name, color),
       onSuccess: invalidate,
     }),
-    deleteTag: useMutation({ mutationFn: vaultApi.deleteTag, onSuccess: invalidate }),
+    deleteTag: useMutation({ mutationFn: secretsApi.deleteTag, onSuccess: invalidate }),
   };
 }

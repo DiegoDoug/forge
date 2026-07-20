@@ -9,7 +9,7 @@ from app.core.config import get_settings
 from app.core.version import VERSION
 from app.models.activity import ActivityLog
 from app.models.note import Note
-from app.services.vault import service as vault_service
+from app.services.secrets import service as secrets_service
 
 
 async def get_dashboard(session: AsyncSession) -> dict:
@@ -20,7 +20,7 @@ async def get_dashboard(session: AsyncSession) -> dict:
 
     activity_result = await session.execute(select(ActivityLog).order_by(ActivityLog.created_at.desc()).limit(15))
     notes_result = await session.execute(select(Note).where(Note.archived == False).order_by(Note.updated_at.desc()).limit(6))  # noqa: E712
-    secrets = (await vault_service.list_secrets(session))[:6]
+    secrets = (await secrets_service.list_secrets(session))[:6]
 
     return {
         "version": VERSION,

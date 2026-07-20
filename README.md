@@ -1,12 +1,12 @@
 # Forge
 
 Forge is a self-hosted developer toolbox that combines a password/secrets
-vault, a notes board, code/crypto utilities, and a document-to-Markdown
+manager, a notes board, code/crypto utilities, and a document-to-Markdown
 converter into one application you run on your own hardware.
 
 ## Features
 
-- **Vault** — encrypted secret storage with folders, tags, favorites, and version history
+- **Secrets** — encrypted secret storage with folders, tags, favorites, and version history
 - **Notes** — drag-and-resize sticky note board with Markdown support and full-text search
 - **Documents** — rich text editor with pin/history sidebar and export to TXT, Markdown, Word (.doc/.docx), PDF, and XML
 - **Generators** — passwords, UUIDs, NanoIDs, random bytes, API keys, JWT secrets

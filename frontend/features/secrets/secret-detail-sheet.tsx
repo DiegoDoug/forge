@@ -23,7 +23,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { formatRelativeTime } from "@/lib/format";
-import { vaultApi, useVaultMutations } from "./api";
+import { secretsApi, useSecretsMutations } from "./api";
 import { SECRET_TYPE_LABELS } from "./secret-types";
 
 export function SecretDetailSheet({
@@ -37,17 +37,17 @@ export function SecretDetailSheet({
 }) {
   const [revealed, setRevealed] = useState(false);
   const [showVersions, setShowVersions] = useState(false);
-  const { deleteSecret } = useVaultMutations();
+  const { deleteSecret } = useSecretsMutations();
 
   const detailQuery = useQuery({
-    queryKey: ["vault", "secret", secretId, revealed],
-    queryFn: () => vaultApi.getSecret(secretId as string, revealed),
+    queryKey: ["secrets", "secret", secretId, revealed],
+    queryFn: () => secretsApi.getSecret(secretId as string, revealed),
     enabled: Boolean(secretId),
   });
 
   const versionsQuery = useQuery({
-    queryKey: ["vault", "secret", secretId, "versions"],
-    queryFn: () => vaultApi.listVersions(secretId as string),
+    queryKey: ["secrets", "secret", secretId, "versions"],
+    queryFn: () => secretsApi.listVersions(secretId as string),
     enabled: Boolean(secretId) && showVersions,
   });
 
@@ -197,8 +197,8 @@ function Field({ label, value }: { label: string; value: string }) {
 function VersionRow({ secretId, versionId, createdAt }: { secretId: string; versionId: string; createdAt: string }) {
   const [revealed, setRevealed] = useState(false);
   const query = useQuery({
-    queryKey: ["vault", "secret", secretId, "versions", versionId],
-    queryFn: () => vaultApi.revealVersion(secretId, versionId),
+    queryKey: ["secrets", "secret", secretId, "versions", versionId],
+    queryFn: () => secretsApi.revealVersion(secretId, versionId),
     enabled: revealed,
   });
 

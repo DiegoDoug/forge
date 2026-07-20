@@ -5,7 +5,7 @@ from .activity import ActivityLog
 from .app_config import AppConfig
 from .document import Document
 from .note import Note
-from .vault import Folder, Secret, SecretTagLink, SecretVersion, Tag
+from .secrets import Folder, Secret, SecretTagLink, SecretVersion, Tag
 
 __all__ = [
     "ActivityLog",

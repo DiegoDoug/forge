@@ -119,7 +119,7 @@ export default function SettingsPage() {
           </div>
         </ToolCard>
 
-        <ToolCard title="Backup" description="Vault values stay encrypted inside the export — it's only useful with your master key">
+        <ToolCard title="Backup" description="Secret values stay encrypted inside the export — it's only useful with your master key">
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={handleExport}>
               <Download className="h-3.5 w-3.5" />
@@ -137,7 +137,7 @@ export default function SettingsPage() {
               onChange={(e) => e.target.files?.[0] && handleImportFile(e.target.files[0])}
             />
           </div>
-          <p className="text-xs text-muted-foreground">Importing replaces all current vault secrets, folders, tags, and notes.</p>
+          <p className="text-xs text-muted-foreground">Importing replaces all current secrets, folders, tags, and notes.</p>
         </ToolCard>
 
         <ToolCard title="About" description="System information">

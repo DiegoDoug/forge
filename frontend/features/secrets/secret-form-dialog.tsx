@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { SecretDetail, SecretType } from "./api";
-import { useVaultMutations } from "./api";
+import { useSecretsMutations } from "./api";
 import { SECRET_TYPE_LABELS, SECRET_TYPES } from "./secret-types";
 
 interface SecretFormDialogProps {
@@ -29,7 +29,7 @@ interface SecretFormDialogProps {
 }
 
 export function SecretFormDialog({ open, onOpenChange, secret, folderId, onSaved }: SecretFormDialogProps) {
-  const { createSecret, updateSecret } = useVaultMutations();
+  const { createSecret, updateSecret } = useSecretsMutations();
   const isEdit = Boolean(secret);
 
   const [name, setName] = useState("");
@@ -90,7 +90,7 @@ export function SecretFormDialog({ open, onOpenChange, secret, folderId, onSaved
           <DialogHeader>
             <DialogTitle>{isEdit ? "Edit secret" : "New secret"}</DialogTitle>
             <DialogDescription>
-              {isEdit ? "Update this vault entry." : "Values are encrypted at rest before they touch disk."}
+              {isEdit ? "Update this secret." : "Values are encrypted at rest before they touch disk."}
             </DialogDescription>
           </DialogHeader>
 

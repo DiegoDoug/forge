@@ -88,9 +88,9 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
             <>
               <CommandSeparator />
               {results.data.secrets.length > 0 ? (
-                <CommandGroup heading="Vault">
+                <CommandGroup heading="Secrets">
                   {results.data.secrets.map((s) => (
-                    <CommandItem key={s.id} value={`secret-${s.id}`} onSelect={() => go(`/vault?open=${s.id}`)}>
+                    <CommandItem key={s.id} value={`secret-${s.id}`} onSelect={() => go(`/secrets?open=${s.id}`)}>
                       <KeyRound className="h-4 w-4" />
                       <span>{s.name}</span>
                     </CommandItem>

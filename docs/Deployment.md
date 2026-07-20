@@ -23,7 +23,7 @@ Forge is served on `http://localhost:${FORGE_PORT:-8585}`.
 openssl rand -base64 32
 ```
 
-This key encrypts every vault secret at rest and signs session cookies. It
+This key encrypts every secret at rest and signs session cookies. It
 never touches the database — losing it means losing access to every stored
 secret, with no recovery path. Treat it like a root password: store it in a
 password manager or your infrastructure's secret store, not just in `.env`

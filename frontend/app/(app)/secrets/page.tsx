@@ -12,13 +12,13 @@ import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/page-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatRelativeTime } from "@/lib/format";
-import { useSecrets, vaultApi, type SecretDetail } from "@/features/vault/api";
-import { SECRET_TYPE_LABELS } from "@/features/vault/secret-types";
-import { SecretDetailSheet } from "@/features/vault/secret-detail-sheet";
-import { SecretFormDialog } from "@/features/vault/secret-form-dialog";
-import { VaultFilters } from "@/features/vault/vault-filters";
+import { useSecrets, secretsApi, type SecretDetail } from "@/features/secrets/api";
+import { SECRET_TYPE_LABELS } from "@/features/secrets/secret-types";
+import { SecretDetailSheet } from "@/features/secrets/secret-detail-sheet";
+import { SecretFormDialog } from "@/features/secrets/secret-form-dialog";
+import { SecretsFilters } from "@/features/secrets/secrets-filters";
 
-export default function VaultPage() {
+export default function SecretsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const openId = searchParams.get("open");
@@ -36,15 +36,15 @@ export default function VaultPage() {
   });
 
   const editQuery = useQuery({
-    queryKey: ["vault", "secret", editSecret?.id, "edit"],
-    queryFn: () => vaultApi.getSecret(editSecret!.id, true),
+    queryKey: ["secrets", "secret", editSecret?.id, "edit"],
+    queryFn: () => secretsApi.getSecret(editSecret!.id, true),
     enabled: Boolean(editSecret),
   });
 
-  const closeDetail = () => router.push("/vault");
+  const closeDetail = () => router.push("/secrets");
 
   async function startEdit(id: string) {
-    const detail = await vaultApi.getSecret(id, true);
+    const detail = await secretsApi.getSecret(id, true);
     setEditSecret(detail);
     setFormOpen(true);
   }
@@ -54,7 +54,7 @@ export default function VaultPage() {
   return (
     <div>
       <PageHeader
-        title="Vault"
+        title="Secrets"
         description="Encrypted secrets, API keys, and credentials"
         actions={
           <Button
@@ -71,7 +71,7 @@ export default function VaultPage() {
       />
 
       <div className="flex">
-        <VaultFilters folderId={folderId} tagId={tagId} onFolderChange={setFolderId} onTagChange={setTagId} />
+        <SecretsFilters folderId={folderId} tagId={tagId} onFolderChange={setFolderId} onTagChange={setTagId} />
 
         <div className="flex-1 p-4 md:p-6">
           <div className="mb-4 flex items-center gap-2">
@@ -109,7 +109,7 @@ export default function VaultPage() {
               {secrets.map((secret, i) => (
                 <button
                   key={secret.id}
-                  onClick={() => router.push(`/vault?open=${secret.id}`)}
+                  onClick={() => router.push(`/secrets?open=${secret.id}`)}
                   className={`flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors hover:bg-accent/40 ${
                     i > 0 ? "border-t border-border" : ""
                   }`}
@@ -154,7 +154,7 @@ export default function VaultPage() {
         }}
         secret={editSecret ? (editQuery.data ?? editSecret) : null}
         folderId={folderId}
-        onSaved={(id) => router.push(`/vault?open=${id}`)}
+        onSaved={(id) => router.push(`/secrets?open=${id}`)}
       />
     </div>
   );

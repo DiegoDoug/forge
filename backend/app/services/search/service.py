@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.documents import service as documents_service
 from app.services.notes import service as notes_service
-from app.services.vault import service as vault_service
+from app.services.secrets import service as secrets_service
 
 
 async def global_search(session: AsyncSession, query: str) -> dict:
@@ -12,7 +12,7 @@ async def global_search(session: AsyncSession, query: str) -> dict:
     if not query:
         return {"secrets": [], "notes": [], "documents": []}
 
-    secrets = await vault_service.list_secrets(session, query=query)
+    secrets = await secrets_service.list_secrets(session, query=query)
     notes = await notes_service.search_notes(session, query)
     documents = await documents_service.search_documents(session, query)
 

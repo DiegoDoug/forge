@@ -29,14 +29,14 @@ full reference.
 |---|---|
 | `/health`, `/version`, `/system/status` | Unauthenticated health/version/storage info |
 | `/api/setup`, `/api/auth` | First-run setup, unlock/lock, session check, password change |
-| `/api/vault` | Secrets, folders, tags, version history |
+| `/api/secrets` | Secrets, folders, tags, version history (`/api/vault` still resolves as a temporary compatibility alias, see [DecisionLog.md](DecisionLog.md)) |
 | `/api/generators` | Password/UUID/NanoID/random-bytes/API-key/JWT-secret generation, entropy estimate |
 | `/api/crypto` | Base64, hashing, AES-256-GCM, JWT decode/verify/build, RSA, ECDSA |
 | `/api/converters` | Cron expression parsing (other converters run client-side) |
 | `/api/notes` | Note CRUD + full-text search |
 | `/api/documents` | Document CRUD, full-text search, and multi-format export (txt/md/doc/docx/pdf/xml) |
 | `/api/ingest` | Document upload → Markdown conversion jobs, preview, save-to-notes |
-| `/api/search` | Combined vault + notes + documents search for the command palette |
+| `/api/search` | Combined secrets + notes + documents search for the command palette |
 | `/api/dashboard` | Aggregated recent activity/notes/secrets/storage for the home page |
 | `/api/settings` | Theme, backup export/import, about |
 

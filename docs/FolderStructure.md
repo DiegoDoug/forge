@@ -10,7 +10,7 @@ forge/
 │   │   ├── models/                 SQLModel tables — single source of truth for schema
 │   │   ├── schemas/                Pydantic request/response models, per feature
 │   │   ├── services/               business logic, one subpackage per feature
-│   │   │   ├── vault/
+│   │   │   ├── secrets/
 │   │   │   ├── notes/
 │   │   │   ├── generators/
 │   │   │   ├── crypto/
@@ -31,7 +31,7 @@ forge/
 │   │   ├── (auth)/                 setup, unlock — no sidebar
 │   │   └── (app)/                  every real page — wrapped in AuthGate + shell
 │   ├── features/                   one folder per feature: api.ts + components
-│   │   ├── vault/
+│   │   ├── secrets/
 │   │   ├── notes/
 │   │   ├── generators/
 │   │   ├── crypto/
@@ -59,12 +59,12 @@ forge/
 
 ## Conventions
 
-- **Features don't import from each other.** `features/vault` never imports
+- **Features don't import from each other.** `features/secrets` never imports
   from `features/notes`, and vice versa. Anything genuinely shared (the API
   client, formatting helpers, shared UI) lives in `lib/` or `components/`.
 - **`api.ts` is the only file in a feature that knows backend endpoint
   shapes.** Pages and components call hooks it exports
-  (`useSecrets`, `useVaultMutations`, ...), never `fetch` directly.
+  (`useSecrets`, `useSecretsMutations`, ...), never `fetch` directly.
 - **Backend routers are thin.** Validation lives in Pydantic schemas,
   business logic lives in `services/`, routers just wire the two together
   and shape the HTTP response.

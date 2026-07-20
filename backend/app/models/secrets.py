@@ -46,7 +46,7 @@ class Tag(SQLModel, table=True):
 
 
 class Secret(SQLModel, table=True):
-    """A vault entry. ``encrypted_value``/``encrypted_metadata`` are opaque
+    """A secrets entry. ``encrypted_value``/``encrypted_metadata`` are opaque
     PyNaCl SecretBox ciphertext — plaintext never touches the database."""
 
     __tablename__ = "secrets"

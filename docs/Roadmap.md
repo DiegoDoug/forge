@@ -6,10 +6,10 @@
   PGP/GPG. A correct implementation needs a real keyring model (not just a
   keypair), which is a meaningfully larger feature than the others; see
   [DecisionLog.md](DecisionLog.md).
-- **Pagination** — Vault and Notes list endpoints return everything in one
-  response. Fine at the scale of a personal vault; would need cursor-based
-  pagination before it's fine at thousands of entries.
-- **Nested folders in the Vault UI** — the backend model supports
+- **Pagination** — Secrets and Notes list endpoints return everything in one
+  response. Fine at the scale of a personal secrets store; would need
+  cursor-based pagination before it's fine at thousands of entries.
+- **Nested folders in the Secrets UI** — the backend model supports
   `parent_id` nesting; the sidebar currently renders folders as a flat list.
 - **Rate limiting** — see [Security.md](Security.md) for why this is
   currently a deployment-time concern (VPN/reverse-proxy) rather than
