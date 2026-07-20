@@ -3,9 +3,9 @@
 > **Purpose:** Durable, append-only log of every checkpoint produced under [10_CHECKPOINT_PROTOCOL.md](../10_CHECKPOINT_PROTOCOL.md), so state survives even after a phase's `CURRENT_STATE.md` is overwritten by its next update.
 > **Scope:** Checkpoint records only. Architectural decisions belong in [`../decisions/`](../decisions/README.md), not here.
 > **Ownership:** TODO — assign an owner.
-> **Status:** Empty — no checkpoints logged yet
-> **Version:** 0.1.0
-> **Last Updated:** 2026-07-20
+> **Status:** One checkpoint logged
+> **Version:** 0.2.0
+> **Last Updated:** 2026-07-21
 > **Depends On:** [../10_CHECKPOINT_PROTOCOL.md](../10_CHECKPOINT_PROTOCOL.md)
 > **Supersedes:** —
 
@@ -23,11 +23,11 @@ At every checkpoint (per [`../10_CHECKPOINT_PROTOCOL.md`](../10_CHECKPOINT_PROTO
 
 | Date | Phase | Trigger | File |
 |------|-------|---------|------|
-| _(none yet)_ | | | |
+| 2026-07-21 | Phase-01-Workbench | Milestone completion (Milestone 1 — Foundation, T1–T4) | [2026-07-21-phase-01-milestone-1-foundation.md](2026-07-21-phase-01-milestone-1-foundation.md) |
 
 ## 3. TODO
 
-- [ ] TODO: Log the first checkpoint once Phase 01 work begins.
+- [ ] TODO: none — first checkpoint logged.
 
 ## 4. Cross-references
 
