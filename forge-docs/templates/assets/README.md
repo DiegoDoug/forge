@@ -4,7 +4,10 @@
 > **Scope:** Binary/static assets only. Diagrams expressible as text (e.g. Mermaid, ASCII trees) should stay inline in the relevant Markdown file instead of becoming an image here — text stays diffable.
 > **Ownership:** TODO — assign an owner.
 > **Status:** Empty — no assets yet
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** [../../04_UI_GUIDELINES.md](../../04_UI_GUIDELINES.md), [../../05_DESIGN_SYSTEM.md](../../05_DESIGN_SYSTEM.md)
+> **Supersedes:** —
 
 ---
 

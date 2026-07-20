@@ -4,7 +4,10 @@
 > **Scope:** Code-level conventions for both frontend and backend. Product-level judgment calls live in [01_PRODUCT_PRINCIPLES.md](01_PRODUCT_PRINCIPLES.md).
 > **Ownership:** TODO — assign an engineering standards owner.
 > **Status:** Draft — derived from existing codebase conventions in [`../docs/FolderStructure.md`](../docs/FolderStructure.md) and [`../docs/Contributing.md`](../docs/Contributing.md)
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** [03_ARCHITECTURE.md](03_ARCHITECTURE.md)
+> **Supersedes:** —
 
 ---
 

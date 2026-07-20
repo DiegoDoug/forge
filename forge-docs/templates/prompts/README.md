@@ -4,7 +4,10 @@
 > **Scope:** Prompt text templates only. The rules those prompts must satisfy live in [`../../09_CLAUDE_CODE_RULES.md`](../../09_CLAUDE_CODE_RULES.md) and [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md).
 > **Ownership:** TODO — assign an owner.
 > **Status:** Draft
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** [../../09_CLAUDE_CODE_RULES.md](../../09_CLAUDE_CODE_RULES.md), [../../10_CHECKPOINT_PROTOCOL.md](../../10_CHECKPOINT_PROTOCOL.md)
+> **Supersedes:** —
 
 ---
 

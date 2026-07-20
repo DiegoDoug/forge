@@ -4,7 +4,10 @@
 > **Scope:** Checkpoint records only. Architectural decisions belong in [`../decisions/`](../decisions/README.md), not here.
 > **Ownership:** TODO — assign an owner.
 > **Status:** Empty — no checkpoints logged yet
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** [../10_CHECKPOINT_PROTOCOL.md](../10_CHECKPOINT_PROTOCOL.md)
+> **Supersedes:** —
 
 ---
 

@@ -4,7 +4,10 @@
 > **Scope:** Product and design principles. Engineering conventions live in [07_CODING_STANDARDS.md](07_CODING_STANDARDS.md); architectural principles live in [03_ARCHITECTURE.md](03_ARCHITECTURE.md).
 > **Ownership:** TODO — assign a product owner.
 > **Status:** Draft
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** [00_VISION.md](00_VISION.md)
+> **Supersedes:** —
 
 ---
 

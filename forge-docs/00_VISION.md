@@ -4,7 +4,10 @@
 > **Scope:** Product-level vision only. Feature specifics live in [11_PROJECT_STRUCTURE.md](11_PROJECT_STRUCTURE.md) and `/forge-docs/implementation/`. Process/execution vision (how Claude Code works within this repo) lives in [09_CLAUDE_CODE_RULES.md](09_CLAUDE_CODE_RULES.md).
 > **Ownership:** TODO — assign a product owner (currently unowned; the Lead Architect role is filling this gap).
 > **Status:** Draft
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** —
+> **Supersedes:** —
 
 ---
 

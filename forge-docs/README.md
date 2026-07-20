@@ -4,7 +4,10 @@
 > **Scope:** Index only — points to every root document and subsystem. Content lives in the linked files, not here.
 > **Ownership:** TODO — assign an FDK owner.
 > **Status:** Draft
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** —
+> **Supersedes:** —
 
 ---
 
@@ -36,7 +39,9 @@ If you are a Claude Code session about to do implementation work in this reposit
 | [implementation/](implementation/README.md) | The 8 phase specs — the actual buildable work |
 | [templates/](templates/README.md) | Reusable templates (scaffolding, chunks, workflows, prompts, assets) |
 | [decisions/](decisions/README.md) | Architecture decision records (ADRs) |
+| [architecture/](architecture/README.md) | Proposed (not yet accepted) architecture sketches — one step past a research idea, not yet a build contract |
 | [history/](history/README.md) | Durable checkpoint log |
+| [research/](research/README.md) | Benchmarks, competitor notes, raw ideas, and references — kept out of implementation docs |
 
 ## 4. Related documentation outside this folder
 
