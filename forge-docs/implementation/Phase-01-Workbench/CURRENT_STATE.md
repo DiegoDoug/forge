@@ -14,7 +14,7 @@
 
 ## Current Status
 
-**In progress — Milestone 1 (Foundation) underway.** Specification is locked ([ADR-0009](../../decisions/0009-phase-specification-freeze.md)). T1 and T2 are complete; T3–T4 have not been started. Work is on branch `feature/t2-search-page`.
+**In progress — Milestone 1 (Foundation) underway.** Specification is locked ([ADR-0009](../../decisions/0009-phase-specification-freeze.md)). T1–T3 are complete; T4 (the panel contract) remains before the Milestone 1 checkpoint. Work is on branch `feature/t3-workbench-layout-migration`.
 
 ## Completed
 
@@ -28,14 +28,15 @@
   - `frontend/app/(app)/search/page.tsx` (`SearchPage`): route `/search`, query param `?q=` kept in sync via `router.replace`. States per `02_UI.md` §3.5: query length ≤1 shows a prompt empty state, loading shows skeleton rows, a failed fetch shows an inline error with a Retry button (`resultsQuery.refetch()`), otherwise renders results.
   - `frontend/features/search/search-result-list.tsx` (`SearchResultList`): renders the same secrets/notes/documents groups the command palette shows, linking to each item's `?open=id` detail view; a true empty result set shows `No matches for "<query>"` per spec.
   - Not added to `frontend/lib/nav-registry.ts` — per `02_UI.md`, `/search` is reachable only via the (future) Pinned Tools panel and the command palette, not a permanent sidebar item.
+- [x] T3 — `workbench_layout` Alembic migration ([04_DATABASE.md](04_DATABASE.md)). `backend/app/models/workbench.py` (`WorkbenchLayout`, single-row `id=1` pattern matching `AppConfig`) registered in `models/__init__.py`; `backend/alembic/versions/0003_workbench_layout.py` creates the table with the same idempotent existence-guard `0002_documents.py` uses (a no-op on fresh installs, since `0001`'s `create_all()` already covers it once the model is registered). No data migration — the row is created lazily on first access, per the service layer T5 will add. Verified fresh-install and incremental upgrade/downgrade paths directly against a scratch SQLite DB; full pytest suite (32 tests) still green. `docs/Database.md` and `04_DATABASE.md` updated to record it.
 
 ## In Progress
 
-- [ ] TODO: nothing in progress yet — T3 (the `workbench_layout` Alembic migration) is next per the milestone ordering notes in `09_IMPLEMENTATION_TASKS.md` §2.
+- [ ] TODO: nothing in progress yet — T4 (the panel contract: `panel-types.ts`, `panel-registry.ts`, `register-all.ts`) is next, and is Milestone 1's last task before the checkpoint.
 
 ## Remaining
 
-- [ ] T3–T16 in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) — the rest of Milestone 1 (Foundation), then Milestones 2–4.
+- [ ] T4–T16 in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) — T4 finishes Milestone 1 (Foundation, checkpoint due), then Milestones 2–4.
 
 ## Known Issues
 
@@ -77,19 +78,24 @@ All eight are `Status: Accepted` as of 2026-07-20. [ADR-0008](../../decisions/00
 - [x] `frontend/app/(auth)/setup/page.tsx`
 - [x] `frontend/app/(app)/settings/page.tsx`
 - [x] `README.md`, `.env.example`, `docs/API.md`, `docs/FolderStructure.md`, `docs/Database.md`, `docs/Contributing.md`, `docs/Architecture.md`, `docs/Security.md`, `docs/Deployment.md`, `docs/Roadmap.md`, `docs/DecisionLog.md`
-- [x] `forge-docs/implementation/Phase-01-Workbench/09_IMPLEMENTATION_TASKS.md` (T1, T2 checked off)
+- [x] `forge-docs/implementation/Phase-01-Workbench/09_IMPLEMENTATION_TASKS.md` (T1, T2, T3 checked off)
 - [x] `frontend/app/(app)/search/page.tsx` (new)
 - [x] `frontend/features/search/search-result-list.tsx` (new)
+- [x] `backend/app/models/workbench.py` (new)
+- [x] `backend/app/models/__init__.py`
+- [x] `backend/alembic/versions/0003_workbench_layout.py` (new)
+- [x] `forge-docs/implementation/Phase-01-Workbench/04_DATABASE.md` (TODOs checked off)
+- [x] `docs/Database.md` (`workbench_layout` row added)
 
 ## Next Milestone
 
-Milestone 1 — Foundation (T1–T4): Secrets compatibility migration (done), `/search` page (done), `workbench_layout` migration, the panel contract. See [`IMPLEMENT.md`](IMPLEMENT.md) "Milestone Plan" and [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md).
+Milestone 1 — Foundation (T1–T4): Secrets compatibility migration (done), `/search` page (done), `workbench_layout` migration (done), the panel contract. See [`IMPLEMENT.md`](IMPLEMENT.md) "Milestone Plan" and [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md).
 
 ## Next Claude Prompt
 
 ```
 You are working in the Forge repository as a Claude Code session, on branch
-feature/t2-search-page.
+feature/t3-workbench-layout-migration.
 
 Read, in order:
 1. forge-docs/09_CLAUDE_CODE_RULES.md
@@ -97,9 +103,12 @@ Read, in order:
 3. forge-docs/implementation/Phase-01-Workbench/CURRENT_STATE.md
 4. forge-docs/implementation/Phase-01-Workbench/IMPLEMENT.md
 
-T1 and T2 are complete. Begin work on: T3 in 09_IMPLEMENTATION_TASKS.md (write
-and apply the Alembic migration adding workbench_layout, per 04_DATABASE.md),
-the third task of Milestone 1 — Foundation.
+T1, T2, and T3 are complete. Begin work on: T4 in 09_IMPLEMENTATION_TASKS.md
+(the panel contract — panel-types.ts, panel-registry.ts, register-all.ts per
+12_PANEL_INTERFACE.md 2, 4), the fourth and final task of Milestone 1 —
+Foundation. This is a milestone-boundary checkpoint per IMPLEMENT.md: stop
+and produce a full checkpoint after T4 even if the 10-12 task threshold
+hasn't been hit.
 
 Follow the checkpoint protocol in forge-docs/10_CHECKPOINT_PROTOCOL.md exactly,
 plus the milestone checkpoints in IMPLEMENT.md — stop after T4 (end of
@@ -119,7 +128,8 @@ gets flagged and deferred, not built.
 - 2026-07-20 — Scope-freeze pass: Secrets rename refined to a compatibility migration (ADR-0006 v0.2.0); Search's scope confirmed as page-only, with a future command-palette direction recorded but deferred (ADR-0007 §6); Capability Registry direction recorded as ADR-0008, deliberately `Proposed` not `Accepted`; Projects interface confirmed deferred to Phase 06 (ADR-0005 unchanged); Workflows explicitly excluded from this phase. All nine Exit Criteria documents are now content-complete. `09_IMPLEMENTATION_TASKS.md` populated with an ordered 16-task breakdown. `IMPLEMENT.md` remains "Not authorized" pending the project owner's explicit go-ahead.
 - 2026-07-20 — **Authorized.** ADR-0009 (Phase Specification Freeze) recorded and accepted. `09_IMPLEMENTATION_TASKS.md` regrouped into 4 content-coherent milestones (Foundation/Backend/Frontend/Integration). `IMPLEMENT.md` updated with the milestone checkpoint plan and the immutable Priority Order rule (Correctness > Existing functionality > Stability > Performance > UX polish > New functionality). `README.md` now carries a Definition of Success and a formal Authorization record. Specification is locked; implementation is approved to begin at T1.
 - 2026-07-21 — **T1 complete** (branch `feature/t1-vault-secrets-migration`, merged to `master` via [#6](https://github.com/DiegoDoug/forge/pull/6)). Vault → Secrets compatibility migration executed per ADR-0006: database tables were already correctly named, so the work was module/route/UI renames plus two temporary aliases (`/api/vault` proxy, frontend `/vault` redirect). See "Completed" above for the full file list.
-- 2026-07-21 — **T2 complete** (branch `feature/t2-search-page`). Dedicated `/search` page added per ADR-0007, reusing `GET /api/search` and `frontend/features/search/api.ts` unchanged — no backend change. Milestone 1 is not yet checkpoint-complete — T3–T4 remain.
+- 2026-07-21 — **T2 complete** (branch `feature/t2-search-page`, merged to `master` via [#7](https://github.com/DiegoDoug/forge/pull/7)). Dedicated `/search` page added per ADR-0007, reusing `GET /api/search` and `frontend/features/search/api.ts` unchanged — no backend change.
+- 2026-07-21 — **T3 complete** (branch `feature/t3-workbench-layout-migration`). `workbench_layout` Alembic migration written and verified per `04_DATABASE.md`. Milestone 1 is not yet checkpoint-complete — T4 remains, and finishing it triggers the Milestone 1 checkpoint per `IMPLEMENT.md`.
 
 ## Cross-references
 

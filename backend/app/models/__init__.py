@@ -6,6 +6,7 @@ from .app_config import AppConfig
 from .document import Document
 from .note import Note
 from .secrets import Folder, Secret, SecretTagLink, SecretVersion, Tag
+from .workbench import WorkbenchLayout
 
 __all__ = [
     "ActivityLog",
@@ -17,4 +18,5 @@ __all__ = [
     "SecretTagLink",
     "SecretVersion",
     "Tag",
+    "WorkbenchLayout",
 ]
