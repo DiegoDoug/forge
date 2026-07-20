@@ -10,9 +10,9 @@ from app.core.errors import NotFoundError
 from app.core.security import get_vault_crypto
 from app.models.activity import ActivityAction
 from app.models.base import utcnow
-from app.models.vault import Folder, Secret, SecretVersion, Tag
+from app.models.secrets import Folder, Secret, SecretVersion, Tag
 from app.services import activity
-from app.schemas.vault import (
+from app.schemas.secrets import (
     FolderIn,
     SecretCreateIn,
     SecretMetadata,

@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, Query
 
 from app.api.deps import AuthDep, SessionDep
-from app.schemas.vault import (
+from app.schemas.secrets import (
     FolderIn,
     FolderOut,
     SecretCreateIn,
@@ -15,9 +15,12 @@ from app.schemas.vault import (
     TagIn,
     TagOut,
 )
-from app.services.vault import service
+from app.services.secrets import service
 
-router = APIRouter(prefix="/vault", tags=["vault"], dependencies=[AuthDep])
+# No prefix baked in here — app/api/router.py mounts this router twice, once
+# at /secrets and once at /vault (a compatibility alias for the pre-rename
+# path, see ADR-0006: forge-docs/decisions/0006-vault-renamed-to-secrets.md).
+router = APIRouter(tags=["secrets"], dependencies=[AuthDep])
 
 
 def _summary(secret) -> SecretSummaryOut:

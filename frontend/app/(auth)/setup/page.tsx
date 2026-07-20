@@ -52,7 +52,7 @@ export default function SetupPage() {
         </div>
         <h1 className="text-lg font-semibold">Welcome to Forge</h1>
         <p className="text-sm text-muted-foreground">
-          Set a master password to encrypt this instance. It unlocks the vault and cannot be recovered if lost.
+          Set a master password to encrypt this instance. It unlocks your secrets and cannot be recovered if lost.
         </p>
       </div>
 
@@ -74,7 +74,7 @@ export default function SetupPage() {
         </div>
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
         <Button type="submit" disabled={mutation.isPending} className="mt-2">
-          {mutation.isPending ? "Setting up…" : "Create vault"}
+          {mutation.isPending ? "Setting up…" : "Finish setup"}
         </Button>
       </form>
     </div>

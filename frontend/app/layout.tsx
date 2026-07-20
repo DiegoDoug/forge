@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Forge",
-  description: "A self-hosted developer toolbox — vault, notes, generators, crypto, and more.",
+  description: "A self-hosted developer toolbox — secrets, notes, generators, crypto, and more.",
 };
 
 export default function RootLayout({

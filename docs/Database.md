@@ -10,9 +10,9 @@ migrations run from the FastAPI lifespan on startup).
 | Table | Purpose |
 |---|---|
 | `app_config` | Single row (`id=1`): master password hash, theme, setup timestamp |
-| `folders` | Vault folders (self-referential `parent_id` for nesting) |
-| `tags` | Vault tags (name + color) |
-| `secrets` | Vault entries — `encrypted_value`/`encrypted_metadata` are PyNaCl ciphertext, never plaintext |
+| `folders` | Secrets folders (self-referential `parent_id` for nesting) |
+| `tags` | Secrets tags (name + color) |
+| `secrets` | Secrets entries — `encrypted_value`/`encrypted_metadata` are PyNaCl ciphertext, never plaintext |
 | `secret_versions` | Immutable snapshots written whenever a secret's value changes |
 | `secret_tag_links` | Many-to-many join between `secrets` and `tags` |
 | `notes` | Sticky notes — position/size/color/pin/archive + Markdown content |
@@ -36,7 +36,7 @@ in sync automatically; application code never has to remember to update the
 index. `documents_fts` (added in `0002_documents.py`) follows the identical
 pattern over `documents`.
 
-Vault secrets are **not** in an FTS index — only `secrets.name` is
+Secrets are **not** in an FTS index — only `secrets.name` is
 searchable (plain `LIKE`), and only the name; values stay encrypted and are
 never indexed in plaintext.
 

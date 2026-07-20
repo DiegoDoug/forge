@@ -7,9 +7,9 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useFolders, useTags, useVaultMutations } from "./api";
+import { useFolders, useTags, useSecretsMutations } from "./api";
 
-export function VaultFilters({
+export function SecretsFilters({
   folderId,
   tagId,
   onFolderChange,
@@ -22,7 +22,7 @@ export function VaultFilters({
 }) {
   const foldersQuery = useFolders();
   const tagsQuery = useTags();
-  const { createFolder, deleteFolder, createTag, deleteTag } = useVaultMutations();
+  const { createFolder, deleteFolder, createTag, deleteTag } = useSecretsMutations();
 
   const [newFolder, setNewFolder] = useState("");
   const [newTag, setNewTag] = useState("");

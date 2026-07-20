@@ -101,7 +101,7 @@ export default function DashboardPage() {
               {data.recent_secrets.map((secret) => (
                 <li key={secret.id}>
                   <Link
-                    href={`/vault?open=${secret.id}`}
+                    href={`/secrets?open=${secret.id}`}
                     className="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm hover:bg-accent/40"
                   >
                     <span className="truncate">{secret.name}</span>

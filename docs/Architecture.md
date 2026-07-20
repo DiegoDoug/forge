@@ -7,7 +7,7 @@ dependencies beyond what ships in the containers.
 ## Why a monolith
 
 At the scale of a single-user (or small-team) self-hosted toolbox, splitting
-Vault/Notes/Generators/etc. into separate services would add operational
+Secrets/Notes/Generators/etc. into separate services would add operational
 complexity (service discovery, inter-service auth, distributed transactions)
 with no corresponding benefit — every feature shares the same database, the
 same auth session, and the same deploy lifecycle. A modular monolith gets the
@@ -44,7 +44,7 @@ backend/app/
   database/    async SQLAlchemy engine/session
   models/      SQLModel table definitions (single source of truth for schema)
   schemas/     Pydantic request/response models (never expose ORM objects directly)
-  services/    business logic, one subpackage per feature (vault, notes, ingest, …)
+  services/    business logic, one subpackage per feature (secrets, notes, ingest, …)
   api/routes/  thin FastAPI routers — validate input, call a service, shape output
 ```
 
@@ -71,7 +71,7 @@ rather than calling `fetch` directly.
 
 Forge is single-tenant: one master password gates the whole instance.
 `FORGE_MASTER_KEY` (an operator secret, never stored in the database)
-encrypts vault values at rest and signs session cookies; the master password
+encrypts secret values at rest and signs session cookies; the master password
 only decides whether the *current browser* gets a session. See
 [Security.md](Security.md) for the full model.
 
@@ -82,4 +82,4 @@ The `/ingest` feature is a direct port of the standalone
 (`app/services/ingest/`) — MarkItDown-based document→Markdown conversion, an
 in-memory job store with TTL cleanup, and optional vision-LLM assistance for
 scanned PDFs/images. It's intentionally *not* persisted to the database:
-uploads and results are scratch data, unlike vault secrets and notes.
+uploads and results are scratch data, unlike secrets and notes.

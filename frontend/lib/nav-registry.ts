@@ -22,7 +22,7 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { title: "Dashboard", href: "/", icon: LayoutDashboard, description: "Overview & recent activity", shortcut: "D" },
-  { title: "Vault", href: "/vault", icon: KeyRound, description: "Encrypted secrets", shortcut: "V" },
+  { title: "Secrets", href: "/secrets", icon: KeyRound, description: "Encrypted secrets", shortcut: "V" },
   { title: "Notes", href: "/notes", icon: StickyNote, description: "Sticky note board", shortcut: "N" },
   { title: "Documents", href: "/documents", icon: FileText, description: "Rich text editor, history & export" },
   { title: "Generators", href: "/generators", icon: Wand2, description: "Passwords, UUIDs, keys", shortcut: "G" },

@@ -1,4 +1,4 @@
-"""Export/import a full backup of vault + notes data as a single JSON bundle.
+"""Export/import a full backup of secrets + notes data as a single JSON bundle.
 
 Secret values stay encrypted (PyNaCl ciphertext, base64-encoded) end to end —
 a backup file is only useful to someone who also has ``FORGE_MASTER_KEY``.
@@ -16,7 +16,7 @@ from sqlmodel import delete, select
 
 from app.models.base import utcnow
 from app.models.note import Note
-from app.models.vault import Folder, Secret, SecretTagLink, SecretVersion, Tag
+from app.models.secrets import Folder, Secret, SecretTagLink, SecretVersion, Tag
 
 BACKUP_VERSION = 1
 

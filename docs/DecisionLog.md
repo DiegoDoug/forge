@@ -7,7 +7,7 @@ beyond the original project brief.
 
 The brief called for this explicitly; noted here because it's worth stating
 *why* it still holds even as features accumulate: every feature shares one
-database, one auth session, and one deploy lifecycle. Splitting Vault into
+database, one auth session, and one deploy lifecycle. Splitting Secrets into
 its own service would mean either duplicating auth or building
 service-to-service auth for zero user-facing benefit. Revisit only if a
 feature genuinely needs independent scaling or a different runtime.
@@ -45,11 +45,11 @@ into `op.create_table()` calls would be pure duplication with no safety
 benefit. Every migration after `0001` is a normal explicit revision — see
 [Database.md](Database.md).
 
-## SQLite FTS5 for Notes, plain `LIKE` for Vault names
+## SQLite FTS5 for Notes, plain `LIKE` for Secrets names
 
 Notes content is exactly the kind of unstructured text FTS5 is for.
-Vault secret *values* are never indexed in any form (they're encrypted, and
-indexing plaintext defeats the point); vault secret *names* are short enough
+Secret *values* are never indexed in any form (they're encrypted, and
+indexing plaintext defeats the point); secret *names* are short enough
 that a `LIKE` scan is fine and avoids maintaining a second FTS index with
 its own trigger set for marginal benefit.
 
@@ -61,7 +61,7 @@ close ports of the standalone Ingest project's modules, adapted only to
 read from Forge's central `Settings` instead of their own `config.py`. Job
 state stays in-memory with TTL cleanup (unchanged from upstream) rather than
 moving to the database — uploads and converted output are scratch data by
-design (self-cleaning was a stated feature of the original), unlike vault
+design (self-cleaning was a stated feature of the original), unlike
 secrets and notes, which are meant to persist indefinitely.
 
 ## PGP left out rather than shipped partial
@@ -85,6 +85,21 @@ port instead of two, and a natural place to add TLS later without touching
 the app containers. In dev (no Nginx), the frontend's own Next.js rewrites
 do the same job, so the routing logic isn't duplicated conceptually — just
 implemented twice for the two different deployment shapes.
+
+## Vault renamed to Secrets, with temporary compatibility aliases
+
+The shipped feature (routes, frontend/backend module paths) was renamed from
+"Vault" to "Secrets" to match the product's actual naming (see FDK
+`forge-docs/decisions/0006-vault-renamed-to-secrets.md`). The database tables
+were already named `secrets`/`folders`/`tags`/`secret_versions` before this
+rename, so no schema migration was needed. Two temporary aliases exist and
+are meant to be removed in a later cleanup pass, not treated as permanent:
+
+- `/api/vault` still resolves — `app/api/router.py` mounts the same
+  `secrets` router under both `/secrets` and `/vault`, so it's the same
+  handler, not a second implementation.
+- The frontend `/vault` route redirects to `/secrets` (`next.config.ts`
+  `redirects()`), rather than 404ing.
 
 ## Generators run server-side, not in the browser
 

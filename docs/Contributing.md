@@ -48,7 +48,7 @@ Converters/Utilities):
 
 - Backend: type-annotated Python, `from __future__ import annotations`
   **except** in files with SQLModel `Relationship()` fields (see
-  `app/models/vault.py` — future annotations breaks forward-reference
+  `app/models/secrets.py` — future annotations breaks forward-reference
   resolution for generic relationship types like `list["Secret"]` in
   combination with the SQLAlchemy version this project pins).
 - Frontend: TypeScript, no `any`. Prefer composing shadcn primitives over
