@@ -20,6 +20,7 @@ migrations run from the FastAPI lifespan on startup).
 | `documents` | Documents tab entries — title/pin + editor HTML content, stored as plain text (see [API.md](API.md) for export formats) |
 | `documents_fts` | FTS5 virtual table over `documents.title`/`documents.content`, kept in sync by triggers |
 | `activity_log` | Lightweight feed for the dashboard's "Recent activity" — never stores secret values or document contents |
+| `workbench_layout` | Single row (`id=1`): JSON-encoded `panels` (display order/visibility) and `pinned_tools` (pin order) for the home Workbench |
 
 Every table uses a `TEXT` primary key (a 32-char hex UUID from
 `models/base.py::new_id`), not an auto-increment integer — this makes IDs

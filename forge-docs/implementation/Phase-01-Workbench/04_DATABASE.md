@@ -51,9 +51,9 @@ Persists indefinitely, like `AppConfig`. Overwritten in place on every layout ch
 
 ## 5. TODO
 
-- [ ] TODO: Confirm the JSON-in-TEXT approach is acceptable rather than normalizing into child tables — unchanged judgment call from v0.1.0 of this document, still open.
-- [ ] TODO: Write and review the actual Alembic migration once this document is confirmed.
-- [ ] TODO: Coordinate with the Vault → Secrets rename task ([ADR-0006](../../decisions/0006-vault-renamed-to-secrets.md)) on migration ordering if both land in the same implementation session.
+- [ ] TODO: Confirm the JSON-in-TEXT approach is acceptable rather than normalizing into child tables — unchanged judgment call from v0.1.0 of this document, still open. Implemented as specified (JSON-in-TEXT) pending that confirmation, not a design change.
+- [x] TODO: Write and review the actual Alembic migration once this document is confirmed. — Done: `backend/alembic/versions/0003_workbench_layout.py` (T3), following the same idempotent-guard pattern as `0002_documents.py`.
+- [x] TODO: Coordinate with the Vault → Secrets rename task ([ADR-0006](../../decisions/0006-vault-renamed-to-secrets.md)) on migration ordering if both land in the same implementation session. — Resolved: T1 (the rename) landed first; it made no database changes (the `secrets`/`folders`/`tags`/`secret_versions` tables were already correctly named), so no ordering conflict existed by the time this migration was written.
 
 ## 6. Cross-references
 
