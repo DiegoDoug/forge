@@ -4,7 +4,10 @@
 > **Scope:** Runtime and build-time dependencies. Coding conventions for using them live in [07_CODING_STANDARDS.md](07_CODING_STANDARDS.md).
 > **Ownership:** TODO — assign a tech-stack owner (typically the lead maintainer).
 > **Status:** Current as of last dependency read — re-verify against `package.json` / `requirements.txt` before trusting for a new phase's dependency decisions.
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** [03_ARCHITECTURE.md](03_ARCHITECTURE.md)
+> **Supersedes:** —
 
 ---
 

@@ -4,7 +4,10 @@
 > **Scope:** Workflow *script patterns and when-to-use guidance*, not one-off scripts for a single task — those are run directly, not stored here.
 > **Ownership:** TODO — assign an owner.
 > **Status:** Empty — no repo-specific workflow patterns captured yet
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** [../../09_CLAUDE_CODE_RULES.md](../../09_CLAUDE_CODE_RULES.md)
+> **Supersedes:** —
 
 ---
 

@@ -4,7 +4,10 @@
 > **Scope:** Meta-index only — each subfolder owns its own detailed README.
 > **Ownership:** TODO — assign an owner.
 > **Status:** Draft
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** —
+> **Supersedes:** —
 
 ---
 

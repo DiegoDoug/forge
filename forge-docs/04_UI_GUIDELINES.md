@@ -4,7 +4,10 @@
 > **Scope:** Interaction patterns, layout conventions, accessibility, and responsive behavior across the app shell and all features.
 > **Ownership:** TODO — assign a UI/UX owner.
 > **Status:** Draft
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** [01_PRODUCT_PRINCIPLES.md](01_PRODUCT_PRINCIPLES.md)
+> **Supersedes:** —
 
 ---
 

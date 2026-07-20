@@ -4,7 +4,10 @@
 > **Scope:** Token values and their source files. Component-level API documentation lives in each phase's `05_COMPONENTS.md`.
 > **Ownership:** TODO — assign a design system owner.
 > **Status:** Draft — captures current configuration; full token audit still TODO
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** [04_UI_GUIDELINES.md](04_UI_GUIDELINES.md)
+> **Supersedes:** —
 
 ---
 

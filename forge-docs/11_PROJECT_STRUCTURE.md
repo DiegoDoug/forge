@@ -4,7 +4,10 @@
 > **Scope:** Directory-level structure only. Conventions for *why* it's organized this way live in [07_CODING_STANDARDS.md](07_CODING_STANDARDS.md) and [03_ARCHITECTURE.md](03_ARCHITECTURE.md).
 > **Ownership:** TODO — assign an owner.
 > **Status:** Current as of FDK scaffold creation
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** [03_ARCHITECTURE.md](03_ARCHITECTURE.md)
+> **Supersedes:** —
 
 ---
 

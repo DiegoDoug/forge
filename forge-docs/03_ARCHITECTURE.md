@@ -4,7 +4,10 @@
 > **Scope:** High-level system architecture and integration points for new phases. Full current-state detail lives in [`../docs/Architecture.md`](../docs/Architecture.md); this document is the FDK-level entry point that stays stable while that one describes the living implementation.
 > **Ownership:** TODO — assign a technical architecture owner.
 > **Status:** Draft (reflects shipped system; forward-looking sections are proposals)
+> **Version:** 0.2.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** [01_PRODUCT_PRINCIPLES.md](01_PRODUCT_PRINCIPLES.md)
+> **Supersedes:** —
 
 ---
 
@@ -73,7 +76,8 @@ Every phase under [`implementation/`](implementation/) must state, in its own `0
 
 ## 4. Open architectural questions
 
-- [ ] TODO: Where does "Project" (Phase 06) live in the data model — a new top-level table that Vault/Notes/Documents gain an optional foreign key to, or a purely client-side grouping?
+- [ ] TODO: **Capability Registry** — [ADR-0008](decisions/0008-capability-registry-direction.md) (Proposed, not Accepted) sketches generalizing Phase 01's Panel Registry into a unified registry for panels, pages, commands, workflow nodes, and more — see [`architecture/CAPABILITY_REGISTRY.md`](architecture/CAPABILITY_REGISTRY.md). Deliberately deferred until a second real registry-shaped need exists; do not build against it yet.
+- [ ] TODO: Where does "Project" (Phase 06) live in the data model — a new top-level table that Vault/Secrets/Notes/Documents gain an optional foreign key to, or a purely client-side grouping?
 - [ ] TODO: Model Playground and Prompt Studio will need outbound network calls to third-party LLM providers — this is a first for Forge (currently only Ingest's optional vision-LLM path does this). Needs an explicit "outbound network calls" section added to Security.md.
 - [ ] TODO: Does Knowledge Hub introduce a new search index, or extend the existing FTS5 setup used by Notes?
 

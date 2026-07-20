@@ -4,7 +4,10 @@
 > **Scope:** Applies to every implementation task under `implementation/Phase-*/09_IMPLEMENTATION_TASKS.md` and every checkpoint in [10_CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md).
 > **Ownership:** TODO — assign an engineering owner.
 > **Status:** Draft
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** [07_CODING_STANDARDS.md](07_CODING_STANDARDS.md)
+> **Supersedes:** —
 
 ---
 

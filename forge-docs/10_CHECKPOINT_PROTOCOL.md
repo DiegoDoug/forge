@@ -4,7 +4,10 @@
 > **Scope:** Applies to every phase's implementation work. Referenced by every phase's `IMPLEMENT.md`.
 > **Ownership:** TODO — assign an owner.
 > **Status:** Draft
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** [09_CLAUDE_CODE_RULES.md](09_CLAUDE_CODE_RULES.md)
+> **Supersedes:** —
 
 ---
 

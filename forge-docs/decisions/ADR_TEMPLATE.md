@@ -4,7 +4,10 @@
 > **Scope:** This decision only.
 > **Ownership:** [who made/approved this decision]
 > **Status:** Proposed | Accepted | Superseded by ADR-NNNN
+> **Version:** 0.1.0
 > **Last Updated:** [YYYY-MM-DD]
+> **Depends On:** [related phase or root doc]
+> **Supersedes:** [prior ADR this replaces, or `—`]
 
 ---
 

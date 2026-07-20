@@ -4,7 +4,10 @@
 > **Scope:** Template files only — no engine logic (that belongs in `backend/app/services/` once Phase 02 is implemented).
 > **Ownership:** TODO — assign to whoever owns Phase 02.
 > **Status:** Empty — awaiting Phase 02 spec
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** —
+> **Supersedes:** —
 
 ---
 

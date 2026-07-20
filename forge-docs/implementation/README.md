@@ -4,7 +4,10 @@
 > **Scope:** Index only. Each phase owns its own full spec in its own folder.
 > **Ownership:** TODO — assign an owner.
 > **Status:** Draft — all 8 phases are template scaffolds, none yet authorized for implementation
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** [../02_ROADMAP.md](../02_ROADMAP.md)
+> **Supersedes:** —
 
 ---
 
@@ -26,6 +29,8 @@
 Each `Phase-XX-Name/` contains the same 12 files:
 
 `README.md`, `CURRENT_STATE.md`, `01_SPEC.md`, `02_UI.md`, `03_BACKEND.md`, `04_DATABASE.md`, `05_COMPONENTS.md`, `06_API.md`, `07_TESTING.md`, `08_ACCEPTANCE.md`, `09_IMPLEMENTATION_TASKS.md`, `IMPLEMENT.md`.
+
+A phase may add extra numbered docs beyond this base 12 when its design introduces a contract that doesn't fit an existing file — e.g. Phase 01 (Workbench) adds `12_PANEL_INTERFACE.md` to specify the `WorkbenchPanel` contract (per [ADR-0002](../decisions/0002-workbench-panel-architecture.md)). This is the exception, not the norm — don't add a numbered doc speculatively; only when a phase's own spec work surfaces a real need for one.
 
 See [`../11_PROJECT_STRUCTURE.md`](../11_PROJECT_STRUCTURE.md) §5 for how this maps onto the repository as a whole.
 

@@ -4,7 +4,10 @@
 > **Scope:** How Claude Code should read this documentation system, what it may do autonomously, and what requires a stop-and-ask. Per-phase execution contracts live in each phase's `IMPLEMENT.md` and inherit from this document.
 > **Ownership:** TODO — assign an owner (recommended: whoever directs Claude Code sessions day-to-day).
 > **Status:** Draft
+> **Version:** 0.1.0
 > **Last Updated:** 2026-07-20
+> **Depends On:** [08_DEFINITION_OF_DONE.md](08_DEFINITION_OF_DONE.md), [10_CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md)
+> **Supersedes:** —
 
 ---
 
