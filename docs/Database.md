@@ -17,6 +17,8 @@ migrations run from the FastAPI lifespan on startup).
 | `secret_tag_links` | Many-to-many join between `secrets` and `tags` |
 | `notes` | Sticky notes — position/size/color/pin/archive + Markdown content |
 | `notes_fts` | FTS5 virtual table over `notes.title`/`notes.content`, kept in sync by triggers |
+| `documents` | Documents tab entries — title/pin + editor HTML content, stored as plain text (see [API.md](API.md) for export formats) |
+| `documents_fts` | FTS5 virtual table over `documents.title`/`documents.content`, kept in sync by triggers |
 | `activity_log` | Lightweight feed for the dashboard's "Recent activity" — never stores secret values or document contents |
 
 Every table uses a `TEXT` primary key (a 32-char hex UUID from
@@ -31,7 +33,8 @@ content_rowid='rowid'`) — it stores no data of its own, just an index that
 joins back to `notes` via SQLite's implicit `rowid`. Three triggers
 (`notes_ai`/`notes_ad`/`notes_au`, created in the initial migration) keep it
 in sync automatically; application code never has to remember to update the
-index.
+index. `documents_fts` (added in `0002_documents.py`) follows the identical
+pattern over `documents`.
 
 Vault secrets are **not** in an FTS index — only `secrets.name` is
 searchable (plain `LIKE`), and only the name; values stay encrypted and are

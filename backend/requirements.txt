@@ -16,6 +16,15 @@ qrcode[pil]>=7.4,<8
 # Ingest document-to-markdown conversion (vendored service, see app/services/ingest)
 markitdown[all]>=0.1.2
 
+# Documents tab: multi-format export (see app/services/documents/export.py).
+# python-docx, beautifulsoup4 and markdownify already ride in transitively via
+# markitdown[all] — pinned here directly so export.py doesn't depend on that
+# staying true across a markitdown upgrade.
+python-docx>=1.1,<2
+beautifulsoup4>=4.12,<5
+markdownify>=0.13,<1
+reportlab>=4.2,<5
+
 # Optional vision-LLM PDF/image support for Ingest (safe to keep installed when disabled)
 openai>=1.40,<2
 pymupdf>=1.24,<2

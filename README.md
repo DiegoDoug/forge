@@ -8,6 +8,7 @@ converter into one application you run on your own hardware.
 
 - **Vault** — encrypted secret storage with folders, tags, favorites, and version history
 - **Notes** — drag-and-resize sticky note board with Markdown support and full-text search
+- **Documents** — rich text editor with pin/history sidebar and export to TXT, Markdown, Word (.doc/.docx), PDF, and XML
 - **Generators** — passwords, UUIDs, NanoIDs, random bytes, API keys, JWT secrets
 - **Crypto** — Base64, hashing, AES-256-GCM, JWT decode/verify/build, RSA, ECDSA
 - **Converters** — JSON formatter, regex tester, URL/Unicode tools, cron parser, diff viewer, timestamp converter

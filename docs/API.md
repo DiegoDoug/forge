@@ -34,8 +34,9 @@ full reference.
 | `/api/crypto` | Base64, hashing, AES-256-GCM, JWT decode/verify/build, RSA, ECDSA |
 | `/api/converters` | Cron expression parsing (other converters run client-side) |
 | `/api/notes` | Note CRUD + full-text search |
+| `/api/documents` | Document CRUD, full-text search, and multi-format export (txt/md/doc/docx/pdf/xml) |
 | `/api/ingest` | Document upload → Markdown conversion jobs, preview, save-to-notes |
-| `/api/search` | Combined vault + notes search for the command palette |
+| `/api/search` | Combined vault + notes + documents search for the command palette |
 | `/api/dashboard` | Aggregated recent activity/notes/secrets/storage for the home page |
 | `/api/settings` | Theme, backup export/import, about |
 
