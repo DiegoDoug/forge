@@ -6,7 +6,6 @@ from app.api.routes import (
     auth,
     converters,
     crypto,
-    dashboard,
     documents,
     generators,
     ingest,
@@ -30,6 +29,5 @@ api_router.include_router(notes.router)
 api_router.include_router(documents.router)
 api_router.include_router(ingest.router)
 api_router.include_router(search.router)
-api_router.include_router(dashboard.router)
 api_router.include_router(settings.router)
 api_router.include_router(workbench.router)

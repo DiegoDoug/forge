@@ -17,7 +17,7 @@ class ActivityAction(str, Enum):
 
 
 class ActivityLog(SQLModel, table=True):
-    """Lightweight feed used by the dashboard's "Recent activity" widget.
+    """Lightweight feed used by the Workbench's Recent Activity panel.
     Never stores secret values or converted document contents."""
 
     __tablename__ = "activity_log"

@@ -38,7 +38,7 @@ forge/
 │   │   ├── converters/
 │   │   ├── utilities/
 │   │   ├── ingest/
-│   │   ├── dashboard/
+│   │   ├── workbench/
 │   │   ├── search/
 │   │   ├── settings/
 │   │   └── auth/

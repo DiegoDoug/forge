@@ -3,8 +3,8 @@
 > **Purpose:** Live snapshot of where this phase actually stands, updated at every checkpoint.
 > **Scope:** This phase only — updated continuously, never left stale.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** In progress — Milestones 1–3 complete, Milestone 4 (Integration) underway — T13 done, T14–T16 remaining
-> **Version:** 0.7.0
+> **Status:** All 16 tasks complete — Final Validation done per `08_ACCEPTANCE.md`; two items remain genuinely open (see "Known Issues") and project-owner sign-off is still outstanding
+> **Version:** 0.8.0
 > **Last Updated:** 2026-07-21
 > **Depends On:** [README.md](README.md), [IMPLEMENT.md](IMPLEMENT.md)
 > **Supersedes:** v0.2.0 of this document (pre-implementation)
@@ -18,9 +18,11 @@
 
 **Milestone 2 (Backend) complete — T5–T8 all done.** See [`../../history/2026-07-21-phase-01-milestone-2-backend.md`](../../history/2026-07-21-phase-01-milestone-2-backend.md) for the Milestone 2 checkpoint record. Merged to `master` via [#10](https://github.com/DiegoDoug/forge/pull/10).
 
-**Milestone 3 (Frontend) complete — T9–T12 all done.** See [`../../history/2026-07-21-phase-01-milestone-3-frontend.md`](../../history/2026-07-21-phase-01-milestone-3-frontend.md) for the Milestone 3 checkpoint record. Work is on branch `feature/t9-t12-workbench-frontend` (unmerged — see that checkpoint for exact status). Next up: Milestone 4 (Integration, T13–T16).
+**Milestone 3 (Frontend) complete — T9–T12 all done.** See [`../../history/2026-07-21-phase-01-milestone-3-frontend.md`](../../history/2026-07-21-phase-01-milestone-3-frontend.md) for the Milestone 3 checkpoint record. Merged to `master` via [#11](https://github.com/DiegoDoug/forge/pull/11).
 
-**Clarification (T5, still in effect through Milestone 3):** `03_BACKEND.md` §1 describes the Dashboard→Workbench move as a rename "in place." In practice `backend/app/services/dashboard.py` (and `/api/dashboard`) must keep working until T14 explicitly removes them (per `09_IMPLEMENTATION_TASKS.md` T14 and its ordering note "nothing deletes the fallback until Milestone 3's replacement is proven working") — so Milestone 2 added `backend/app/services/workbench.py`, `backend/app/schemas/workbench.py`, and `backend/app/api/routes/workbench.py` as new modules alongside the untouched `dashboard.py`/`routes/dashboard.py`, not a literal file rename. Milestone 3 continues this: the new Workbench frontend page lives at `/workbench`, not `/` — the actual home-route cutover (moving Workbench to `/`, removing the old Dashboard page/route) is T13/T14's job, per the same ordering notes. `/api/workbench*`/`/workbench` and `/api/dashboard`/`/` (old Dashboard) are all live simultaneously right now. This is a clarification of already-locked spec text, not a scope change, per ADR-0009 §2.
+**Milestone 4 (Integration) complete — T13–T16 all done.** The Dashboard→Workbench transition (ADR-0001) is now fully realized in code: `/` renders Workbench for real, `/api/dashboard` and every Dashboard file are gone, and the phase's own acceptance checklist (`08_ACCEPTANCE.md`) has been walked criterion-by-criterion against the running app. Work is on branch `feature/t13-workbench-nav-cutover` (unmerged as of this writing).
+
+**Historical note (T5 clarification, now resolved):** `03_BACKEND.md` §1 originally described the Dashboard→Workbench move as a rename "in place," but `dashboard.py`/`/api/dashboard` had to keep working until T14 — see the git history on this branch (or the T1–T12 entries below) for how that staged rollout played out. As of T14, the literal old files are deleted and this clarification no longer applies to the current codebase.
 
 ## Completed
 
@@ -53,19 +55,25 @@
 
 **Milestone 3 verification (all of T9–T12):** `tsc --noEmit`, `eslint .`, and `next build` all clean across the whole frontend; `docker compose build frontend` succeeds (production Docker build, not just local `next build`). No backend files touched this milestone. Every empty/loading/error state in `02_UI.md` §3.2's table live-tested via the real API, not just read from code. `docker ps` showed an unrelated already-running Forge Docker Compose stack on this machine (`forge-frontend-1`/`forge-backend-1`/`forge-nginx-1`) — left untouched; only `docker compose build` (no `up`) was run, so that stack's running containers are unaffected by this milestone's image rebuild.
 - [x] T13 — Sidebar/command-palette rename, `/` cutover ([02_UI.md](02_UI.md) §2). `frontend/app/(app)/page.tsx` replaced with the Workbench page (moved from the T9-staged `frontend/app/(app)/workbench/page.tsx`, now deleted — `/workbench` 404s, no dangling duplicate route). `frontend/lib/nav-registry.ts`'s home entry relabeled "Dashboard" → "Workbench" (`href: "/"`, icon, and `D` shortcut unchanged); sidebar, mobile nav, and command palette all read this one registry entry, so nothing else needed a copy change. `backend/app/services/dashboard.py`/`/api/dashboard` untouched, per T14's ordering note. Deliberately did not add "Customize Workbench"/"Manage pinned tools" command-palette actions (`02_UI.md` §2 mentions them, but they trace beyond T13's stated FR1/FR12 scope and aren't gated by any `08_ACCEPTANCE.md` criterion) — flagged as a deferred follow-up, not folded in.
+- [x] T14 — Old Dashboard removal ([06_API.md](06_API.md) §1 note). Deleted `backend/app/api/routes/dashboard.py`, `backend/app/services/dashboard.py`, `frontend/features/dashboard/` outright — direct cutover, no alias (unlike Vault/Secrets). Removed `dashboard` from `backend/app/api/router.py`'s imports/`include_router` calls. Updated `ActivityLog`'s docstring (`backend/app/models/activity.py`) to say "Workbench's Recent Activity panel" instead of "the dashboard's." Left `DashboardNote` (`schemas/workbench.py`) and a test name referencing "dashboard_shape" alone — legitimate historical references from an already-merged milestone (T7/T8), not leftover Dashboard code, and renaming them is outside T14's scope. Updated shipped docs that still described `/api/dashboard`/`features/dashboard/` as current: `docs/API.md`, `docs/FolderStructure.md`, `docs/Database.md`, root `README.md`. Verified: `GET /api/dashboard` now 404s for real; backend suite still 47/47; `tsc`/`eslint`/`next build` clean.
+- [x] T15 — Manual verification pass ([07_TESTING.md](07_TESTING.md) §3). Full functional walkthrough against a fresh backend instance (pin/unpin persistence, coming-soon tiles, panel+pin keyboard reorder with persisted `PUT`s, hide/show + all-hidden empty state, reset-with-confirmation, `/search`, dark mode, mobile single-column). Performance: initial render and `PUT` round-trip both far under budget; drag FPS/re-render profiling not measurable in this session (see `08_ACCEPTANCE.md` §12 — the automated browser tab never services animation frames, confirmed directly, unrelated to app code). Accessibility: real Tab-key walkthrough, ARIA labels spot-checked, focus-management code reviewed as correct but not live-observable here for the same rAF reason. **Found and fixed a real, pre-existing bug**: `AlertDialogAction` (`frontend/components/ui/alert-dialog.tsx`) never closed its dialog on click (Base UI has no auto-closing "Action" primitive, unlike Radix) — this also silently broke the existing Secrets "Delete" confirmation, not something this phase introduced. Fixed by rebuilding it on `AlertDialogPrimitive.Close`, matching `AlertDialogCancel`'s already-correct pattern. Flagged two out-of-scope a11y issues (mobile-nav hamburger missing an accessible name; sidebar footer contrast) as separate background tasks.
+- [x] T16 — Automated accessibility scan + Final Validation ([08_ACCEPTANCE.md](08_ACCEPTANCE.md)). Injected `axe-core` 4.12.1 directly into the live page (already a transitive devDependency via `eslint-plugin-jsx-a11y`); scoped to Workbench's own `<main>`, zero violations across view mode, customize mode, the pin picker, and `/search`. A whole-page run found two violations, both in pre-existing global app-shell chrome — flagged separately. Walked every criterion in `08_ACCEPTANCE.md` against the running app; see that document (now v0.4.0) for the full result, including §11's bug writeup and §12's environment-limitation notes. Two criteria remain genuinely open (drag FPS/re-render profiling, a live screen-reader pass) rather than checked off without evidence.
 
 ## In Progress
 
-- [ ] TODO: nothing in progress right now. T14 (removing `frontend/features/dashboard/`, `backend/app/services/dashboard.py`, `backend/app/api/routes/dashboard.py`, and `/api/dashboard`) is next.
+- [ ] TODO: nothing in progress. All 16 tasks are complete. Remaining before the phase can be formally closed: project-owner sign-off (`08_ACCEPTANCE.md` §8, still an unassigned TODO), and the two genuinely-open acceptance items noted above.
 
 ## Remaining
 
-- [ ] T14–T16 in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) — Milestone 4 (Integration): old Dashboard removal, manual verification, accessibility scan.
+- [ ] Project-owner sign-off on `08_ACCEPTANCE.md` §8 (phase ownership itself is still an unassigned TODO in `README.md`).
+- [ ] Drag-reorder FPS and React DevTools Profiler re-render verification (`08_ACCEPTANCE.md` §4) — needs a real browser/device session, not an automated one.
+- [ ] A live VoiceOver/NVDA screen-reader pass (`08_ACCEPTANCE.md` §5) — the axe scan and accessibility-tree inspection substitute partially but not fully.
 
 ## Known Issues
 
 - [ ] Temporary compatibility aliases from T1 are debt, per ADR-0006 §4: `/api/vault` (backend proxy) and the frontend `/vault` → `/secrets` redirect both need a later cleanup task to remove once nothing external depends on the old path.
 - [ ] Lower-priority prose in `docs/Deployment.md`/`docs/Security.md`/`docs/Roadmap.md`/`docs/DecisionLog.md`'s older entries was updated where it named the feature ("Vault"/"vault secret") but generic descriptive phrasing was left untouched where it wasn't clearly a proper-noun reference to the feature — not a gap, a deliberate line per this task's scope, but flagging in case a future pass wants full consistency.
+- [ ] Two out-of-scope accessibility issues found during T15/T16 and flagged as separate background tasks (not fixed as part of this phase, since neither touches a file any Workbench task owns): the global mobile-nav hamburger trigger (`components/app-shell/`) has no accessible name; the sidebar footer text and the command palette's dialog-header landmark each have a minor axe violation.
 
 ## Architectural Decisions
 
@@ -147,11 +155,19 @@ All eight are `Status: Accepted` as of 2026-07-20. [ADR-0008](../../decisions/00
 - [x] `frontend/app/(app)/page.tsx` (T13 — replaced with the Workbench page)
 - [x] `frontend/app/(app)/workbench/page.tsx` (T13 — deleted; folded into `/`)
 - [x] `frontend/lib/nav-registry.ts` (T13 — home entry relabeled "Dashboard" → "Workbench")
-- [x] `forge-docs/implementation/Phase-01-Workbench/09_IMPLEMENTATION_TASKS.md` (T13 checked off)
+- [x] `forge-docs/implementation/Phase-01-Workbench/09_IMPLEMENTATION_TASKS.md` (T13, T14, T15, T16 checked off)
+- [x] `backend/app/api/routes/dashboard.py` (T14 — deleted)
+- [x] `backend/app/services/dashboard.py` (T14 — deleted)
+- [x] `frontend/features/dashboard/` (T14 — deleted)
+- [x] `backend/app/api/router.py` (T14 — `dashboard` import/route removed)
+- [x] `backend/app/models/activity.py` (T14 — docstring updated to reference Workbench, not the dashboard)
+- [x] `docs/API.md`, `docs/FolderStructure.md`, `docs/Database.md`, `README.md` (T14 — dashboard→workbench references updated)
+- [x] `frontend/components/ui/alert-dialog.tsx` (T15 — `AlertDialogAction` bug fix; see `08_ACCEPTANCE.md` §11)
+- [x] `forge-docs/implementation/Phase-01-Workbench/08_ACCEPTANCE.md` (T16 — full criterion-by-criterion pass, v0.4.0)
 
 ## Next Milestone
 
-Milestone 4 — Integration (T14–T16): old Dashboard removal, manual verification, accessibility scan. See [`IMPLEMENT.md`](IMPLEMENT.md) "Milestone Plan" and [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md).
+None — this was the last milestone in Phase 01. Remaining before the phase can be formally closed: project-owner sign-off (`08_ACCEPTANCE.md` §8) and the two genuinely-open acceptance items (see "Remaining" above). Phase 02 (Project Initialization Engine) is a separate phase with its own `forge-docs/implementation/Phase-02-Project-Initialization-Engine/` documents.
 
 ## Next Claude Prompt
 
@@ -162,29 +178,32 @@ Read, in order:
 1. forge-docs/09_CLAUDE_CODE_RULES.md
 2. forge-docs/implementation/Phase-01-Workbench/README.md
 3. forge-docs/implementation/Phase-01-Workbench/CURRENT_STATE.md
-4. forge-docs/implementation/Phase-01-Workbench/IMPLEMENT.md
+4. forge-docs/implementation/Phase-01-Workbench/08_ACCEPTANCE.md
 
-Milestones 1–3 are complete. T13 (sidebar/command-palette rename, wiring /
-to the Workbench page, folding the /workbench staging route into the
-cutover) is also complete. Begin work on: T14 in 09_IMPLEMENTATION_TASKS.md
-(remove frontend/features/dashboard/ and the old /api/dashboard route
-entirely — a direct cutover, per 06_API.md §1 note).
+All 16 tasks (T1-T16) are complete and Final Validation against
+08_ACCEPTANCE.md has been performed. This phase has no more implementation
+tasks -- do not invent new ones. What's actually left:
 
-Follow the checkpoint protocol in forge-docs/10_CHECKPOINT_PROTOCOL.md exactly,
-plus the milestone checkpoints in IMPLEMENT.md — this is the LAST milestone;
-Final Validation against 08_ACCEPTANCE.md follows T16, not a checkpoint per se.
+1. Project-owner sign-off (08_ACCEPTANCE.md §8) is still an open TODO --
+   this requires a human decision, not implementation work.
+2. Two acceptance criteria are genuinely unverified, not just unchecked:
+   drag-reorder FPS / React DevTools Profiler re-render count (08_ACCEPTANCE.md
+   §4), and a live VoiceOver/NVDA screen-reader pass (§5). Both need a real
+   browser/device session -- the automated browser tool used through T16
+   cannot service animation frames at all in this environment (confirmed
+   directly, documented in 08_ACCEPTANCE.md §12), so don't reuse that same
+   tool expecting a different result; a different verification approach is
+   needed, or explicit acknowledgment that these remain open.
+3. Two out-of-scope accessibility bugs were found and flagged as separate
+   background tasks (not fixed in this phase): the global mobile-nav
+   hamburger button has no accessible name, and the sidebar footer /
+   command palette have a couple of minor axe violations. Check whether
+   those tasks have been picked up before assuming they still need doing.
 
-The specification is locked per forge-docs/decisions/0009-phase-specification-freeze.md.
-Only bug fixes, clarifications, and typo corrections are in scope beyond the
-documented tasks — anything else (extra panels, workflows, a command palette,
-a capability registry, a Projects interface, a plugin system, AI additions)
-gets flagged and deferred, not built.
-
-Note: / now renders the Workbench for real (T13 done) — backend/app/services/
-dashboard.py, backend/app/api/routes/dashboard.py, /api/dashboard, and
-frontend/features/dashboard/ are all still live but now fully unreferenced
-by the frontend. T14 removes all of them in one pass; grep for "dashboard"
-first to confirm nothing else still imports the old module before deleting it.
+If asked to start the next phase, that's Phase 02
+(forge-docs/implementation/Phase-02-Project-Initialization-Engine/) --
+read its own 01_SPEC.md and IMPLEMENT.md before touching any code; nothing
+here authorizes starting it automatically.
 ```
 
 ## Session Notes
@@ -205,7 +224,10 @@ first to confirm nothing else still imports the old module before deleting it.
 - 2026-07-21 — **T10 complete** (same branch). `PinPickerDialog` and `tool-metadata.ts` added; wired into the customize-mode toolbar.
 - 2026-07-21 — **T11 complete** (same branch). All five active panels registered. Found and fixed a real bug during browser verification: panel registration never ran because the bootstrap side-effect import lived in a Server Component — moved to the Client Component that consumes the registry.
 - 2026-07-21 — **T12 complete, Milestone 3 (Frontend) checkpoint** (same branch). Drag/keyboard panel reorder and pin reorder added via `@dnd-kit/sortable`. Verified keyboard-only reordering end-to-end via dispatched `KeyboardEvent`s (the browser-automation tool's synthetic key-press action didn't reliably reach the sensor's `keydown` handler, so verification used direct event dispatch instead — a testing-tool limitation, not an implementation gap; confirmed by proving the sensor correctly `preventDefault()`s a properly-formed native `keydown`). `tsc`/`eslint`/`next build`/`docker compose build frontend` all clean. Full checkpoint logged to `../../history/2026-07-21-phase-01-milestone-3-frontend.md` per `10_CHECKPOINT_PROTOCOL.md`. Milestone 4 (Integration, T13–T16) is next.
-- 2026-07-21 — **T13 complete, Milestone 4 (Integration) underway.** `frontend/app/(app)/page.tsx` now renders the Workbench (moved from the T9-staged `/workbench` route, which is deleted — confirmed `/workbench` 404s post-cutover, no dangling duplicate). `nav-registry.ts`'s home entry relabeled "Dashboard" → "Workbench" (route/icon/shortcut unchanged); sidebar, mobile nav, and command palette all pick this up from the single registry entry. `dashboard.py`/`/api/dashboard` left untouched per T14's ordering note. Verified: `tsc --noEmit`/`eslint .`/`next build` clean, full backend pytest suite still 47/47 (untouched), and a full browser walkthrough against a fresh backend instance (setup → unlock → `/` renders the default Workbench layout with correct pins, sidebar/palette read "Workbench", `/workbench` 404s). T14 (removing the now-fully-unreferenced `dashboard.py`/`routes/dashboard.py`/`/api/dashboard`/`frontend/features/dashboard/`) is next.
+- 2026-07-21 — **T13 complete, Milestone 4 (Integration) underway.** `frontend/app/(app)/page.tsx` now renders the Workbench (moved from the T9-staged `/workbench` route, which is deleted — confirmed `/workbench` 404s post-cutover, no dangling duplicate). `nav-registry.ts`'s home entry relabeled "Dashboard" → "Workbench" (route/icon/shortcut unchanged); sidebar, mobile nav, and command palette all pick this up from the single registry entry. `dashboard.py`/`/api/dashboard` left untouched per T14's ordering note. Verified: `tsc --noEmit`/`eslint .`/`next build` clean, full backend pytest suite still 47/47 (untouched), and a full browser walkthrough against a fresh backend instance (setup → unlock → `/` renders the default Workbench layout with correct pins, sidebar/palette read "Workbench", `/workbench` 404s). T14 (removing the now-fully-unreferenced `dashboard.py`/`routes/dashboard.py`/`/api/dashboard`/`frontend/features/dashboard/`) is next. Committed to branch `feature/t13-workbench-nav-cutover` (not yet pushed/PR'd).
+- 2026-07-21 — **T14 complete** (same branch). `backend/app/api/routes/dashboard.py`, `backend/app/services/dashboard.py`, and `frontend/features/dashboard/` deleted outright (direct cutover per `06_API.md` §1, unlike the Vault/Secrets alias). `router.py` updated. Shipped docs (`docs/API.md`, `docs/FolderStructure.md`, `docs/Database.md`, `README.md`) updated to describe Workbench instead of the now-removed Dashboard. Verified `GET /api/dashboard` returns a real 404 against a fresh backend instance; full suite still 47/47; `tsc`/`eslint`/`next build`/`docker compose build frontend` all clean.
+- 2026-07-21 — **T15 complete** (same branch). Full manual verification pass per `07_TESTING.md` §3 — functional checks all passed against a fresh instance; performance (initial render, `PUT` round-trip) both well under budget via Resource Timing measurements; drag FPS and React Profiler re-render counts could not be measured in this automated session (root-caused to the session's browser tab not servicing animation frames at all — confirmed directly via `getAnimations()`/`requestAnimationFrame`, not an app defect). **Found and fixed a real, pre-existing bug**: `frontend/components/ui/alert-dialog.tsx`'s `AlertDialogAction` never closed its dialog (Base UI has no auto-closing "Action" primitive unlike Radix) — silently broke both the Workbench reset-confirmation dialog and the pre-existing Secrets delete-confirmation dialog. Fixed by rebuilding it on `AlertDialogPrimitive.Close`. Flagged two unrelated, out-of-scope a11y issues (mobile-nav hamburger missing an accessible name; sidebar footer contrast) as separate background tasks rather than fixing them here.
+- 2026-07-21 — **T16 complete, Milestone 4 (Integration) and Phase 01 implementation complete.** Ran `axe-core` 4.12.1 (injected directly into the live page) against Workbench's own `<main>` region in both modes plus `/search` — zero violations. A whole-page run found two violations in pre-existing global chrome (sidebar footer contrast, command-palette dialog landmark), flagged separately, not fixed. Performed the full `08_ACCEPTANCE.md` criterion-by-criterion pass (now v0.4.0) — every criterion is checked with cited evidence except two genuinely open items (drag FPS/re-render profiling, a live screen-reader pass), which are marked unchecked rather than assumed. All 16 implementation tasks in `09_IMPLEMENTATION_TASKS.md` are now complete. Remaining before the phase is formally done: project-owner sign-off.
 
 ## Cross-references
 

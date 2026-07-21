@@ -37,7 +37,7 @@ full reference.
 | `/api/documents` | Document CRUD, full-text search, and multi-format export (txt/md/doc/docx/pdf/xml) |
 | `/api/ingest` | Document upload → Markdown conversion jobs, preview, save-to-notes |
 | `/api/search` | Combined secrets + notes + documents search for the command palette |
-| `/api/dashboard` | Aggregated recent activity/notes/secrets/storage for the home page |
+| `/api/workbench` | Home-page Workbench: layout (panels + pinned tools), storage/recent-activity/recent-notes aggregation, layout update/reset |
 | `/api/settings` | Theme, backup export/import, about |
 
 ## Example
