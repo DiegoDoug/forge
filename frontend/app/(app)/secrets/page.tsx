@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { KeyRound, Plus, Search, Star } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -50,6 +50,19 @@ export default function SecretsPage() {
   }
 
   const secrets = useMemo(() => secretsQuery.data ?? [], [secretsQuery.data]);
+
+  // Deep-link from the Workbench Quick Actions panel (?new=1): open the
+  // create-secret dialog immediately, then drop the param.
+  const consumedNewParam = useRef(false);
+  useEffect(() => {
+    if (searchParams.get("new") && !consumedNewParam.current) {
+      consumedNewParam.current = true;
+      setEditSecret(null);
+      setFormOpen(true);
+      router.replace("/secrets");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   return (
     <div>

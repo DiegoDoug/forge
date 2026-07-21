@@ -4,6 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUpdateLayoutMutation, useWorkbenchQuery } from "../api";
 import { getRegisteredPanels } from "../panel-registry";
+// Side-effect import: runs every panel-owning feature's registration module
+// exactly once (per 12_PANEL_INTERFACE.md §4). Imported here rather than
+// from the (server-component) app shell layout, since ES module evaluation
+// order only guarantees this runs before getRegisteredPanels() below when
+// it's a direct static import of the client module that actually consumes
+// the registry - a side-effect-only import of client modules from a Server
+// Component isn't guaranteed to execute in the browser bundle at all.
+import "../register-all";
 import { WorkbenchEmptyState } from "./workbench-empty-state";
 import { WorkbenchPanelCard } from "./workbench-panel-card";
 

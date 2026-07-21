@@ -2,7 +2,6 @@ import { AuthGate } from "@/features/auth/auth-gate";
 import { CommandPaletteProvider } from "@/components/command-palette/command-palette-provider";
 import { Sidebar } from "@/components/app-shell/sidebar";
 import { Topbar } from "@/components/app-shell/topbar";
-import "@/features/workbench/register-all";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (

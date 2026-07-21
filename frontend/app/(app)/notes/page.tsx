@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Archive, Plus, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,8 @@ import { NOTE_COLORS } from "@/features/notes/note-colors";
 import { NotesBoard } from "@/features/notes/notes-board";
 
 export default function NotesPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [showArchived, setShowArchived] = useState(false);
   const [query, setQuery] = useState("");
   const { create } = useNoteMutations();
@@ -28,6 +31,19 @@ export default function NotesPage() {
       color,
     });
   }
+
+  // Deep-link from the Workbench Quick Actions panel (?new=1): start the
+  // note-creation flow immediately, then drop the param so it doesn't
+  // re-trigger on refresh/back-navigation.
+  const consumedNewParam = useRef(false);
+  useEffect(() => {
+    if (searchParams.get("new") && !consumedNewParam.current) {
+      consumedNewParam.current = true;
+      handleNewNote();
+      router.replace("/notes");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   return (
     <div>
