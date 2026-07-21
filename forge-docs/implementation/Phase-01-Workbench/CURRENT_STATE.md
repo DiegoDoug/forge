@@ -3,8 +3,8 @@
 > **Purpose:** Live snapshot of where this phase actually stands, updated at every checkpoint.
 > **Scope:** This phase only — updated continuously, never left stale.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** In progress — Milestones 1 (Foundation) and 2 (Backend) complete, Milestone 3 (Frontend) next
-> **Version:** 0.5.0
+> **Status:** In progress — Milestones 1 (Foundation), 2 (Backend), and 3 (Frontend) complete, Milestone 4 (Integration) next
+> **Version:** 0.6.0
 > **Last Updated:** 2026-07-21
 > **Depends On:** [README.md](README.md), [IMPLEMENT.md](IMPLEMENT.md)
 > **Supersedes:** v0.2.0 of this document (pre-implementation)
@@ -16,9 +16,11 @@
 
 **Milestone 1 (Foundation) complete — T1–T4 all done.** Specification is locked ([ADR-0009](../../decisions/0009-phase-specification-freeze.md)). See [`../../history/2026-07-21-phase-01-milestone-1-foundation.md`](../../history/2026-07-21-phase-01-milestone-1-foundation.md) for the Milestone 1 checkpoint record.
 
-**Milestone 2 (Backend) complete — T5–T8 all done.** See [`../../history/2026-07-21-phase-01-milestone-2-backend.md`](../../history/2026-07-21-phase-01-milestone-2-backend.md) for the Milestone 2 checkpoint record. Work is on branch `feature/t5-workbench-layout-service` (unmerged — see that checkpoint's "Current State" for exact status). Next up: Milestone 3 (Frontend, T9–T12).
+**Milestone 2 (Backend) complete — T5–T8 all done.** See [`../../history/2026-07-21-phase-01-milestone-2-backend.md`](../../history/2026-07-21-phase-01-milestone-2-backend.md) for the Milestone 2 checkpoint record. Merged to `master` via [#10](https://github.com/DiegoDoug/forge/pull/10).
 
-**Clarification (T5, still in effect through T6–T8):** `03_BACKEND.md` §1 describes the Dashboard→Workbench move as a rename "in place." In practice `backend/app/services/dashboard.py` (and `/api/dashboard`) must keep working until T14 explicitly removes them (per `09_IMPLEMENTATION_TASKS.md` T14 and its ordering note "nothing deletes the fallback until Milestone 3's replacement is proven working") — so Milestone 2 added `backend/app/services/workbench.py`, `backend/app/schemas/workbench.py`, and `backend/app/api/routes/workbench.py` as new modules alongside the untouched `dashboard.py`/`routes/dashboard.py`, not a literal file rename. `/api/workbench*` and `/api/dashboard` are both live and independently tested. The literal old-file removal happens at T14 as scheduled. This is a clarification of already-locked spec text, not a scope change, per ADR-0009 §2.
+**Milestone 3 (Frontend) complete — T9–T12 all done.** See [`../../history/2026-07-21-phase-01-milestone-3-frontend.md`](../../history/2026-07-21-phase-01-milestone-3-frontend.md) for the Milestone 3 checkpoint record. Work is on branch `feature/t9-t12-workbench-frontend` (unmerged — see that checkpoint for exact status). Next up: Milestone 4 (Integration, T13–T16).
+
+**Clarification (T5, still in effect through Milestone 3):** `03_BACKEND.md` §1 describes the Dashboard→Workbench move as a rename "in place." In practice `backend/app/services/dashboard.py` (and `/api/dashboard`) must keep working until T14 explicitly removes them (per `09_IMPLEMENTATION_TASKS.md` T14 and its ordering note "nothing deletes the fallback until Milestone 3's replacement is proven working") — so Milestone 2 added `backend/app/services/workbench.py`, `backend/app/schemas/workbench.py`, and `backend/app/api/routes/workbench.py` as new modules alongside the untouched `dashboard.py`/`routes/dashboard.py`, not a literal file rename. Milestone 3 continues this: the new Workbench frontend page lives at `/workbench`, not `/` — the actual home-route cutover (moving Workbench to `/`, removing the old Dashboard page/route) is T13/T14's job, per the same ordering notes. `/api/workbench*`/`/workbench` and `/api/dashboard`/`/` (old Dashboard) are all live simultaneously right now. This is a clarification of already-locked spec text, not a scope change, per ADR-0009 §2.
 
 ## Completed
 
@@ -44,14 +46,20 @@
 - [x] T8 — `backend/tests/test_workbench.py` ([07_TESTING.md](07_TESTING.md) §1). 8 unit tests (in-memory SQLite per test) + 7 integration tests (one module-scoped `TestClient` against the real app, ordered top-to-bottom since `workbench_layout` is a real single-row table — first asserts 401 with no session, the rest run post-`/api/setup`). Covers every bullet in §1, including the load-bearing "unrecognized panel `type` is accepted, not rejected" test at both the service and route level, and the `recent_secrets`-absence regression check. Added `asyncio_mode = auto` to `backend/pytest.ini` (first async test file in the suite) and gave the module its own throwaway `FORGE_DATA_DIR`, set at module level before `app.main` is imported, so repeated test runs don't collide with a previously-completed `/api/setup` — mirrors the existing pattern in `tests/conftest.py`.
 
 **Milestone 2 verification (all of T5–T8):** full backend pytest suite green at 47/47 (32 pre-existing + 15 new), run twice consecutively to confirm idempotency of the new test module's throwaway data dir. End-to-end HTTP verification via `TestClient` covered: auth-required 401, full `GET`/`PUT`/`POST` round-trip, all three 422 validation paths, unrecognized-panel-type acceptance, and that `/api/dashboard` is completely unaffected.
+- [x] T9 — The generic Workbench runtime ([05_COMPONENTS.md](05_COMPONENTS.md) §1.1). `frontend/features/workbench/api.ts` (`useWorkbenchQuery`/`useUpdateLayoutMutation`, optimistic with rollback/`useResetLayoutMutation`) plus `WorkbenchGrid`, `WorkbenchPanelCard`, `WorkbenchEmptyState`, `WorkbenchResetButton`, `WorkbenchCustomizeToggle` under `frontend/features/workbench/components/`. New page `frontend/app/(app)/workbench/page.tsx`, staged at `/workbench` (see Clarification above — the `/` cutover is T13's). `WorkbenchPanelCard` wraps every panel in a class-based error boundary plus a manual `onError` callback escape hatch, per `12_PANEL_INTERFACE.md` §3. Verified in-browser; tsc/eslint/`next build` clean.
+- [x] T10 — `PinPickerDialog` ([05_COMPONENTS.md](05_COMPONENTS.md) §1.1, [02_UI.md](02_UI.md) §3.4). New `frontend/features/workbench/tool-metadata.ts` maps every `tool_catalog` key to display metadata (8 tools sourced from `nav-registry.ts`, Search/Prompt Studio/Universal Converter hand-added since they have no sidebar entry). Dialog lists every catalog entry with a pin/unpin `Switch`, "Coming soon" badges on unavailable tools. Wired into the Workbench page's customize-mode toolbar. Verified in-browser: exact default pinned set, correct badges, live pin/unpin round-trip.
+- [x] T11 — The five active panels ([05_COMPONENTS.md](05_COMPONENTS.md) §1.2, [08_ACCEPTANCE.md](08_ACCEPTANCE.md) §6). `PinnedToolsPanel`/`RecentActivityPanel`/`QuickActionsPanel`/`SystemStatusPanel` in `frontend/features/workbench/components/`; `RecentNotesPanel` in `frontend/features/notes/workbench-panel.tsx` (owning-feature example from `05_COMPONENTS.md` §3), fetching via its own `useNotes()` rather than the aggregated response, per `12_PANEL_INTERFACE.md` §2/§10. **Clarification:** `RecentActivityPanel` lives in `workbench/components/` alongside the doc's three stated exceptions — there's no `frontend/features/activity/` to own it (mirrors the backend having no dedicated activity feature either). Quick Actions deep-links (FR11) via `?new=1`, handled by `notes/page.tsx`/`secrets/page.tsx` themselves — Workbench never touches their internals. **Bug found and fixed:** `register-all.ts`'s side-effect import was in the Server Component app-shell layout, where it isn't guaranteed to execute in the browser bundle — moved into `workbench-grid.tsx` (the Client Component that actually calls `getRegisteredPanels()`). Verified in-browser end-to-end, including both Quick Actions deep-links producing real API calls.
+- [x] T12 — Drag/keyboard panel reorder, pin reorder, panel states ([02_UI.md](02_UI.md) §3.1–3.3). `WorkbenchGrid` and `PinnedToolsPanel` each wrap their sortable items in `@dnd-kit/core`'s `DndContext` + `@dnd-kit/sortable`'s `SortableContext` (`rectSortingStrategy`) with `PointerSensor` + `KeyboardSensor`, wiring T9's stubbed drag-handle props to `useSortable()`'s real activator/listeners. Verified keyboard reordering by dispatching real `KeyboardEvent`s (confirmed sensor wiring via `defaultPrevented`/`aria-describedby`, then a full pick-up/move/drop producing a `PUT` with the new order, an Escape-cancel firing no mutation, and the same for pin reorder) and round-tripped both edge-case empty states (zero pinned tools, all panels hidden) through the real API.
+
+**Milestone 3 verification (all of T9–T12):** `tsc --noEmit`, `eslint .`, and `next build` all clean across the whole frontend; `docker compose build frontend` succeeds (production Docker build, not just local `next build`). No backend files touched this milestone. Every empty/loading/error state in `02_UI.md` §3.2's table live-tested via the real API, not just read from code. `docker ps` showed an unrelated already-running Forge Docker Compose stack on this machine (`forge-frontend-1`/`forge-backend-1`/`forge-nginx-1`) — left untouched; only `docker compose build` (no `up`) was run, so that stack's running containers are unaffected by this milestone's image rebuild.
 
 ## In Progress
 
-- [ ] TODO: nothing in progress right now. T9 (the generic Workbench runtime — `WorkbenchGrid`, `WorkbenchPanelCard`, `WorkbenchEmptyState`, `WorkbenchResetButton`, `WorkbenchCustomizeToggle`) starts Milestone 3 (Frontend).
+- [ ] TODO: nothing in progress right now. T13 (sidebar/palette rename, wiring `/` to Workbench) starts Milestone 4 (Integration).
 
 ## Remaining
 
-- [ ] T9–T16 in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) — Milestone 3 (Frontend) and Milestone 4 (Integration).
+- [ ] T13–T16 in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) — Milestone 4 (Integration): nav/palette rename, old Dashboard removal, manual verification, accessibility scan.
 
 ## Known Issues
 
@@ -112,11 +120,33 @@ All eight are `Status: Accepted` as of 2026-07-20. [ADR-0008](../../decisions/00
 - [x] `backend/tests/test_workbench.py` (new — T8)
 - [x] `backend/pytest.ini` (T8 — `asyncio_mode = auto` added)
 - [x] `forge-docs/implementation/Phase-01-Workbench/09_IMPLEMENTATION_TASKS.md` (T5–T8 checked off)
-- [x] `forge-docs/history/2026-07-21-phase-01-milestone-2-backend.md` (new — this checkpoint)
+- [x] `forge-docs/history/2026-07-21-phase-01-milestone-2-backend.md` (new)
+- [x] `frontend/features/workbench/api.ts` (new — T9)
+- [x] `frontend/features/workbench/components/workbench-grid.tsx` (new — T9, extended by T12)
+- [x] `frontend/features/workbench/components/workbench-panel-card.tsx` (new — T9, extended by T12)
+- [x] `frontend/features/workbench/components/panel-error-boundary.tsx` (new — T9)
+- [x] `frontend/features/workbench/components/workbench-empty-state.tsx` (new — T9)
+- [x] `frontend/features/workbench/components/workbench-reset-button.tsx` (new — T9)
+- [x] `frontend/features/workbench/components/workbench-customize-toggle.tsx` (new — T9)
+- [x] `frontend/app/(app)/workbench/page.tsx` (new — T9, extended by T10)
+- [x] `frontend/app/(app)/layout.tsx` (T9 — reverted at T11 once the register-all.ts bug was found)
+- [x] `frontend/features/workbench/tool-metadata.ts` (new — T10)
+- [x] `frontend/features/workbench/components/pin-picker-dialog.tsx` (new — T10)
+- [x] `frontend/features/workbench/components/pinned-tools-panel.tsx` (new — T11, extended by T12)
+- [x] `frontend/features/workbench/components/recent-activity-panel.tsx` (new — T11)
+- [x] `frontend/features/workbench/components/quick-actions-panel.tsx` (new — T11)
+- [x] `frontend/features/workbench/components/system-status-panel.tsx` (new — T11)
+- [x] `frontend/features/notes/workbench-panel.tsx` (new — T11)
+- [x] `frontend/features/workbench/register-all.ts` (T11 — five panel registrations wired in)
+- [x] `frontend/app/(app)/notes/page.tsx` (T11 — `?new=1` deep-link handling)
+- [x] `frontend/app/(app)/secrets/page.tsx` (T11 — `?new=1` deep-link handling)
+- [x] `forge-docs/implementation/Phase-01-Workbench/09_IMPLEMENTATION_TASKS.md` (T9–T12 checked off)
+- [x] `forge-docs/history/2026-07-21-phase-01-milestone-3-frontend.md` (new — this checkpoint)
+- [x] `.gitignore` (added `backend/.dev-data/`, the local `uvicorn --reload` data dir per `docs/Development.md`)
 
 ## Next Milestone
 
-Milestone 3 — Frontend (T9–T12): the generic Workbench runtime, `PinPickerDialog`, the five active panels, drag/keyboard reorder + every empty/loading/error state. See [`IMPLEMENT.md`](IMPLEMENT.md) "Milestone Plan" and [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md).
+Milestone 4 — Integration (T13–T16): nav/palette rename, old Dashboard removal, manual verification, accessibility scan. See [`IMPLEMENT.md`](IMPLEMENT.md) "Milestone Plan" and [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md).
 
 ## Next Claude Prompt
 
@@ -128,17 +158,17 @@ Read, in order:
 2. forge-docs/implementation/Phase-01-Workbench/README.md
 3. forge-docs/implementation/Phase-01-Workbench/CURRENT_STATE.md
 4. forge-docs/implementation/Phase-01-Workbench/IMPLEMENT.md
-5. forge-docs/history/2026-07-21-phase-01-milestone-2-backend.md
+5. forge-docs/history/2026-07-21-phase-01-milestone-3-frontend.md
 
-Milestones 1 (Foundation, T1-T4) and 2 (Backend, T5-T8) are complete. Begin
-work on: T9 in 09_IMPLEMENTATION_TASKS.md (the generic Workbench runtime --
-WorkbenchGrid, WorkbenchPanelCard with an error boundary, WorkbenchEmptyState,
-WorkbenchResetButton, WorkbenchCustomizeToggle, per 05_COMPONENTS.md §1.1),
-the first task of Milestone 3 -- Frontend.
+Milestones 1 (Foundation, T1-T4), 2 (Backend, T5-T8), and 3 (Frontend, T9-T12)
+are complete. Begin work on: T13 in 09_IMPLEMENTATION_TASKS.md (sidebar and
+command-palette entries rename Dashboard -> Workbench; wire route / to the
+new Workbench page, per 02_UI.md §2), the first task of Milestone 4 --
+Integration.
 
 Follow the checkpoint protocol in forge-docs/10_CHECKPOINT_PROTOCOL.md exactly,
-plus the milestone checkpoints in IMPLEMENT.md — stop after T12 (end of
-Milestone 3) even if the 10-12 task threshold hasn't been hit yet.
+plus the milestone checkpoints in IMPLEMENT.md — this is the LAST milestone;
+Final Validation against 08_ACCEPTANCE.md follows T16, not a checkpoint per se.
 
 The specification is locked per forge-docs/decisions/0009-phase-specification-freeze.md.
 Only bug fixes, clarifications, and typo corrections are in scope beyond the
@@ -146,9 +176,13 @@ documented tasks — anything else (extra panels, workflows, a command palette,
 a capability registry, a Projects interface, a plugin system, AI additions)
 gets flagged and deferred, not built.
 
-Note: /api/workbench* and /api/dashboard are both live right now (by design,
-see CURRENT_STATE.md's Clarification note) -- T9-T12 build against
-/api/workbench*; do not touch dashboard.py or /api/dashboard, that's T14.
+Note: the Workbench frontend page currently lives at /workbench (staged there
+through Milestone 3 - see CURRENT_STATE.md's Clarification note). T13 is
+where it actually becomes /, and T14 is where dashboard.py/routes/dashboard.py/
+frontend/features/dashboard/ get removed for real - don't do either
+prematurely in T13 without also verifying the other now-obsolete surfaces
+(the /workbench staging route itself, once / renders Workbench, should not
+remain as a duplicate - fold it into the T13/T14 cutover, not left dangling).
 ```
 
 ## Session Notes
@@ -164,7 +198,11 @@ see CURRENT_STATE.md's Clarification note) -- T9-T12 build against
 - 2026-07-21 — **T5 complete** (branch `feature/t5-workbench-layout-service`, Milestone 2 underway). `backend/app/services/workbench.py` added with `get_layout`/`update_layout`/`reset_layout` and `WORKBENCH_TOOL_KEYS` per `03_BACKEND.md` §2–3. Clarified during implementation that this is a new module alongside `dashboard.py`, not a literal rename, since `dashboard.py`/`/api/dashboard` must stay live until T14 — see "Clarification" above.
 - 2026-07-21 — **T6 complete** (same branch). `get_workbench()` aggregation added to `services/workbench.py`, dropping `recent_secrets` entirely; extracted `serialize_layout()` for reuse by T7.
 - 2026-07-21 — **T7 complete** (same branch). `schemas/workbench.py` and `api/routes/workbench.py` added; `/api/workbench*` wired into `api_router` alongside the still-live `/api/dashboard`. Verified end-to-end via `TestClient`.
-- 2026-07-21 — **T8 complete, Milestone 2 (Backend) checkpoint** (same branch). `backend/tests/test_workbench.py` added (15 tests: 8 unit + 7 integration), `asyncio_mode = auto` added to `pytest.ini`. Full suite green at 47/47, run twice for idempotency. Full checkpoint logged to `../../history/2026-07-21-phase-01-milestone-2-backend.md` per `10_CHECKPOINT_PROTOCOL.md`. Milestone 3 (Frontend, T9–T12) is next.
+- 2026-07-21 — **T8 complete, Milestone 2 (Backend) checkpoint** (same branch). `backend/tests/test_workbench.py` added (15 tests: 8 unit + 7 integration), `asyncio_mode = auto` added to `pytest.ini`. Full suite green at 47/47, run twice for idempotency. Full checkpoint logged to `../../history/2026-07-21-phase-01-milestone-2-backend.md` per `10_CHECKPOINT_PROTOCOL.md`. Milestone 2 merged via [#10](https://github.com/DiegoDoug/forge/pull/10).
+- 2026-07-21 — **T9 complete** (branch `feature/t9-t12-workbench-frontend`, Milestone 3 underway). Generic Workbench runtime added per `05_COMPONENTS.md` §1.1; new page staged at `/workbench` rather than `/`. Set up local dev tooling (`.claude/launch.json`, `backend/.dev-data/` gitignored) to browser-verify against real backend/frontend dev servers instead of the unrelated Docker Compose stack already running on this machine's ports 8000/3000.
+- 2026-07-21 — **T10 complete** (same branch). `PinPickerDialog` and `tool-metadata.ts` added; wired into the customize-mode toolbar.
+- 2026-07-21 — **T11 complete** (same branch). All five active panels registered. Found and fixed a real bug during browser verification: panel registration never ran because the bootstrap side-effect import lived in a Server Component — moved to the Client Component that consumes the registry.
+- 2026-07-21 — **T12 complete, Milestone 3 (Frontend) checkpoint** (same branch). Drag/keyboard panel reorder and pin reorder added via `@dnd-kit/sortable`. Verified keyboard-only reordering end-to-end via dispatched `KeyboardEvent`s (the browser-automation tool's synthetic key-press action didn't reliably reach the sensor's `keydown` handler, so verification used direct event dispatch instead — a testing-tool limitation, not an implementation gap; confirmed by proving the sensor correctly `preventDefault()`s a properly-formed native `keydown`). `tsc`/`eslint`/`next build`/`docker compose build frontend` all clean. Full checkpoint logged to `../../history/2026-07-21-phase-01-milestone-3-frontend.md` per `10_CHECKPOINT_PROTOCOL.md`. Milestone 4 (Integration, T13–T16) is next.
 
 ## Cross-references
 

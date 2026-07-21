@@ -9,6 +9,7 @@ backend/**/__pycache__/
 backend/*.egg-info/
 backend/.tmp-*
 backend/.pytest_cache/
+backend/.dev-data/
 
 # Frontend
 frontend/node_modules/
