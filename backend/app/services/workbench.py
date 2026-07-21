@@ -117,6 +117,17 @@ async def reset_layout(session: AsyncSession) -> WorkbenchLayout:
     return layout
 
 
+def serialize_layout(layout: WorkbenchLayout) -> dict:
+    pinned_tool_keys: list[str] = json.loads(layout.pinned_tools)
+    return {
+        "panels": json.loads(layout.panels),
+        "pinned_tools": [
+            {"key": key, "available": WORKBENCH_TOOL_KEYS[key]["available"]} for key in pinned_tool_keys
+        ],
+        "tool_catalog": [{"key": key, "available": meta["available"]} for key, meta in WORKBENCH_TOOL_KEYS.items()],
+    }
+
+
 async def get_workbench(session: AsyncSession) -> dict:
     settings = get_settings()
     settings.data_dir.mkdir(parents=True, exist_ok=True)
@@ -127,16 +138,9 @@ async def get_workbench(session: AsyncSession) -> dict:
     notes_result = await session.execute(select(Note).where(Note.archived == False).order_by(Note.updated_at.desc()).limit(6))  # noqa: E712
 
     layout = await get_layout(session)
-    pinned_tool_keys: list[str] = json.loads(layout.pinned_tools)
 
     return {
-        "layout": {
-            "panels": json.loads(layout.panels),
-            "pinned_tools": [
-                {"key": key, "available": WORKBENCH_TOOL_KEYS[key]["available"]} for key in pinned_tool_keys
-            ],
-            "tool_catalog": [{"key": key, "available": meta["available"]} for key, meta in WORKBENCH_TOOL_KEYS.items()],
-        },
+        "layout": serialize_layout(layout),
         "data": {
             "version": VERSION,
             "storage": {

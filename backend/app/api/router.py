@@ -2,7 +2,20 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from app.api.routes import auth, converters, crypto, dashboard, documents, generators, ingest, notes, search, secrets, settings
+from app.api.routes import (
+    auth,
+    converters,
+    crypto,
+    dashboard,
+    documents,
+    generators,
+    ingest,
+    notes,
+    search,
+    secrets,
+    settings,
+    workbench,
+)
 
 api_router = APIRouter(prefix="/api")
 api_router.include_router(auth.router)
@@ -19,3 +32,4 @@ api_router.include_router(ingest.router)
 api_router.include_router(search.router)
 api_router.include_router(dashboard.router)
 api_router.include_router(settings.router)
+api_router.include_router(workbench.router)
