@@ -3,8 +3,8 @@
 > **Purpose:** Live snapshot of where this phase actually stands, updated at every checkpoint.
 > **Scope:** This phase only — updated continuously, never left stale.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** In progress — Milestones 1 (Foundation), 2 (Backend), and 3 (Frontend) complete, Milestone 4 (Integration) next
-> **Version:** 0.6.0
+> **Status:** In progress — Milestones 1–3 complete, Milestone 4 (Integration) underway — T13 done, T14–T16 remaining
+> **Version:** 0.7.0
 > **Last Updated:** 2026-07-21
 > **Depends On:** [README.md](README.md), [IMPLEMENT.md](IMPLEMENT.md)
 > **Supersedes:** v0.2.0 of this document (pre-implementation)
@@ -52,14 +52,15 @@
 - [x] T12 — Drag/keyboard panel reorder, pin reorder, panel states ([02_UI.md](02_UI.md) §3.1–3.3). `WorkbenchGrid` and `PinnedToolsPanel` each wrap their sortable items in `@dnd-kit/core`'s `DndContext` + `@dnd-kit/sortable`'s `SortableContext` (`rectSortingStrategy`) with `PointerSensor` + `KeyboardSensor`, wiring T9's stubbed drag-handle props to `useSortable()`'s real activator/listeners. Verified keyboard reordering by dispatching real `KeyboardEvent`s (confirmed sensor wiring via `defaultPrevented`/`aria-describedby`, then a full pick-up/move/drop producing a `PUT` with the new order, an Escape-cancel firing no mutation, and the same for pin reorder) and round-tripped both edge-case empty states (zero pinned tools, all panels hidden) through the real API.
 
 **Milestone 3 verification (all of T9–T12):** `tsc --noEmit`, `eslint .`, and `next build` all clean across the whole frontend; `docker compose build frontend` succeeds (production Docker build, not just local `next build`). No backend files touched this milestone. Every empty/loading/error state in `02_UI.md` §3.2's table live-tested via the real API, not just read from code. `docker ps` showed an unrelated already-running Forge Docker Compose stack on this machine (`forge-frontend-1`/`forge-backend-1`/`forge-nginx-1`) — left untouched; only `docker compose build` (no `up`) was run, so that stack's running containers are unaffected by this milestone's image rebuild.
+- [x] T13 — Sidebar/command-palette rename, `/` cutover ([02_UI.md](02_UI.md) §2). `frontend/app/(app)/page.tsx` replaced with the Workbench page (moved from the T9-staged `frontend/app/(app)/workbench/page.tsx`, now deleted — `/workbench` 404s, no dangling duplicate route). `frontend/lib/nav-registry.ts`'s home entry relabeled "Dashboard" → "Workbench" (`href: "/"`, icon, and `D` shortcut unchanged); sidebar, mobile nav, and command palette all read this one registry entry, so nothing else needed a copy change. `backend/app/services/dashboard.py`/`/api/dashboard` untouched, per T14's ordering note. Deliberately did not add "Customize Workbench"/"Manage pinned tools" command-palette actions (`02_UI.md` §2 mentions them, but they trace beyond T13's stated FR1/FR12 scope and aren't gated by any `08_ACCEPTANCE.md` criterion) — flagged as a deferred follow-up, not folded in.
 
 ## In Progress
 
-- [ ] TODO: nothing in progress right now. T13 (sidebar/palette rename, wiring `/` to Workbench) starts Milestone 4 (Integration).
+- [ ] TODO: nothing in progress right now. T14 (removing `frontend/features/dashboard/`, `backend/app/services/dashboard.py`, `backend/app/api/routes/dashboard.py`, and `/api/dashboard`) is next.
 
 ## Remaining
 
-- [ ] T13–T16 in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) — Milestone 4 (Integration): nav/palette rename, old Dashboard removal, manual verification, accessibility scan.
+- [ ] T14–T16 in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) — Milestone 4 (Integration): old Dashboard removal, manual verification, accessibility scan.
 
 ## Known Issues
 
@@ -143,10 +144,14 @@ All eight are `Status: Accepted` as of 2026-07-20. [ADR-0008](../../decisions/00
 - [x] `forge-docs/implementation/Phase-01-Workbench/09_IMPLEMENTATION_TASKS.md` (T9–T12 checked off)
 - [x] `forge-docs/history/2026-07-21-phase-01-milestone-3-frontend.md` (new — this checkpoint)
 - [x] `.gitignore` (added `backend/.dev-data/`, the local `uvicorn --reload` data dir per `docs/Development.md`)
+- [x] `frontend/app/(app)/page.tsx` (T13 — replaced with the Workbench page)
+- [x] `frontend/app/(app)/workbench/page.tsx` (T13 — deleted; folded into `/`)
+- [x] `frontend/lib/nav-registry.ts` (T13 — home entry relabeled "Dashboard" → "Workbench")
+- [x] `forge-docs/implementation/Phase-01-Workbench/09_IMPLEMENTATION_TASKS.md` (T13 checked off)
 
 ## Next Milestone
 
-Milestone 4 — Integration (T13–T16): nav/palette rename, old Dashboard removal, manual verification, accessibility scan. See [`IMPLEMENT.md`](IMPLEMENT.md) "Milestone Plan" and [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md).
+Milestone 4 — Integration (T14–T16): old Dashboard removal, manual verification, accessibility scan. See [`IMPLEMENT.md`](IMPLEMENT.md) "Milestone Plan" and [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md).
 
 ## Next Claude Prompt
 
@@ -158,13 +163,12 @@ Read, in order:
 2. forge-docs/implementation/Phase-01-Workbench/README.md
 3. forge-docs/implementation/Phase-01-Workbench/CURRENT_STATE.md
 4. forge-docs/implementation/Phase-01-Workbench/IMPLEMENT.md
-5. forge-docs/history/2026-07-21-phase-01-milestone-3-frontend.md
 
-Milestones 1 (Foundation, T1-T4), 2 (Backend, T5-T8), and 3 (Frontend, T9-T12)
-are complete. Begin work on: T13 in 09_IMPLEMENTATION_TASKS.md (sidebar and
-command-palette entries rename Dashboard -> Workbench; wire route / to the
-new Workbench page, per 02_UI.md §2), the first task of Milestone 4 --
-Integration.
+Milestones 1–3 are complete. T13 (sidebar/command-palette rename, wiring /
+to the Workbench page, folding the /workbench staging route into the
+cutover) is also complete. Begin work on: T14 in 09_IMPLEMENTATION_TASKS.md
+(remove frontend/features/dashboard/ and the old /api/dashboard route
+entirely — a direct cutover, per 06_API.md §1 note).
 
 Follow the checkpoint protocol in forge-docs/10_CHECKPOINT_PROTOCOL.md exactly,
 plus the milestone checkpoints in IMPLEMENT.md — this is the LAST milestone;
@@ -176,13 +180,11 @@ documented tasks — anything else (extra panels, workflows, a command palette,
 a capability registry, a Projects interface, a plugin system, AI additions)
 gets flagged and deferred, not built.
 
-Note: the Workbench frontend page currently lives at /workbench (staged there
-through Milestone 3 - see CURRENT_STATE.md's Clarification note). T13 is
-where it actually becomes /, and T14 is where dashboard.py/routes/dashboard.py/
-frontend/features/dashboard/ get removed for real - don't do either
-prematurely in T13 without also verifying the other now-obsolete surfaces
-(the /workbench staging route itself, once / renders Workbench, should not
-remain as a duplicate - fold it into the T13/T14 cutover, not left dangling).
+Note: / now renders the Workbench for real (T13 done) — backend/app/services/
+dashboard.py, backend/app/api/routes/dashboard.py, /api/dashboard, and
+frontend/features/dashboard/ are all still live but now fully unreferenced
+by the frontend. T14 removes all of them in one pass; grep for "dashboard"
+first to confirm nothing else still imports the old module before deleting it.
 ```
 
 ## Session Notes
@@ -203,6 +205,7 @@ remain as a duplicate - fold it into the T13/T14 cutover, not left dangling).
 - 2026-07-21 — **T10 complete** (same branch). `PinPickerDialog` and `tool-metadata.ts` added; wired into the customize-mode toolbar.
 - 2026-07-21 — **T11 complete** (same branch). All five active panels registered. Found and fixed a real bug during browser verification: panel registration never ran because the bootstrap side-effect import lived in a Server Component — moved to the Client Component that consumes the registry.
 - 2026-07-21 — **T12 complete, Milestone 3 (Frontend) checkpoint** (same branch). Drag/keyboard panel reorder and pin reorder added via `@dnd-kit/sortable`. Verified keyboard-only reordering end-to-end via dispatched `KeyboardEvent`s (the browser-automation tool's synthetic key-press action didn't reliably reach the sensor's `keydown` handler, so verification used direct event dispatch instead — a testing-tool limitation, not an implementation gap; confirmed by proving the sensor correctly `preventDefault()`s a properly-formed native `keydown`). `tsc`/`eslint`/`next build`/`docker compose build frontend` all clean. Full checkpoint logged to `../../history/2026-07-21-phase-01-milestone-3-frontend.md` per `10_CHECKPOINT_PROTOCOL.md`. Milestone 4 (Integration, T13–T16) is next.
+- 2026-07-21 — **T13 complete, Milestone 4 (Integration) underway.** `frontend/app/(app)/page.tsx` now renders the Workbench (moved from the T9-staged `/workbench` route, which is deleted — confirmed `/workbench` 404s post-cutover, no dangling duplicate). `nav-registry.ts`'s home entry relabeled "Dashboard" → "Workbench" (route/icon/shortcut unchanged); sidebar, mobile nav, and command palette all pick this up from the single registry entry. `dashboard.py`/`/api/dashboard` left untouched per T14's ordering note. Verified: `tsc --noEmit`/`eslint .`/`next build` clean, full backend pytest suite still 47/47 (untouched), and a full browser walkthrough against a fresh backend instance (setup → unlock → `/` renders the default Workbench layout with correct pins, sidebar/palette read "Workbench", `/workbench` 404s). T14 (removing the now-fully-unreferenced `dashboard.py`/`routes/dashboard.py`/`/api/dashboard`/`frontend/features/dashboard/`) is next.
 
 ## Cross-references
 
