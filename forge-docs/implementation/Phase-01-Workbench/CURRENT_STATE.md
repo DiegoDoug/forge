@@ -3,8 +3,8 @@
 > **Purpose:** Live snapshot of where this phase actually stands, updated at every checkpoint.
 > **Scope:** This phase only — updated continuously, never left stale.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** In progress — Milestone 1 (Foundation) complete, Milestone 2 (Backend) next
-> **Version:** 0.3.0
+> **Status:** In progress — Milestones 1 (Foundation) and 2 (Backend) complete, Milestone 3 (Frontend) next
+> **Version:** 0.5.0
 > **Last Updated:** 2026-07-21
 > **Depends On:** [README.md](README.md), [IMPLEMENT.md](IMPLEMENT.md)
 > **Supersedes:** v0.2.0 of this document (pre-implementation)
@@ -14,7 +14,11 @@
 
 ## Current Status
 
-**Milestone 1 (Foundation) complete — T1–T4 all done.** Specification is locked ([ADR-0009](../../decisions/0009-phase-specification-freeze.md)). This is the Milestone 1 checkpoint per [`IMPLEMENT.md`](IMPLEMENT.md); see [`../../history/2026-07-21-phase-01-milestone-1-foundation.md`](../../history/2026-07-21-phase-01-milestone-1-foundation.md) for the full checkpoint record. Next session begins Milestone 2 (Backend, T5–T8). Work is on branch `feature/t4-panel-contract`.
+**Milestone 1 (Foundation) complete — T1–T4 all done.** Specification is locked ([ADR-0009](../../decisions/0009-phase-specification-freeze.md)). See [`../../history/2026-07-21-phase-01-milestone-1-foundation.md`](../../history/2026-07-21-phase-01-milestone-1-foundation.md) for the Milestone 1 checkpoint record.
+
+**Milestone 2 (Backend) complete — T5–T8 all done.** See [`../../history/2026-07-21-phase-01-milestone-2-backend.md`](../../history/2026-07-21-phase-01-milestone-2-backend.md) for the Milestone 2 checkpoint record. Work is on branch `feature/t5-workbench-layout-service` (unmerged — see that checkpoint's "Current State" for exact status). Next up: Milestone 3 (Frontend, T9–T12).
+
+**Clarification (T5, still in effect through T6–T8):** `03_BACKEND.md` §1 describes the Dashboard→Workbench move as a rename "in place." In practice `backend/app/services/dashboard.py` (and `/api/dashboard`) must keep working until T14 explicitly removes them (per `09_IMPLEMENTATION_TASKS.md` T14 and its ordering note "nothing deletes the fallback until Milestone 3's replacement is proven working") — so Milestone 2 added `backend/app/services/workbench.py`, `backend/app/schemas/workbench.py`, and `backend/app/api/routes/workbench.py` as new modules alongside the untouched `dashboard.py`/`routes/dashboard.py`, not a literal file rename. `/api/workbench*` and `/api/dashboard` are both live and independently tested. The literal old-file removal happens at T14 as scheduled. This is a clarification of already-locked spec text, not a scope change, per ADR-0009 §2.
 
 ## Completed
 
@@ -34,14 +38,20 @@
   - `panel-registry.ts` — `registerWorkbenchPanel(definition)`/`getRegisteredPanels()`, backed by a `Map<string, WorkbenchPanelDefinition>`.
   - `register-all.ts` — an empty bootstrap stub. **Not yet imported from the app shell** — nothing registers with it yet (by design, per the task's own scope note), and wiring it in only becomes meaningful once `WorkbenchGrid` (T9) actually calls `getRegisteredPanels()`.
   - Verified with `tsc --noEmit` and `eslint`; no runtime behavior exists yet to browser-verify (pure types + an unused registry).
+- [x] T5 — `services/workbench.py`: `get_layout`, `update_layout`, `reset_layout`, `WORKBENCH_TOOL_KEYS` ([03_BACKEND.md](03_BACKEND.md) §2–3). New module (see "Clarification" above — `dashboard.py` is untouched). `get_layout` mirrors `settings/service.py`'s `get_config()` get-or-create pattern, seeding the first-access row with the real default panels/pinned-tools (`DEFAULT_LAYOUT_PANELS`/`DEFAULT_PINNED_TOOLS`), not empty arrays. `update_layout` validates panel shape (non-empty string `type`, boolean `visible`, no duplicate `type`) and pinned-tool keys against `WORKBENCH_TOOL_KEYS`, raising `AppError(status_code=422)` on failure per [06_API.md](06_API.md) §3. `reset_layout` overwrites both columns with the same default constants.
+- [x] T6 — `services/workbench.py`: `get_workbench()` aggregation ([03_BACKEND.md](03_BACKEND.md) §2). Reuses the exact `ActivityLog`/`Note` queries `get_dashboard()` already runs; the `recent_secrets` field is dropped entirely (no `secrets_service` import at all, not just an omitted field). Extracted `serialize_layout(layout)` — decodes the stored JSON, denormalizes each pinned tool's `available` flag, and builds `tool_catalog` from `WORKBENCH_TOOL_KEYS` — shared by `get_workbench()` and T7's PUT/reset route responses so that logic exists in exactly one place.
+- [x] T7 — `schemas/workbench.py` and `api/routes/workbench.py`: the three `/api/workbench*` routes ([06_API.md](06_API.md) §1–2). Schemas match §2 literally (`WorkbenchPanelState`, `ToolCatalogEntry`, `PinnedTool`, `WorkbenchLayoutOut`, `WorkbenchLayoutUpdate`, `StorageStats`, `ActivityEntry`, `DashboardNote`, `WorkbenchData`, `WorkbenchOut`). Router is thin (schema ↔ service only), wired into `api_router` in `backend/app/api/router.py` alongside `dashboard.router` — both live simultaneously, per the Clarification above.
+- [x] T8 — `backend/tests/test_workbench.py` ([07_TESTING.md](07_TESTING.md) §1). 8 unit tests (in-memory SQLite per test) + 7 integration tests (one module-scoped `TestClient` against the real app, ordered top-to-bottom since `workbench_layout` is a real single-row table — first asserts 401 with no session, the rest run post-`/api/setup`). Covers every bullet in §1, including the load-bearing "unrecognized panel `type` is accepted, not rejected" test at both the service and route level, and the `recent_secrets`-absence regression check. Added `asyncio_mode = auto` to `backend/pytest.ini` (first async test file in the suite) and gave the module its own throwaway `FORGE_DATA_DIR`, set at module level before `app.main` is imported, so repeated test runs don't collide with a previously-completed `/api/setup` — mirrors the existing pattern in `tests/conftest.py`.
+
+**Milestone 2 verification (all of T5–T8):** full backend pytest suite green at 47/47 (32 pre-existing + 15 new), run twice consecutively to confirm idempotency of the new test module's throwaway data dir. End-to-end HTTP verification via `TestClient` covered: auth-required 401, full `GET`/`PUT`/`POST` round-trip, all three 422 validation paths, unrecognized-panel-type acceptance, and that `/api/dashboard` is completely unaffected.
 
 ## In Progress
 
-- [ ] TODO: nothing in progress — Milestone 1 (Foundation) is complete. T5 (`services/workbench.py`'s `get_layout`/`update_layout`/`reset_layout` + `WORKBENCH_TOOL_KEYS`) starts Milestone 2 (Backend).
+- [ ] TODO: nothing in progress right now. T9 (the generic Workbench runtime — `WorkbenchGrid`, `WorkbenchPanelCard`, `WorkbenchEmptyState`, `WorkbenchResetButton`, `WorkbenchCustomizeToggle`) starts Milestone 3 (Frontend).
 
 ## Remaining
 
-- [ ] T5–T16 in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) — Milestones 2 (Backend), 3 (Frontend), 4 (Integration).
+- [ ] T9–T16 in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) — Milestone 3 (Frontend) and Milestone 4 (Integration).
 
 ## Known Issues
 
@@ -94,11 +104,19 @@ All eight are `Status: Accepted` as of 2026-07-20. [ADR-0008](../../decisions/00
 - [x] `frontend/features/workbench/panel-types.ts` (new)
 - [x] `frontend/features/workbench/panel-registry.ts` (new)
 - [x] `frontend/features/workbench/register-all.ts` (new)
-- [x] `forge-docs/history/2026-07-21-phase-01-milestone-1-foundation.md` (new — this checkpoint)
+- [x] `forge-docs/history/2026-07-21-phase-01-milestone-1-foundation.md` (new)
+- [x] `backend/app/services/workbench.py` (new — T5, extended by T6 and T7)
+- [x] `backend/app/schemas/workbench.py` (new — T7)
+- [x] `backend/app/api/routes/workbench.py` (new — T7)
+- [x] `backend/app/api/router.py` (T7 — `workbench.router` wired in)
+- [x] `backend/tests/test_workbench.py` (new — T8)
+- [x] `backend/pytest.ini` (T8 — `asyncio_mode = auto` added)
+- [x] `forge-docs/implementation/Phase-01-Workbench/09_IMPLEMENTATION_TASKS.md` (T5–T8 checked off)
+- [x] `forge-docs/history/2026-07-21-phase-01-milestone-2-backend.md` (new — this checkpoint)
 
 ## Next Milestone
 
-Milestone 2 — Backend (T5–T8): layout persistence service, workbench aggregation, API routes, backend tests. See [`IMPLEMENT.md`](IMPLEMENT.md) "Milestone Plan" and [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md).
+Milestone 3 — Frontend (T9–T12): the generic Workbench runtime, `PinPickerDialog`, the five active panels, drag/keyboard reorder + every empty/loading/error state. See [`IMPLEMENT.md`](IMPLEMENT.md) "Milestone Plan" and [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md).
 
 ## Next Claude Prompt
 
@@ -110,22 +128,27 @@ Read, in order:
 2. forge-docs/implementation/Phase-01-Workbench/README.md
 3. forge-docs/implementation/Phase-01-Workbench/CURRENT_STATE.md
 4. forge-docs/implementation/Phase-01-Workbench/IMPLEMENT.md
-5. forge-docs/history/2026-07-21-phase-01-milestone-1-foundation.md
+5. forge-docs/history/2026-07-21-phase-01-milestone-2-backend.md
 
-Milestone 1 (Foundation, T1-T4) is complete. Begin work on: T5 in
-09_IMPLEMENTATION_TASKS.md (services/workbench.py: get_layout, update_layout,
-reset_layout, and the WORKBENCH_TOOL_KEYS catalog, per 03_BACKEND.md 2-3),
-the first task of Milestone 2 — Backend.
+Milestones 1 (Foundation, T1-T4) and 2 (Backend, T5-T8) are complete. Begin
+work on: T9 in 09_IMPLEMENTATION_TASKS.md (the generic Workbench runtime --
+WorkbenchGrid, WorkbenchPanelCard with an error boundary, WorkbenchEmptyState,
+WorkbenchResetButton, WorkbenchCustomizeToggle, per 05_COMPONENTS.md §1.1),
+the first task of Milestone 3 -- Frontend.
 
 Follow the checkpoint protocol in forge-docs/10_CHECKPOINT_PROTOCOL.md exactly,
-plus the milestone checkpoints in IMPLEMENT.md — stop after T8 (end of
-Milestone 2) even if the 10-12 task threshold hasn't been hit yet.
+plus the milestone checkpoints in IMPLEMENT.md — stop after T12 (end of
+Milestone 3) even if the 10-12 task threshold hasn't been hit yet.
 
 The specification is locked per forge-docs/decisions/0009-phase-specification-freeze.md.
 Only bug fixes, clarifications, and typo corrections are in scope beyond the
 documented tasks — anything else (extra panels, workflows, a command palette,
 a capability registry, a Projects interface, a plugin system, AI additions)
 gets flagged and deferred, not built.
+
+Note: /api/workbench* and /api/dashboard are both live right now (by design,
+see CURRENT_STATE.md's Clarification note) -- T9-T12 build against
+/api/workbench*; do not touch dashboard.py or /api/dashboard, that's T14.
 ```
 
 ## Session Notes
@@ -138,6 +161,10 @@ gets flagged and deferred, not built.
 - 2026-07-21 — **T2 complete** (branch `feature/t2-search-page`, merged to `master` via [#7](https://github.com/DiegoDoug/forge/pull/7)). Dedicated `/search` page added per ADR-0007, reusing `GET /api/search` and `frontend/features/search/api.ts` unchanged — no backend change.
 - 2026-07-21 — **T3 complete** (branch `feature/t3-workbench-layout-migration`, merged to `master` via [#8](https://github.com/DiegoDoug/forge/pull/8)). `workbench_layout` Alembic migration written and verified per `04_DATABASE.md`.
 - 2026-07-21 — **T4 complete, Milestone 1 (Foundation) checkpoint** (branch `feature/t4-panel-contract`). The panel contract (`panel-types.ts`, `panel-registry.ts`, `register-all.ts`) added per `12_PANEL_INTERFACE.md` §2, §4 — establishes the interface, nothing registers yet. Full checkpoint logged to `../../history/2026-07-21-phase-01-milestone-1-foundation.md` per `10_CHECKPOINT_PROTOCOL.md`. Milestone 2 (Backend, T5–T8) is next.
+- 2026-07-21 — **T5 complete** (branch `feature/t5-workbench-layout-service`, Milestone 2 underway). `backend/app/services/workbench.py` added with `get_layout`/`update_layout`/`reset_layout` and `WORKBENCH_TOOL_KEYS` per `03_BACKEND.md` §2–3. Clarified during implementation that this is a new module alongside `dashboard.py`, not a literal rename, since `dashboard.py`/`/api/dashboard` must stay live until T14 — see "Clarification" above.
+- 2026-07-21 — **T6 complete** (same branch). `get_workbench()` aggregation added to `services/workbench.py`, dropping `recent_secrets` entirely; extracted `serialize_layout()` for reuse by T7.
+- 2026-07-21 — **T7 complete** (same branch). `schemas/workbench.py` and `api/routes/workbench.py` added; `/api/workbench*` wired into `api_router` alongside the still-live `/api/dashboard`. Verified end-to-end via `TestClient`.
+- 2026-07-21 — **T8 complete, Milestone 2 (Backend) checkpoint** (same branch). `backend/tests/test_workbench.py` added (15 tests: 8 unit + 7 integration), `asyncio_mode = auto` added to `pytest.ini`. Full suite green at 47/47, run twice for idempotency. Full checkpoint logged to `../../history/2026-07-21-phase-01-milestone-2-backend.md` per `10_CHECKPOINT_PROTOCOL.md`. Milestone 3 (Frontend, T9–T12) is next.
 
 ## Cross-references
 
