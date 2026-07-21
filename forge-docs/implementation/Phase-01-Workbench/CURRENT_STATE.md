@@ -3,14 +3,22 @@
 > **Purpose:** Live snapshot of where this phase actually stands, updated at every checkpoint.
 > **Scope:** This phase only — updated continuously, never left stale.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** All 16 tasks complete — Final Validation done per `08_ACCEPTANCE.md`; two items remain genuinely open (see "Known Issues") and project-owner sign-off is still outstanding
-> **Version:** 0.8.0
+> **Status:** Implementation Complete — Pending: QA ([`QA/`](QA/README.md)), Owner Sign-off, Merge
+> **Version:** 0.9.0
 > **Last Updated:** 2026-07-21
 > **Depends On:** [README.md](README.md), [IMPLEMENT.md](IMPLEMENT.md)
 > **Supersedes:** v0.2.0 of this document (pre-implementation)
 
 ---
 
+## Status
+
+| | |
+|---|---|
+| **Status** | Implementation Complete |
+| **Pending** | QA ([QA-0001](QA/QA-0001-drag-performance.md), [QA-0002](QA/QA-0002-screen-reader-audit.md)) · Owner Sign-off ([`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) §8) · Merge (`feature/t13-workbench-nav-cutover` → `master`) |
+
+All 16 implementation tasks (T1–T16) are done and verified against `08_ACCEPTANCE.md`. This is not the same claim as "phase complete" — QA, owner sign-off, and the merge to `master` are still open, tracked explicitly rather than implied. See "Known Issues" below for a code-review audit that surfaced five additional findings not yet dispositioned (fix now vs. file as post-freeze bug-fix work).
 
 ## Current Status
 
@@ -57,23 +65,27 @@
 - [x] T13 — Sidebar/command-palette rename, `/` cutover ([02_UI.md](02_UI.md) §2). `frontend/app/(app)/page.tsx` replaced with the Workbench page (moved from the T9-staged `frontend/app/(app)/workbench/page.tsx`, now deleted — `/workbench` 404s, no dangling duplicate route). `frontend/lib/nav-registry.ts`'s home entry relabeled "Dashboard" → "Workbench" (`href: "/"`, icon, and `D` shortcut unchanged); sidebar, mobile nav, and command palette all read this one registry entry, so nothing else needed a copy change. `backend/app/services/dashboard.py`/`/api/dashboard` untouched, per T14's ordering note. Deliberately did not add "Customize Workbench"/"Manage pinned tools" command-palette actions (`02_UI.md` §2 mentions them, but they trace beyond T13's stated FR1/FR12 scope and aren't gated by any `08_ACCEPTANCE.md` criterion) — flagged as a deferred follow-up, not folded in.
 - [x] T14 — Old Dashboard removal ([06_API.md](06_API.md) §1 note). Deleted `backend/app/api/routes/dashboard.py`, `backend/app/services/dashboard.py`, `frontend/features/dashboard/` outright — direct cutover, no alias (unlike Vault/Secrets). Removed `dashboard` from `backend/app/api/router.py`'s imports/`include_router` calls. Updated `ActivityLog`'s docstring (`backend/app/models/activity.py`) to say "Workbench's Recent Activity panel" instead of "the dashboard's." Left `DashboardNote` (`schemas/workbench.py`) and a test name referencing "dashboard_shape" alone — legitimate historical references from an already-merged milestone (T7/T8), not leftover Dashboard code, and renaming them is outside T14's scope. Updated shipped docs that still described `/api/dashboard`/`features/dashboard/` as current: `docs/API.md`, `docs/FolderStructure.md`, `docs/Database.md`, root `README.md`. Verified: `GET /api/dashboard` now 404s for real; backend suite still 47/47; `tsc`/`eslint`/`next build` clean.
 - [x] T15 — Manual verification pass ([07_TESTING.md](07_TESTING.md) §3). Full functional walkthrough against a fresh backend instance (pin/unpin persistence, coming-soon tiles, panel+pin keyboard reorder with persisted `PUT`s, hide/show + all-hidden empty state, reset-with-confirmation, `/search`, dark mode, mobile single-column). Performance: initial render and `PUT` round-trip both far under budget; drag FPS/re-render profiling not measurable in this session (see `08_ACCEPTANCE.md` §12 — the automated browser tab never services animation frames, confirmed directly, unrelated to app code). Accessibility: real Tab-key walkthrough, ARIA labels spot-checked, focus-management code reviewed as correct but not live-observable here for the same rAF reason. **Found and fixed a real, pre-existing bug**: `AlertDialogAction` (`frontend/components/ui/alert-dialog.tsx`) never closed its dialog on click (Base UI has no auto-closing "Action" primitive, unlike Radix) — this also silently broke the existing Secrets "Delete" confirmation, not something this phase introduced. Fixed by rebuilding it on `AlertDialogPrimitive.Close`, matching `AlertDialogCancel`'s already-correct pattern. Flagged two out-of-scope a11y issues (mobile-nav hamburger missing an accessible name; sidebar footer contrast) as separate background tasks.
-- [x] T16 — Automated accessibility scan + Final Validation ([08_ACCEPTANCE.md](08_ACCEPTANCE.md)). Injected `axe-core` 4.12.1 directly into the live page (already a transitive devDependency via `eslint-plugin-jsx-a11y`); scoped to Workbench's own `<main>`, zero violations across view mode, customize mode, the pin picker, and `/search`. A whole-page run found two violations, both in pre-existing global app-shell chrome — flagged separately. Walked every criterion in `08_ACCEPTANCE.md` against the running app; see that document (now v0.4.0) for the full result, including §11's bug writeup and §12's environment-limitation notes. Two criteria remain genuinely open (drag FPS/re-render profiling, a live screen-reader pass) rather than checked off without evidence.
+- [x] T16 — Automated accessibility scan + Final Validation ([08_ACCEPTANCE.md](08_ACCEPTANCE.md)). Injected `axe-core` 4.12.1 directly into the live page (already a transitive devDependency via `eslint-plugin-jsx-a11y`); scoped to Workbench's own `<main>`, zero violations across view mode, customize mode, the pin picker, and `/search`. A whole-page run found two violations, both in pre-existing global app-shell chrome — flagged separately. Walked every criterion in `08_ACCEPTANCE.md` against the running app; see that document (now v0.5.0) for the full result, including §11's bug writeup and §12's environment-limitation notes.
+- [x] **Independent code-review audit** (post-T16, requested explicitly as a fresh-eyes review). Read every Phase 01 spec doc and every line of the Workbench implementation and cross-checked one against the other. Found 5 additional issues beyond what T15/T16 caught, most notably a real data-loss bug: `WorkbenchGrid`'s panel drag-reorder and visibility-toggle handlers build their `PUT` payload from a pre-filtered "registered types only" list, so any panel `type` unrecognized by the running frontend build gets silently and permanently deleted from the persisted layout the next time the user reorders or toggles *any* panel — contradicting `12_PANEL_INTERFACE.md` §3 item 6's "safely inert until registered" guarantee. Also found: no duplicate-key validation on `pinned_tools` (asymmetric with the panel-type duplicate check); 3 of 4 layout-mutation failure paths show no error toast (only the Pin Picker's toggle does); `get_workbench()` computes and returns `recent_notes` that `RecentNotesPanel` never reads (it fetches independently); the `onError` panel-contract prop is never called by any of the five shipped panels. Full detail in the review's structured findings output. **None of these are fixed yet — disposition (fix now vs. file as post-freeze bug-fix work) is an open decision, not something resolved unilaterally.**
 
 ## In Progress
 
-- [ ] TODO: nothing in progress. All 16 tasks are complete. Remaining before the phase can be formally closed: project-owner sign-off (`08_ACCEPTANCE.md` §8, still an unassigned TODO), and the two genuinely-open acceptance items noted above.
+- [ ] TODO: nothing in progress. All 16 tasks are complete. See "Status" at the top of this document for what's actually blocking the phase from being fully closed.
 
 ## Remaining
 
 - [ ] Project-owner sign-off on `08_ACCEPTANCE.md` §8 (phase ownership itself is still an unassigned TODO in `README.md`).
-- [ ] Drag-reorder FPS and React DevTools Profiler re-render verification (`08_ACCEPTANCE.md` §4) — needs a real browser/device session, not an automated one.
-- [ ] A live VoiceOver/NVDA screen-reader pass (`08_ACCEPTANCE.md` §5) — the axe scan and accessibility-tree inspection substitute partially but not fully.
+- [ ] QA-0001 — drag-reorder FPS / React DevTools Profiler re-render verification ([`QA/QA-0001-drag-performance.md`](QA/QA-0001-drag-performance.md)) — ruled non-blocking for sign-off by the project owner; needs a real browser/device session.
+- [ ] QA-0002 — live NVDA/VoiceOver/keyboard-only screen-reader audit ([`QA/QA-0002-screen-reader-audit.md`](QA/QA-0002-screen-reader-audit.md)) — ruled non-blocking for sign-off by the project owner.
+- [ ] Disposition of the 5 audit findings above: fix before merge, fix as post-freeze bug-fix work, or explicitly accept — **undecided**, most notably the panel-deletion data-loss bug, which is the one finding here with a real severity case for fixing before merge rather than after.
+- [ ] Merge `feature/t13-workbench-nav-cutover` → `master` (not yet done).
 
 ## Known Issues
 
 - [ ] Temporary compatibility aliases from T1 are debt, per ADR-0006 §4: `/api/vault` (backend proxy) and the frontend `/vault` → `/secrets` redirect both need a later cleanup task to remove once nothing external depends on the old path.
 - [ ] Lower-priority prose in `docs/Deployment.md`/`docs/Security.md`/`docs/Roadmap.md`/`docs/DecisionLog.md`'s older entries was updated where it named the feature ("Vault"/"vault secret") but generic descriptive phrasing was left untouched where it wasn't clearly a proper-noun reference to the feature — not a gap, a deliberate line per this task's scope, but flagging in case a future pass wants full consistency.
-- [ ] Two out-of-scope accessibility issues found during T15/T16 and flagged as separate background tasks (not fixed as part of this phase, since neither touches a file any Workbench task owns): the global mobile-nav hamburger trigger (`components/app-shell/`) has no accessible name; the sidebar footer text and the command palette's dialog-header landmark each have a minor axe violation.
+- [ ] Two out-of-scope accessibility issues found during T15/T16, flagged as separate background tasks (not fixed as part of this phase, since neither touches a file any Workbench task owns): the global mobile-nav hamburger trigger (`components/app-shell/`) has no accessible name (task_146af5a1, started); the sidebar footer text and the command palette's dialog-header landmark each have a minor axe violation (task_7f16eee4, started).
+- [ ] Five findings from the post-T16 independent audit, not yet fixed or dispositioned — see "Completed" above and the review's structured findings output for full detail. Highest severity: the panel drag-reorder/visibility-toggle data-loss bug in `workbench-grid.tsx`.
 
 ## Architectural Decisions
 
@@ -163,11 +175,15 @@ All eight are `Status: Accepted` as of 2026-07-20. [ADR-0008](../../decisions/00
 - [x] `backend/app/models/activity.py` (T14 — docstring updated to reference Workbench, not the dashboard)
 - [x] `docs/API.md`, `docs/FolderStructure.md`, `docs/Database.md`, `README.md` (T14 — dashboard→workbench references updated)
 - [x] `frontend/components/ui/alert-dialog.tsx` (T15 — `AlertDialogAction` bug fix; see `08_ACCEPTANCE.md` §11)
-- [x] `forge-docs/implementation/Phase-01-Workbench/08_ACCEPTANCE.md` (T16 — full criterion-by-criterion pass, v0.4.0)
+- [x] `forge-docs/implementation/Phase-01-Workbench/08_ACCEPTANCE.md` (T16, then post-audit — full criterion-by-criterion pass plus QA-ticket cross-links, v0.5.0)
+- [x] `forge-docs/implementation/Phase-01-Workbench/QA/README.md` (new — QA ticket index)
+- [x] `forge-docs/implementation/Phase-01-Workbench/QA/QA-0001-drag-performance.md` (new)
+- [x] `forge-docs/implementation/Phase-01-Workbench/QA/QA-0002-screen-reader-audit.md` (new)
+- [x] `forge-docs/implementation/Phase-01-Workbench/POST_IMPLEMENTATION_REVIEW.md` (new)
 
 ## Next Milestone
 
-None — this was the last milestone in Phase 01. Remaining before the phase can be formally closed: project-owner sign-off (`08_ACCEPTANCE.md` §8) and the two genuinely-open acceptance items (see "Remaining" above). Phase 02 (Project Initialization Engine) is a separate phase with its own `forge-docs/implementation/Phase-02-Project-Initialization-Engine/` documents.
+None — this was the last milestone in Phase 01. Remaining before the phase can be formally closed: project-owner sign-off (`08_ACCEPTANCE.md` §8), QA-0001/QA-0002 (tracked separately, non-blocking), disposition of the 5 post-audit findings, and the merge to `master`. Phase 02 (Project Initialization Engine) is a separate phase with its own `forge-docs/implementation/Phase-02-Project-Initialization-Engine/` documents.
 
 ## Next Claude Prompt
 
@@ -179,22 +195,32 @@ Read, in order:
 2. forge-docs/implementation/Phase-01-Workbench/README.md
 3. forge-docs/implementation/Phase-01-Workbench/CURRENT_STATE.md
 4. forge-docs/implementation/Phase-01-Workbench/08_ACCEPTANCE.md
+5. forge-docs/implementation/Phase-01-Workbench/QA/README.md
 
 All 16 tasks (T1-T16) are complete and Final Validation against
-08_ACCEPTANCE.md has been performed. This phase has no more implementation
-tasks -- do not invent new ones. What's actually left:
+08_ACCEPTANCE.md has been performed. Status is "Implementation Complete,"
+NOT "phase complete" -- three things are still pending: QA, owner sign-off,
+and the merge to master. This phase has no more implementation tasks --
+do not invent new ones. What's actually left:
 
 1. Project-owner sign-off (08_ACCEPTANCE.md §8) is still an open TODO --
    this requires a human decision, not implementation work.
-2. Two acceptance criteria are genuinely unverified, not just unchecked:
-   drag-reorder FPS / React DevTools Profiler re-render count (08_ACCEPTANCE.md
-   §4), and a live VoiceOver/NVDA screen-reader pass (§5). Both need a real
-   browser/device session -- the automated browser tool used through T16
-   cannot service animation frames at all in this environment (confirmed
-   directly, documented in 08_ACCEPTANCE.md §12), so don't reuse that same
-   tool expecting a different result; a different verification approach is
-   needed, or explicit acknowledgment that these remain open.
-3. Two out-of-scope accessibility bugs were found and flagged as separate
+2. QA-0001 (drag FPS / React Profiler) and QA-0002 (live screen-reader
+   audit) are tracked in QA/, explicitly ruled non-blocking for sign-off
+   by the project owner. Both need a real browser/device session -- the
+   automated browser tool used through T16 cannot service animation frames
+   at all in this environment (confirmed directly, documented in
+   08_ACCEPTANCE.md §12), so don't reuse that same tool expecting a
+   different result on these two specifically.
+3. Five findings from a post-T16 independent code-review audit are NOT
+   YET FIXED OR DISPOSITIONED -- see "Completed" above for the summary.
+   The highest-severity one is a real data-loss bug: WorkbenchGrid's panel
+   drag-reorder/visibility-toggle handlers silently and permanently delete
+   any panel `type` the running frontend doesn't recognize from the
+   persisted layout. Don't merge or tag this phase without an explicit
+   decision on these five -- at minimum, surface them and ask, don't
+   silently fix or silently ignore.
+4. Two out-of-scope accessibility bugs were found and flagged as separate
    background tasks (not fixed in this phase): the global mobile-nav
    hamburger button has no accessible name, and the sidebar footer /
    command palette have a couple of minor axe violations. Check whether
@@ -228,6 +254,8 @@ here authorizes starting it automatically.
 - 2026-07-21 — **T14 complete** (same branch). `backend/app/api/routes/dashboard.py`, `backend/app/services/dashboard.py`, and `frontend/features/dashboard/` deleted outright (direct cutover per `06_API.md` §1, unlike the Vault/Secrets alias). `router.py` updated. Shipped docs (`docs/API.md`, `docs/FolderStructure.md`, `docs/Database.md`, `README.md`) updated to describe Workbench instead of the now-removed Dashboard. Verified `GET /api/dashboard` returns a real 404 against a fresh backend instance; full suite still 47/47; `tsc`/`eslint`/`next build`/`docker compose build frontend` all clean.
 - 2026-07-21 — **T15 complete** (same branch). Full manual verification pass per `07_TESTING.md` §3 — functional checks all passed against a fresh instance; performance (initial render, `PUT` round-trip) both well under budget via Resource Timing measurements; drag FPS and React Profiler re-render counts could not be measured in this automated session (root-caused to the session's browser tab not servicing animation frames at all — confirmed directly via `getAnimations()`/`requestAnimationFrame`, not an app defect). **Found and fixed a real, pre-existing bug**: `frontend/components/ui/alert-dialog.tsx`'s `AlertDialogAction` never closed its dialog (Base UI has no auto-closing "Action" primitive unlike Radix) — silently broke both the Workbench reset-confirmation dialog and the pre-existing Secrets delete-confirmation dialog. Fixed by rebuilding it on `AlertDialogPrimitive.Close`. Flagged two unrelated, out-of-scope a11y issues (mobile-nav hamburger missing an accessible name; sidebar footer contrast) as separate background tasks rather than fixing them here.
 - 2026-07-21 — **T16 complete, Milestone 4 (Integration) and Phase 01 implementation complete.** Ran `axe-core` 4.12.1 (injected directly into the live page) against Workbench's own `<main>` region in both modes plus `/search` — zero violations. A whole-page run found two violations in pre-existing global chrome (sidebar footer contrast, command-palette dialog landmark), flagged separately, not fixed. Performed the full `08_ACCEPTANCE.md` criterion-by-criterion pass (now v0.4.0) — every criterion is checked with cited evidence except two genuinely open items (drag FPS/re-render profiling, a live screen-reader pass), which are marked unchecked rather than assumed. All 16 implementation tasks in `09_IMPLEMENTATION_TASKS.md` are now complete. Remaining before the phase is formally done: project-owner sign-off.
+- 2026-07-21 — **Independent code-review audit**, requested explicitly as a fresh-eyes review ("forget you implemented this... audit... as if written by another engineer"). Read every Phase 01 spec doc and every line of the Workbench implementation. Found 5 issues T15/T16 missed, reported via structured findings (most severe first): (1) `WorkbenchGrid`'s panel drag-reorder/visibility-toggle mutations silently and permanently delete any panel `type` unrecognized by the running frontend build from the persisted layout — a real data-loss bug contradicting `12_PANEL_INTERFACE.md` §3 item 6's extensibility guarantee; (2) `_validate_pinned_tools` has no duplicate-key check, asymmetric with `_validate_panels`'s explicit one; (3) 3 of 4 layout-mutation call sites (panel reorder, panel visibility, pin reorder) show no error toast on failure, only Pin Picker's toggle does; (4) `get_workbench()` computes and returns `recent_notes` that `RecentNotesPanel` never reads (dead backend work); (5) the `onError` panel-contract prop is never called by any of the five shipped panels (unexercised code path). Also re-verified the T15 `AlertDialogAction` fix against the Secrets delete-confirmation flow it also touches — confirmed no regression. None of the 5 new findings are fixed yet; disposition is an open decision.
+- 2026-07-21 — **Process follow-up per the project owner's direction, given the audit results.** Split the two genuinely-unverified acceptance criteria (drag FPS/Profiler, screen-reader pass) into `QA/QA-0001-drag-performance.md` and `QA/QA-0002-screen-reader-audit.md` — explicitly non-blocking for sign-off, tracked separately from implementation. `08_ACCEPTANCE.md` (now v0.5.0) cross-links both and records the project-owner's ruling in a new §8 note. `CURRENT_STATE.md` status changed from "In Progress" to "Implementation Complete — Pending: QA, Owner Sign-off, Merge" (see the new "Status" table at the top of this document), per the project owner's explicit requirement that this distinction not be blurred. Started `POST_IMPLEMENTATION_REVIEW.md`. **Freezing the directory and tagging `v0.1.0-workbench` were both described by the project owner as happening *after* sign-off** — since sign-off is still an open TODO (owner unassigned), neither was done yet; flagged back to the user rather than assumed.
 
 ## Cross-references
 

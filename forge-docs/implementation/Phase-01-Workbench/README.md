@@ -3,9 +3,9 @@
 > **Purpose:** Entry point for the Workbench phase — objective, scope, deliverables, and completion criteria.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** ✅ AUTHORIZED — specification 🔒 LOCKED per [ADR-0009](../../decisions/0009-phase-specification-freeze.md); implementation approved to begin
-> **Version:** 0.4.0
-> **Last Updated:** 2026-07-20
+> **Status:** Implementation Complete — Pending: QA ([`QA/`](QA/README.md)), Owner Sign-off ([`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) §8), Merge
+> **Version:** 0.5.0
+> **Last Updated:** 2026-07-21
 > **Depends On:** [01_SPEC.md](01_SPEC.md), [../../decisions/README.md](../../decisions/README.md), [../../decisions/0009-phase-specification-freeze.md](../../decisions/0009-phase-specification-freeze.md)
 > **Supersedes:** v0.3.0 of this document (awaiting authorization; no Definition of Success; single flat milestone list instead of the 4-milestone checkpoint plan)
 
@@ -42,13 +42,13 @@ Fully replaces the former **Dashboard** feature (`frontend/features/dashboard/`,
 
 ## Deliverables
 
-- [ ] The Workbench runtime (`WorkbenchGrid`, `WorkbenchPanelCard`, panel registry) per [`05_COMPONENTS.md`](05_COMPONENTS.md) and [`12_PANEL_INTERFACE.md`](12_PANEL_INTERFACE.md).
-- [ ] Five active panels, each registered through the panel registry, per [`05_COMPONENTS.md`](05_COMPONENTS.md) §1.2.
-- [ ] `workbench_layout` table + Alembic migration, per [`04_DATABASE.md`](04_DATABASE.md).
-- [ ] `GET/PUT/POST /api/workbench*` endpoints, per [`06_API.md`](06_API.md).
-- [ ] The Vault → Secrets rename, per [ADR-0006](../../decisions/0006-vault-renamed-to-secrets.md).
-- [ ] The new `/search` page, per [ADR-0007](../../decisions/0007-search-dedicated-page.md).
-- [ ] Removal of `frontend/features/dashboard/` and the old `/api/dashboard` route.
+- [x] The Workbench runtime (`WorkbenchGrid`, `WorkbenchPanelCard`, panel registry) per [`05_COMPONENTS.md`](05_COMPONENTS.md) and [`12_PANEL_INTERFACE.md`](12_PANEL_INTERFACE.md). (T9)
+- [x] Five active panels, each registered through the panel registry, per [`05_COMPONENTS.md`](05_COMPONENTS.md) §1.2. (T11)
+- [x] `workbench_layout` table + Alembic migration, per [`04_DATABASE.md`](04_DATABASE.md). (T3)
+- [x] `GET/PUT/POST /api/workbench*` endpoints, per [`06_API.md`](06_API.md). (T7)
+- [x] The Vault → Secrets rename, per [ADR-0006](../../decisions/0006-vault-renamed-to-secrets.md). (T1)
+- [x] The new `/search` page, per [ADR-0007](../../decisions/0007-search-dedicated-page.md). (T2)
+- [x] Removal of `frontend/features/dashboard/` and the old `/api/dashboard` route. (T14)
 
 ## Dependencies
 
@@ -58,10 +58,10 @@ None on other new phases — this remains the entry-point phase. It does carry t
 
 Four milestones, matching [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md)'s task grouping exactly — see [`IMPLEMENT.md`](IMPLEMENT.md) "Milestone Plan" for the authoritative version:
 
-- [ ] Milestone 1 — **Foundation** (T1–T4): Secrets compatibility migration, `/search` page, `workbench_layout` migration, the panel contract itself.
-- [ ] Milestone 2 — **Backend** (T5–T8): layout persistence service, workbench data aggregation, API routes, backend tests.
-- [ ] Milestone 3 — **Frontend** (T9–T12): the Workbench runtime shell, pin picker, all five active panels, drag/keyboard reorder and panel states.
-- [ ] Milestone 4 — **Integration** (T13–T16): nav rename, old Dashboard removal, manual verification, accessibility scan.
+- [x] Milestone 1 — **Foundation** (T1–T4): Secrets compatibility migration, `/search` page, `workbench_layout` migration, the panel contract itself.
+- [x] Milestone 2 — **Backend** (T5–T8): layout persistence service, workbench data aggregation, API routes, backend tests.
+- [x] Milestone 3 — **Frontend** (T9–T12): the Workbench runtime shell, pin picker, all five active panels, drag/keyboard reorder and panel states.
+- [x] Milestone 4 — **Integration** (T13–T16): nav rename, old Dashboard removal, manual verification, accessibility scan.
 
 > Each milestone completion is a checkpoint trigger, in addition to the standard 10–12 task / ~70% context triggers — see [`IMPLEMENT.md`](IMPLEMENT.md) "Milestone Plan" and [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md) §1.
 
@@ -73,10 +73,11 @@ Four milestones, matching [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS
 
 ## Definition of Complete
 
-- [ ] All deliverables above are shipped and meet [`../../08_DEFINITION_OF_DONE.md`](../../08_DEFINITION_OF_DONE.md).
-- [ ] [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) criteria are fully checked off.
-- [ ] [`CURRENT_STATE.md`](CURRENT_STATE.md) reflects reality with no stale "In Progress" items.
-- [ ] A final checkpoint has been produced per [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md).
+- [x] All deliverables above are shipped and meet [`../../08_DEFINITION_OF_DONE.md`](../../08_DEFINITION_OF_DONE.md).
+- [ ] [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) criteria are fully checked off. — Two criteria are deliberately not: QA-0001/QA-0002 (drag FPS/Profiler, live screen-reader pass), ruled non-blocking for sign-off by the project owner and tracked in [`QA/`](QA/README.md) rather than checked off without evidence.
+- [x] [`CURRENT_STATE.md`](CURRENT_STATE.md) reflects reality with no stale "In Progress" items. — Status is explicitly "Implementation Complete — Pending: QA, Owner Sign-off, Merge," not "Done."
+- [x] A final checkpoint has been produced per [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md).
+- [ ] **Not yet done, and not part of the original Definition of Complete, but required before merge per the project owner:** owner sign-off (`08_ACCEPTANCE.md` §8) and disposition of the 5 findings from the post-implementation audit (see [`POST_IMPLEMENTATION_REVIEW.md`](POST_IMPLEMENTATION_REVIEW.md) and `CURRENT_STATE.md`'s "Known Issues").
 
 ## Definition of Success
 
@@ -128,6 +129,8 @@ Authorized by the project owner on 2026-07-20, after three specification review 
 - [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
 - [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
 - [12_PANEL_INTERFACE.md](12_PANEL_INTERFACE.md)
+- [QA/README.md](QA/README.md)
+- [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
 - [IMPLEMENT.md](IMPLEMENT.md)
 - [../../02_ROADMAP.md](../../02_ROADMAP.md)
 - [../../09_CLAUDE_CODE_RULES.md](../../09_CLAUDE_CODE_RULES.md)
