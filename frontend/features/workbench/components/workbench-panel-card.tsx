@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { DraggableAttributes, DraggableSyntheticListeners } from "@dnd-kit/core";
 import { AlertTriangle, GripVertical } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -36,8 +37,8 @@ export function WorkbenchPanelCard({
   mode: "view" | "customize";
   onVisibilityChange: (visible: boolean) => void;
   dragHandleRef?: (element: HTMLElement | null) => void;
-  dragHandleAttributes?: React.HTMLAttributes<HTMLButtonElement>;
-  dragHandleListeners?: React.HTMLAttributes<HTMLButtonElement>;
+  dragHandleAttributes?: DraggableAttributes;
+  dragHandleListeners?: DraggableSyntheticListeners;
   className?: string;
 }) {
   const [manualError, setManualError] = useState<unknown>(null);
