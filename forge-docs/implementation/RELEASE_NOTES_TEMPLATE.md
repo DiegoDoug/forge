@@ -5,7 +5,7 @@
 > **Status:** Draft — fill in at RC, finalize at sign-off.
 > **Version:** [tag this phase ships as, e.g. v0.2.0-project-init]
 > **Last Updated:** [date]
-> **Depends On:** [CURRENT_STATE.md](CURRENT_STATE.md), [08_ACCEPTANCE.md](08_ACCEPTANCE.md), [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
+> **Depends On:** [../../implementation/Phase-NN-Name/CURRENT_STATE.md](../../implementation/Phase-NN-Name/CURRENT_STATE.md), [../../implementation/Phase-NN-Name/08_ACCEPTANCE.md](../../implementation/Phase-NN-Name/08_ACCEPTANCE.md), [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
 
 ---
 
@@ -39,8 +39,8 @@
 
 ## Cross-references
 
-- [CURRENT_STATE.md](CURRENT_STATE.md)
-- [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
+- [../../implementation/Phase-NN-Name/CURRENT_STATE.md](../../implementation/Phase-NN-Name/CURRENT_STATE.md)
+- [../../implementation/Phase-NN-Name/08_ACCEPTANCE.md](../../implementation/Phase-NN-Name/08_ACCEPTANCE.md)
 - [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
 - [BUGS/README.md](BUGS/README.md) — if this phase has one
 - [QA/README.md](QA/README.md) — if this phase has one
