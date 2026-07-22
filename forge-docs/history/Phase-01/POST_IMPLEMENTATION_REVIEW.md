@@ -2,9 +2,9 @@
 
 > **Purpose:** A retrospective on how Phase 01 actually went — not a restatement of what was built (see `CURRENT_STATE.md`/`08_ACCEPTANCE.md` for that), but what the process revealed. Recommended by the project owner as a standing per-phase document, starting here.
 > **Scope:** This phase's implementation, T1–T16, plus the post-T16 independent audit.
-> **Status:** Draft — written at Implementation Complete, before QA/sign-off/merge. Should be revisited once QA-0001/QA-0002 close and the 5 audit findings are dispositioned, in case either changes the picture.
+> **Status:** Final — Phase 01 released as `v0.1.0-workbench` and frozen; archived here per the project owner's direction to keep the active implementation folder focused on the specification. QA-0001/QA-0002 and the 4 non-blocking `BUGS/` findings remain open per the release notes, but don't change this review's content.
 > **Last Updated:** 2026-07-21
-> **Depends On:** [CURRENT_STATE.md](CURRENT_STATE.md), [08_ACCEPTANCE.md](08_ACCEPTANCE.md), [QA/README.md](QA/README.md)
+> **Depends On:** [../../implementation/Phase-01-Workbench/CURRENT_STATE.md](../../implementation/Phase-01-Workbench/CURRENT_STATE.md), [../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md](../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md), [QA/README.md](QA/README.md)
 
 ---
 
@@ -79,8 +79,9 @@ The one deliberate, spec-authorized deviation: `03_BACKEND.md` §1 described the
 
 ## Cross-references
 
-- [CURRENT_STATE.md](CURRENT_STATE.md)
-- [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
+- [../../implementation/Phase-01-Workbench/CURRENT_STATE.md](../../implementation/Phase-01-Workbench/CURRENT_STATE.md)
+- [../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md](../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md)
 - [QA/README.md](QA/README.md)
-- [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
-- [../../history/](../../history/)
+- [../../implementation/Phase-01-Workbench/09_IMPLEMENTATION_TASKS.md](../../implementation/Phase-01-Workbench/09_IMPLEMENTATION_TASKS.md)
+- [10_RELEASE_NOTES.md](10_RELEASE_NOTES.md)
+- [README.md](../README.md) — checkpoint/history index

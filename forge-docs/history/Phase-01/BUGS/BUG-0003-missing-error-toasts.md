@@ -28,6 +28,6 @@ Add the same `{ onError: () => toast.error(...) }` second argument to the three 
 
 ## Cross-references
 
-- [../02_UI.md](../02_UI.md) §3.4
-- [../08_ACCEPTANCE.md](../08_ACCEPTANCE.md) §2
-- [../CURRENT_STATE.md](../CURRENT_STATE.md)
+- [../../../implementation/Phase-01-Workbench/02_UI.md](../../../implementation/Phase-01-Workbench/02_UI.md) §3.4
+- [../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md](../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md) §2
+- [../../../implementation/Phase-01-Workbench/CURRENT_STATE.md](../../../implementation/Phase-01-Workbench/CURRENT_STATE.md)

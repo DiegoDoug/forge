@@ -24,4 +24,4 @@ Add a duplicate check to `_validate_pinned_tools` mirroring `_validate_panels`'s
 ## Cross-references
 
 - [../../../../backend/app/services/workbench.py](../../../../backend/app/services/workbench.py)
-- [../CURRENT_STATE.md](../CURRENT_STATE.md)
+- [../../../implementation/Phase-01-Workbench/CURRENT_STATE.md](../../../implementation/Phase-01-Workbench/CURRENT_STATE.md)

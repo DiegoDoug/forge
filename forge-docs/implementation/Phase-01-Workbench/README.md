@@ -3,8 +3,8 @@
 > **Purpose:** Entry point for the Workbench phase — objective, scope, deliverables, and completion criteria.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** RC2 — no known BLOCKERs ([`12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md)) — Pending: QA ([`QA/`](QA/README.md)), Owner Sign-off ([`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) §8), Tag, Merge, Freeze
-> **Version:** 0.6.0
+> **Status:** 🔒 RELEASED & FROZEN — tagged `v0.1.0-workbench`, merged to `master`. Specification: Locked. Implementation: Closed. Future changes: bug fixes only.
+> **Version:** 0.7.0
 > **Last Updated:** 2026-07-21
 > **Depends On:** [01_SPEC.md](01_SPEC.md), [../../decisions/README.md](../../decisions/README.md), [../../decisions/0009-phase-specification-freeze.md](../../decisions/0009-phase-specification-freeze.md)
 > **Supersedes:** v0.3.0 of this document (awaiting authorization; no Definition of Success; single flat milestone list instead of the 4-milestone checkpoint plan)
@@ -74,11 +74,11 @@ Four milestones, matching [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS
 ## Definition of Complete
 
 - [x] All deliverables above are shipped and meet [`../../08_DEFINITION_OF_DONE.md`](../../08_DEFINITION_OF_DONE.md).
-- [ ] [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) criteria are fully checked off. — Two criteria are deliberately not: QA-0001/QA-0002 (drag FPS/Profiler, live screen-reader pass), ruled non-blocking for sign-off by the project owner and tracked in [`QA/`](QA/README.md) rather than checked off without evidence.
-- [x] [`CURRENT_STATE.md`](CURRENT_STATE.md) reflects reality with no stale "In Progress" items. — Status is explicitly "RC2 — Pending: QA, Owner Sign-off, Merge," not "Done."
+- [x] [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) criteria are fully checked off, with two deliberate exceptions: QA-0001/QA-0002 (drag FPS/Profiler, live screen-reader pass), ruled non-blocking for release by the project owner and tracked in [`QA/`](../../history/Phase-01/QA/README.md) rather than checked off without evidence.
+- [x] [`CURRENT_STATE.md`](CURRENT_STATE.md) reflects reality with no stale "In Progress" items. — Status is explicitly "🔒 Released & Frozen."
 - [x] A final checkpoint has been produced per [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md).
-- [x] **Per [`../../12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md)'s merge criteria — no known BLOCKERs.** A post-implementation audit found 5 issues; one (`BUGS/BUG-0001`, panel-layout data loss) was classified 🔴 BLOCKER and is now fixed and verified, reaching RC2. The remaining four ([`BUGS/`](BUGS/README.md)) are MAJOR/MINOR, explicitly ruled non-blocking by the project owner.
-- [ ] **Not yet done:** owner sign-off (`08_ACCEPTANCE.md` §8) — the one remaining item before tag `v0.1.0-workbench` → merge → freeze.
+- [x] **Per [`../../12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md)'s merge criteria — no known BLOCKERs.** A post-implementation audit found 5 issues; one (`BUGS/BUG-0001`, panel-layout data loss) was classified 🔴 BLOCKER and was fixed and verified, reaching RC2. The remaining four ([`BUGS/`](../../history/Phase-01/BUGS/README.md)) are MAJOR/MINOR, explicitly ruled non-blocking by the project owner.
+- [x] **Owner sign-off recorded** 2026-07-21: "APPROVED, Accepted for Release." Tagged `v0.1.0-workbench`, merged to `master` via [#14](https://github.com/DiegoDoug/forge/pull/14), directory frozen.
 
 ## Definition of Success
 
@@ -117,11 +117,12 @@ All nine are content-complete as of 2026-07-20, across three review passes with 
 
 **Phase 01 — Workbench**
 
-- **Status:** ✅ Authorized
-- **Specification:** 🔒 Locked (per [ADR-0009](../../decisions/0009-phase-specification-freeze.md) — bug fixes, clarifications, and typos allowed; new features, architectural changes, and scope expansion deferred to the backlog until this phase reaches Definition of Done)
-- **Implementation:** ✅ Approved to begin
+- **Status:** ✅ Authorized → ✅ Implemented → ✅ Signed off → 🔒 **Released & Frozen**
+- **Specification:** 🔒 Locked (per [ADR-0009](../../decisions/0009-phase-specification-freeze.md) — bug fixes, clarifications, and typos allowed; new features, architectural changes, and scope expansion deferred to the backlog, permanently, now that this phase is frozen)
+- **Implementation:** 🔒 Closed
+- **Future Changes:** Bug fixes only — see [`../../history/Phase-01/BUGS/`](../../history/Phase-01/BUGS/README.md) for the open ones
 
-Authorized by the project owner on 2026-07-20, after three specification review passes and nine accepted (plus one deliberately deferred) ADRs. From this point forward, the specification is the contract: `IMPLEMENT.md` governs execution, [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) governs the work breakdown, and [ADR-0009](../../decisions/0009-phase-specification-freeze.md) governs what may change along the way. New ideas surfaced during implementation are captured as roadmap items or future ADRs, not folded into this phase.
+Authorized by the project owner on 2026-07-20, after three specification review passes and nine accepted (plus one deliberately deferred) ADRs. Implemented across 16 tasks (T1–T16) and two release candidates (RC1 found `BUG-0001`, a real data-loss bug; RC2 fixed and verified it). **Signed off by the project owner on 2026-07-21: "APPROVED, Accepted for Release."** Released as `v0.1.0-workbench`, merged to `master` via [#14](https://github.com/DiegoDoug/forge/pull/14), and frozen per [`../../13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md). From this point forward, this directory accepts bug fixes only — new ideas belong in the roadmap or a future phase, never folded back into Phase 01.
 
 ## Cross-references
 
@@ -130,10 +131,11 @@ Authorized by the project owner on 2026-07-20, after three specification review 
 - [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
 - [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
 - [12_PANEL_INTERFACE.md](12_PANEL_INTERFACE.md)
-- [QA/README.md](QA/README.md)
-- [BUGS/README.md](BUGS/README.md)
-- [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
+- [QA/README.md](../../history/Phase-01/QA/README.md)
+- [BUGS/README.md](../../history/Phase-01/BUGS/README.md)
+- [POST_IMPLEMENTATION_REVIEW.md](../../history/Phase-01/POST_IMPLEMENTATION_REVIEW.md)
 - [../../12_BUG_CLASSIFICATION.md](../../12_BUG_CLASSIFICATION.md)
+- [../../13_PHASE_LIFECYCLE.md](../../13_PHASE_LIFECYCLE.md)
 - [IMPLEMENT.md](IMPLEMENT.md)
 - [../../02_ROADMAP.md](../../02_ROADMAP.md)
 - [../../09_CLAUDE_CODE_RULES.md](../../09_CLAUDE_CODE_RULES.md)

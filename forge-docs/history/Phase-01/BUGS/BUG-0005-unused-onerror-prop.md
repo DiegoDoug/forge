@@ -21,5 +21,5 @@ Either exercise this path deliberately once (e.g. have one panel call `onError` 
 
 ## Cross-references
 
-- [../12_PANEL_INTERFACE.md](../12_PANEL_INTERFACE.md) §3 item 4
-- [../CURRENT_STATE.md](../CURRENT_STATE.md)
+- [../../../implementation/Phase-01-Workbench/12_PANEL_INTERFACE.md](../../../implementation/Phase-01-Workbench/12_PANEL_INTERFACE.md) §3 item 4
+- [../../../implementation/Phase-01-Workbench/CURRENT_STATE.md](../../../implementation/Phase-01-Workbench/CURRENT_STATE.md)

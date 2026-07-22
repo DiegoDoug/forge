@@ -1,10 +1,10 @@
 # QA-0001 — Verify Workbench drag performance
 
-> **Purpose:** Close out the one performance criterion in [`../08_ACCEPTANCE.md`](../08_ACCEPTANCE.md) §4 that T16 could not measure.
+> **Purpose:** Close out the one performance criterion in [`../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md`](../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md) §4 that T16 could not measure.
 > **Status:** Open — not yet run
 > **Owner:** TODO — assign a QA owner
-> **Type:** Manual Browser Session (not automatable in this repo's current toolchain — no frontend test runner exists per [`../07_TESTING.md`](../07_TESTING.md) §2)
-> **Blocks Phase 01 sign-off:** No — tracked here specifically so it does not block. See [`../08_ACCEPTANCE.md`](../08_ACCEPTANCE.md) §4 and [`../CURRENT_STATE.md`](../CURRENT_STATE.md) for why.
+> **Type:** Manual Browser Session (not automatable in this repo's current toolchain — no frontend test runner exists per [`../../../implementation/Phase-01-Workbench/07_TESTING.md`](../../../implementation/Phase-01-Workbench/07_TESTING.md) §2)
+> **Blocks Phase 01 sign-off:** No — tracked here specifically so it does not block. See [`../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md`](../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md) §4 and [`../../../implementation/Phase-01-Workbench/CURRENT_STATE.md`](../../../implementation/Phase-01-Workbench/CURRENT_STATE.md) for why.
 
 ---
 
@@ -18,7 +18,7 @@ Drag-and-drop panel reordering and pinned-tool reordering in Workbench customize
 
 ## Acceptance criteria (from `08_ACCEPTANCE.md` §4)
 
-- [ ] **60 FPS**, no visible jank, during a panel drag-reorder and a pinned-tool drag-reorder. Measure via browser devtools' Performance panel or an FPS meter, per [`../07_TESTING.md`](../07_TESTING.md) §3.
+- [ ] **60 FPS**, no visible jank, during a panel drag-reorder and a pinned-tool drag-reorder. Measure via browser devtools' Performance panel or an FPS meter, per [`../../../implementation/Phase-01-Workbench/07_TESTING.md`](../../../implementation/Phase-01-Workbench/07_TESTING.md) §3.
 - [ ] **React DevTools Profiler**: during a drag interaction, only the dragged panel/tile and its immediate neighbors re-render — not the full grid, not unrelated panels' own data-fetching hooks re-firing.
 - [ ] **No unnecessary re-renders** more broadly: toggling a panel's visibility or reordering pins shouldn't cause sibling panels to refetch or re-render.
 
@@ -36,6 +36,6 @@ _Not yet run. Fill in with actual numbers/screenshots and a pass/fail once done.
 
 ## Cross-references
 
-- [../08_ACCEPTANCE.md](../08_ACCEPTANCE.md) §4
-- [../07_TESTING.md](../07_TESTING.md) §3
-- [../CURRENT_STATE.md](../CURRENT_STATE.md)
+- [../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md](../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md) §4
+- [../../../implementation/Phase-01-Workbench/07_TESTING.md](../../../implementation/Phase-01-Workbench/07_TESTING.md) §3
+- [../../../implementation/Phase-01-Workbench/CURRENT_STATE.md](../../../implementation/Phase-01-Workbench/CURRENT_STATE.md)

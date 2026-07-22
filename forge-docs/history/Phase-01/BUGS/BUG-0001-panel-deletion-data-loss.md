@@ -36,7 +36,7 @@ Both handlers now build their mutation payload from the full, unfiltered `data.l
 
 ## Cross-references
 
-- [../12_PANEL_INTERFACE.md](../12_PANEL_INTERFACE.md) §3 item 6
+- [../../../implementation/Phase-01-Workbench/12_PANEL_INTERFACE.md](../../../implementation/Phase-01-Workbench/12_PANEL_INTERFACE.md) §3 item 6
 - [../../../decisions/0002-workbench-panel-architecture.md](../../../decisions/0002-workbench-panel-architecture.md)
-- [../CURRENT_STATE.md](../CURRENT_STATE.md)
+- [../../../implementation/Phase-01-Workbench/CURRENT_STATE.md](../../../implementation/Phase-01-Workbench/CURRENT_STATE.md)
 - [../POST_IMPLEMENTATION_REVIEW.md](../POST_IMPLEMENTATION_REVIEW.md)

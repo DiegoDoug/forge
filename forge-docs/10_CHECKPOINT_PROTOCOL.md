@@ -68,6 +68,7 @@ When the trigger is a blocking architectural decision, the checkpoint's "Known R
 - [09_CLAUDE_CODE_RULES.md](09_CLAUDE_CODE_RULES.md)
 - [08_DEFINITION_OF_DONE.md](08_DEFINITION_OF_DONE.md)
 - [12_BUG_CLASSIFICATION.md](12_BUG_CLASSIFICATION.md) — triage matrix + RC/merge-criteria workflow for closing out a phase
+- [13_PHASE_LIFECYCLE.md](13_PHASE_LIFECYCLE.md) — the full Draft→Archived lifecycle a phase moves through, of which checkpoints are one recurring event during Implementation
 - [history/README.md](history/README.md)
 - [decisions/ADR_TEMPLATE.md](decisions/ADR_TEMPLATE.md)
 - [../.claude/CHECKPOINT_TEMPLATE.md](../.claude/CHECKPOINT_TEMPLATE.md)

@@ -1,10 +1,10 @@
 # QA-0002 — Screen reader audit
 
-> **Purpose:** Close out the one accessibility criterion in [`../08_ACCEPTANCE.md`](../08_ACCEPTANCE.md) §5 that T16 could not perform — a live assistive-technology pass.
+> **Purpose:** Close out the one accessibility criterion in [`../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md`](../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md) §5 that T16 could not perform — a live assistive-technology pass.
 > **Status:** Open — not yet run
 > **Owner:** TODO — assign a QA owner
 > **Type:** Manual audit — NVDA, VoiceOver, keyboard-only
-> **Blocks Phase 01 sign-off:** No — tracked here specifically so it does not block. See [`../08_ACCEPTANCE.md`](../08_ACCEPTANCE.md) §5 and [`../CURRENT_STATE.md`](../CURRENT_STATE.md) for why.
+> **Blocks Phase 01 sign-off:** No — tracked here specifically so it does not block. See [`../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md`](../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md) §5 and [`../../../implementation/Phase-01-Workbench/CURRENT_STATE.md`](../../../implementation/Phase-01-Workbench/CURRENT_STATE.md) for why.
 
 ---
 
@@ -37,6 +37,6 @@ _Not yet run. Fill in with findings and a pass/fail once done._
 
 ## Cross-references
 
-- [../08_ACCEPTANCE.md](../08_ACCEPTANCE.md) §5
-- [../07_TESTING.md](../07_TESTING.md) §3
-- [../CURRENT_STATE.md](../CURRENT_STATE.md)
+- [../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md](../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md) §5
+- [../../../implementation/Phase-01-Workbench/07_TESTING.md](../../../implementation/Phase-01-Workbench/07_TESTING.md) §3
+- [../../../implementation/Phase-01-Workbench/CURRENT_STATE.md](../../../implementation/Phase-01-Workbench/CURRENT_STATE.md)

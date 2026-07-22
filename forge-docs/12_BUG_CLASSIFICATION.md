@@ -86,6 +86,7 @@ Only then: tag the release, merge, and freeze the phase's implementation directo
 
 - [08_DEFINITION_OF_DONE.md](08_DEFINITION_OF_DONE.md)
 - [10_CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md)
-- [implementation/Phase-01-Workbench/CURRENT_STATE.md](implementation/Phase-01-Workbench/CURRENT_STATE.md) — first phase this classification was applied to, retroactively
-- [implementation/Phase-01-Workbench/BUGS/](implementation/Phase-01-Workbench/BUGS/) — first BUGS/ folder, precedent for the pattern
-- [implementation/Phase-01-Workbench/QA/](implementation/Phase-01-Workbench/QA/) — first QA/ folder, precedent for the pattern
+- [13_PHASE_LIFECYCLE.md](13_PHASE_LIFECYCLE.md) — where Release Candidate/QA/Sign-off/Frozen fit in the full phase lifecycle
+- [implementation/Phase-01-Workbench/CURRENT_STATE.md](implementation/Phase-01-Workbench/CURRENT_STATE.md) — first phase this classification was applied to, retroactively; now released and frozen
+- [history/Phase-01/BUGS/](history/Phase-01/BUGS/README.md) — first BUGS/ folder, precedent for the pattern; archived here once Phase 01 froze
+- [history/Phase-01/QA/](history/Phase-01/QA/README.md) — first QA/ folder, precedent for the pattern; archived here once Phase 01 froze
