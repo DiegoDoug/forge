@@ -41,7 +41,7 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="border-t border-sidebar-border p-3 text-[11px] text-sidebar-foreground/40">
+      <div className="border-t border-sidebar-border p-3 text-[11px] text-sidebar-foreground/60">
         Forge · self-hosted
       </div>
     </aside>
