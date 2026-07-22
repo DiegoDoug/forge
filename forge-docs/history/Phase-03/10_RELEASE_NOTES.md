@@ -39,7 +39,8 @@ Five items are tracked as QA tickets rather than claimed as fully tested, since 
 
 ## Cross-references
 
-- [01_SPEC.md](01_SPEC.md)
-- [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
-- [RC1_AUDIT.md](RC1_AUDIT.md)
-- [CURRENT_STATE.md](CURRENT_STATE.md)
+- [../../implementation/Phase-03-Prompt-Studio/01_SPEC.md](../../implementation/Phase-03-Prompt-Studio/01_SPEC.md)
+- [../../implementation/Phase-03-Prompt-Studio/08_ACCEPTANCE.md](../../implementation/Phase-03-Prompt-Studio/08_ACCEPTANCE.md)
+- [../../implementation/Phase-03-Prompt-Studio/RC1_AUDIT.md](../../implementation/Phase-03-Prompt-Studio/RC1_AUDIT.md)
+- [../../implementation/Phase-03-Prompt-Studio/CURRENT_STATE.md](../../implementation/Phase-03-Prompt-Studio/CURRENT_STATE.md)
+- [QA/README.md](QA/README.md)

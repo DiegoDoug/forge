@@ -3,8 +3,8 @@
 > **Purpose:** Entry point for the Prompt Studio phase — objective, scope, deliverables, and completion criteria.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
 > **Ownership:** Lead Software Engineer (phase-assigned).
-> **Status:** Accepted — approved by the project owner 2026-07-22. Per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md): Stage 1 (Specification) COMPLETE, Stage 2 (Technical Planning) COMPLETE, Stage 3 (Implementation) COMPLETE, Stage 4 (RC Audit) COMPLETE — APPROVED FOR RELEASE (see [`RC1_AUDIT.md`](RC1_AUDIT.md)), Owner Sign-off RECORDED, Stage 5 (Release) IN PROGRESS.
-> **Last Updated:** 2026-07-22
+> **Status:** 🔒 RELEASED & FROZEN — tagged `v0.3.0-prompt-studio`, merged to `master` via [PR #18](https://github.com/DiegoDoug/forge/pull/18). Specification: Locked. Implementation: Closed. Future changes: bug fixes only.
+> **Last Updated:** 2026-07-23
 
 ---
 
