@@ -3,9 +3,9 @@
 > **Purpose:** Sequence the vision in [00_VISION.md](00_VISION.md) into ordered, buildable phases.
 > **Scope:** Cross-phase sequencing and dependency ordering. Per-phase detail lives in `implementation/Phase-XX-*/`.
 > **Ownership:** TODO — assign a roadmap owner.
-> **Status:** Draft — Phase 01 released; Phase 02 current
-> **Version:** 0.3.0
-> **Last Updated:** 2026-07-21
+> **Status:** Phase 01–02 complete and released; Phase 03+ in specification phase
+> **Version:** 0.4.0
+> **Last Updated:** 2026-07-22
 > **Depends On:** [00_VISION.md](00_VISION.md)
 > **Supersedes:** —
 
@@ -34,7 +34,7 @@ The following already exist in the application and are **not** re-specified here
 | # | Phase | Proposed relationship to shipped foundation | Status |
 |---|-------|----------------------------------------------|--------|
 | 01 | [Workbench](implementation/Phase-01-Workbench/README.md) | Replaces Dashboard outright with a panel-based, extensible home workspace (see [ADR-0001](decisions/0001-workbench-replaces-dashboard.md), [ADR-0002](decisions/0002-workbench-panel-architecture.md)) | ✓ Complete — 🔒 released & frozen as `v0.1.0-workbench` |
-| 02 | [Project Initialization Engine](implementation/Phase-02-Project-Initialization-Engine/README.md) | New — generates FDK phase scaffolds and AI project instruction files (CLAUDE.md/AGENTS.md/instructions.md) as zip downloads | **Current** — implementation complete, pending Release Candidate audit + Owner Sign-off (not yet merged) |
+| 02 | [Project Initialization Engine](implementation/Phase-02-Project-Initialization-Engine/README.md) | New — generates FDK phase scaffolds and AI project instruction files (CLAUDE.md/AGENTS.md/instructions.md) as zip downloads | ✓ Complete — 🔒 released & frozen as `v0.2.0-project-init` |
 | 03 | [Prompt Studio](implementation/Phase-03-Prompt-Studio/README.md) | New — authoring/versioning workspace for LLM prompts | Not started |
 | 04 | [Universal Converter](implementation/Phase-04-Universal-Converter/README.md) | Unifies Converters + Ingest into one format-conversion surface | Not started |
 | 05 | [Model Playground](implementation/Phase-05-Model-Playground/README.md) | New — test/compare LLM providers and models | Not started |
@@ -50,7 +50,7 @@ The following already exist in the application and are **not** re-specified here
 - Phases 03 and 05 (Prompt Studio, Model Playground) share LLM-provider plumbing — TODO: confirm whether they should be built together or 05 first as the provider-integration base.
 - Phases 04, 07, 08 are consolidations of existing features and carry lower architectural risk — candidates to interleave with the higher-risk new phases (01, 02, 03, 05, 06) for momentum.
 
-This ordering is a **draft proposal**, not a commitment. Phase 01 shipped in this position without issue. TODO: run a sequencing review before Phase 02 kicks off.
+This ordering was validated by Phases 01–02 shipping in sequence without architectural conflicts. Phase 03 onwards should follow this sequencing, with periodic reviews after each checkpoint.
 
 - [ ] TODO: [ADR-0005](decisions/0005-projects-primary-organizational-unit.md) affirms Projects as Forge's primary organizational unit going forward — revisit whether Phase 06's position in this sequence still reflects that priority, or whether it should move earlier once Phase 01/02 land.
 
