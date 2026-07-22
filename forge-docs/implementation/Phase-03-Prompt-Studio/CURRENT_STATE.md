@@ -31,7 +31,7 @@
 
 ## In Progress
 
-- [ ] Stage 5 (Release) — project owner confirmed the release path: commit, tag `v0.3.0-prompt-studio`, push the branch and tag, open a PR (matching how Phase 01/02 actually shipped — this repo uses GitHub PRs, not a bare local merge to `master`). Merging the PR itself is left to the project owner.
+- [ ] Stage 5 (Release) — committed (`26190e1`), tagged `v0.3.0-prompt-studio`, branch and tag both pushed to `origin`, PR opened: [github.com/DiegoDoug/forge/pull/18](https://github.com/DiegoDoug/forge/pull/18). Merging the PR is left to the project owner. Once merged: freeze this phase's directory, add the "Post-release: update roadmap" follow-up commit on `master` (matching Phase 02's precedent — a separate commit, not bundled into the release commit), and archive temporary artifacts to `history/Phase-03/`.
 
 ## Remaining
 
