@@ -27,7 +27,7 @@ WORKBENCH_TOOL_KEYS: dict[str, dict[str, bool]] = {
     "utilities": {"available": True},
     "ingest": {"available": True},
     "search": {"available": True},
-    "prompt_studio": {"available": False},
+    "prompt_studio": {"available": True},
     "universal_converter": {"available": False},
 }
 

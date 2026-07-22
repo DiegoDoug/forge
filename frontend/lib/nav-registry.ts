@@ -3,6 +3,7 @@ import {
   FileText,
   KeyRound,
   LayoutDashboard,
+  MessageSquareText,
   Settings,
   ShieldHalf,
   Sparkles,
@@ -32,5 +33,6 @@ export const NAV_ITEMS: NavItem[] = [
   { title: "Utilities", href: "/utilities", icon: Wrench, description: "QR, checksums, timezones", shortcut: "U" },
   { title: "Ingest", href: "/ingest", icon: FileInput, description: "Documents → Markdown", shortcut: "I" },
   { title: "Project Init", href: "/project-init", icon: Sparkles, description: "Generate FDK scaffolds & AI instructions" },
+  { title: "Prompt Studio", href: "/prompt-studio", icon: MessageSquareText, description: "Author, version & preview LLM prompts" },
   { title: "Settings", href: "/settings", icon: Settings, description: "Theme, backup, about", shortcut: "," },
 ];

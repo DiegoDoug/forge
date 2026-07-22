@@ -11,6 +11,7 @@ from app.api.routes import (
     ingest,
     notes,
     project_init,
+    prompt_studio,
     search,
     secrets,
     settings,
@@ -33,3 +34,4 @@ api_router.include_router(search.router)
 api_router.include_router(settings.router)
 api_router.include_router(workbench.router)
 api_router.include_router(project_init.router)
+api_router.include_router(prompt_studio.router)

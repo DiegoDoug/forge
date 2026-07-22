@@ -43,7 +43,7 @@ A feature (a full phase, or a major slice of one) is done only when, in addition
 ## 4. TODO
 
 - [ ] TODO: Define measurable test-coverage thresholds, if any, once frontend testing tooling is chosen (see [06_TECH_STACK.md](06_TECH_STACK.md) §5).
-- [ ] TODO: Define a security-review gate for phases that introduce outbound network calls (Model Playground, Prompt Studio) — likely an addendum here plus updates to `../docs/Security.md`.
+- [ ] TODO: Define a security-review gate for phases that introduce outbound network calls (Model Playground, and any future phase that does) — likely an addendum here plus updates to `../docs/Security.md`. Prompt Studio (Phase 03) was specified with zero outbound calls (2026-07-22), so it does not currently trigger this gate — see [`implementation/Phase-03-Prompt-Studio/01_SPEC.md`](implementation/Phase-03-Prompt-Studio/01_SPEC.md) §5.
 
 ## 5. Cross-references
 
