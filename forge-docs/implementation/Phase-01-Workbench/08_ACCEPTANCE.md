@@ -3,8 +3,8 @@
 > **Purpose:** The pass/fail checklist that decides whether this phase is complete — the authoritative list referenced by 08_DEFINITION_OF_DONE.md.
 > **Scope:** This phase only. Each criterion must be independently verifiable.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** Final validation complete — every criterion checked against the running app at the end of Milestone 4 (T16); two criteria (§4 FPS/re-renders, §5 screen-reader pass) ruled non-blocking by the project owner and tracked in `QA/`
-> **Version:** 0.5.0
+> **Status:** RC2 — every criterion checked against the running app; two (§4 FPS/re-renders, §5 screen-reader pass) ruled non-blocking and tracked in `QA/`; a post-implementation audit's one BLOCKER finding ([`BUGS/BUG-0001`](BUGS/BUG-0001-panel-deletion-data-loss.md)) is fixed and verified, per [`../../12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md)
+> **Version:** 0.6.0
 > **Last Updated:** 2026-07-21
 > **Depends On:** [01_SPEC.md](01_SPEC.md), [02_UI.md](02_UI.md), [07_TESTING.md](07_TESTING.md), [12_PANEL_INTERFACE.md](12_PANEL_INTERFACE.md), [../../decisions/0006-vault-renamed-to-secrets.md](../../decisions/0006-vault-renamed-to-secrets.md), [../../decisions/0008-capability-registry-direction.md](../../decisions/0008-capability-registry-direction.md)
 > **Supersedes:** v0.2.0 of this document (no explicit scope-freeze guard against ADR-0008/Projects/Workflows creeping into the implementation)
@@ -45,10 +45,10 @@ Derived from [`02_UI.md`](02_UI.md):
 
 ## 3. Quality acceptance criteria
 
-- [x] All tests in [`07_TESTING.md`](07_TESTING.md) pass, including the panel-type-not-enum-validated test and the `recent_secrets`-absence regression check. — Backend suite 47/47 green (re-run at the end of T14, T15, and T16, all identical); `tsc --noEmit`, `eslint .`, `next build`, and `docker compose build frontend` all clean at every checkpoint through T16.
-- [x] No architectural invariant violated (per [`../../03_ARCHITECTURE.md`](../../03_ARCHITECTURE.md) §2). — No cross-feature imports introduced; panel registry pattern held throughout.
+- [x] All tests in [`07_TESTING.md`](07_TESTING.md) pass, including the panel-type-not-enum-validated test and the `recent_secrets`-absence regression check. — Backend suite 47/47 green (re-run at the end of T14, T15, T16, and RC2); `tsc --noEmit`, `eslint .`, `next build`, and `docker compose build frontend` all clean at every checkpoint through RC2.
+- [x] No architectural invariant violated (per [`../../03_ARCHITECTURE.md`](../../03_ARCHITECTURE.md) §2). — No cross-feature imports introduced; panel registry pattern held throughout. **One real violation was found and fixed**: the panel-registry's own "unregistered types stay safely inert" guarantee (`12_PANEL_INTERFACE.md` §3 item 6) was violated by `WorkbenchGrid` silently deleting such entries on any panel mutation — [`BUGS/BUG-0001`](BUGS/BUG-0001-panel-deletion-data-loss.md), classified 🔴 BLOCKER, fixed and verified before this criterion could be checked off.
 - [x] `frontend/features/dashboard/` is fully removed with no dangling references. — **Verified T14**: directory deleted; repo-wide grep for `features/dashboard` returns nothing.
-- [x] [`../../08_DEFINITION_OF_DONE.md`](../../08_DEFINITION_OF_DONE.md) feature-level checklist satisfied. — Covered by the functional/UX/quality/performance/accessibility criteria above.
+- [x] [`../../08_DEFINITION_OF_DONE.md`](../../08_DEFINITION_OF_DONE.md) feature-level checklist satisfied. — Covered by the functional/UX/quality/performance/accessibility criteria above. Four additional MAJOR/MINOR findings from the same post-implementation audit that found `BUG-0001` are tracked in [`BUGS/`](BUGS/README.md) and explicitly do not block this criterion, per [`../../12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md).
 
 ## 4. Performance acceptance criteria
 
@@ -82,6 +82,10 @@ Derived from [`02_UI.md`](02_UI.md):
 - [ ] TODO: who signs off on this phase being complete? (Recommendation: whoever is assigned phase ownership in [`README.md`](README.md), once assigned.)
 
 **Project-owner ruling on the two unverified criteria (§4/§5):** drag-reorder FPS/React Profiler re-render counts and the live screen-reader pass do **not** block sign-off. They're real, genuinely open items — not formalities — but they require a real device/browser session that an automated Claude Code session structurally cannot provide, so blocking on them would mean this phase can never close. They're tracked instead as [`QA/QA-0001-drag-performance.md`](QA/QA-0001-drag-performance.md) and [`QA/QA-0002-screen-reader-audit.md`](QA/QA-0002-screen-reader-audit.md), owned by QA, separate from implementation. Sign-off means: every criterion this environment *could* verify has been verified, and the two it structurally couldn't are explicitly tracked rather than silently dropped.
+
+**Project-owner ruling on the post-implementation audit's 5 findings:** per [`../../12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md) — the one 🔴 BLOCKER ([`BUGS/BUG-0001`](BUGS/BUG-0001-panel-deletion-data-loss.md), panel-layout data loss) was fixed and verified before this phase could reach RC2; it would have blocked sign-off otherwise. The remaining four (🟡 MAJOR [`BUG-0003`](BUGS/BUG-0003-missing-error-toasts.md), 🟢 MINOR [`BUG-0002`](BUGS/BUG-0002-pinned-tools-duplicate-validation.md)/[`BUG-0004`](BUGS/BUG-0004-dead-recent-notes-computation.md)/[`BUG-0005`](BUGS/BUG-0005-unused-onerror-prop.md)) do not block sign-off — they're documented, classified, and backlogged, not silently dropped. `BUG-0003` (MAJOR) still needs an explicit project-owner decision at some point, but that decision does not itself gate this phase.
+
+**Merge criteria** (per [`../../12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md) §6) are tracked in [`CURRENT_STATE.md`](CURRENT_STATE.md)'s "Status" section — as of RC2, every box is checked except owner sign-off itself.
 
 ## 9. TODO
 

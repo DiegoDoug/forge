@@ -109,8 +109,16 @@ export function WorkbenchGrid({ mode, onEnterCustomize }: { mode: "view" | "cust
 
   const panelsToRender = mode === "customize" ? savedPanels : visiblePanels;
 
+  // Both handlers below build the PUT payload from the FULL data.layout.panels
+  // (not the registered-only `savedPanels`), so any entry whose `type` isn't
+  // registered in this frontend build (e.g. a not-yet-shipped phase's panel,
+  // or one temporarily missing across a version mismatch) survives untouched
+  // instead of being silently dropped from the persisted layout the next time
+  // the user reorders or toggles an unrelated panel. Per 12_PANEL_INTERFACE.md
+  // §3 item 6, an unregistered type must be safely and durably inert, not
+  // deleted by an unrelated user action.
   function handleVisibilityChange(type: string, visible: boolean) {
-    const nextPanels = savedPanels.map((p) => (p.type === type ? { ...p, visible } : p));
+    const nextPanels = data!.layout.panels.map((p) => (p.type === type ? { ...p, visible } : p));
     updateLayout.mutate({
       panels: nextPanels,
       pinned_tools: data!.layout.pinned_tools.map((t) => t.key),
@@ -123,8 +131,11 @@ export function WorkbenchGrid({ mode, onEnterCustomize }: { mode: "view" | "cust
     const oldIndex = savedPanels.findIndex((p) => p.type === active.id);
     const newIndex = savedPanels.findIndex((p) => p.type === over.id);
     if (oldIndex === -1 || newIndex === -1) return;
+    const reorderedSaved = arrayMove(savedPanels, oldIndex, newIndex);
+    let i = 0;
+    const nextPanels = data!.layout.panels.map((p) => (registeredByType.has(p.type) ? reorderedSaved[i++] : p));
     updateLayout.mutate({
-      panels: arrayMove(savedPanels, oldIndex, newIndex),
+      panels: nextPanels,
       pinned_tools: data!.layout.pinned_tools.map((t) => t.key),
     });
   }

@@ -3,8 +3,8 @@
 > **Purpose:** Entry point for the Workbench phase — objective, scope, deliverables, and completion criteria.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** Implementation Complete — Pending: QA ([`QA/`](QA/README.md)), Owner Sign-off ([`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) §8), Merge
-> **Version:** 0.5.0
+> **Status:** RC2 — no known BLOCKERs ([`12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md)) — Pending: QA ([`QA/`](QA/README.md)), Owner Sign-off ([`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) §8), Tag, Merge, Freeze
+> **Version:** 0.6.0
 > **Last Updated:** 2026-07-21
 > **Depends On:** [01_SPEC.md](01_SPEC.md), [../../decisions/README.md](../../decisions/README.md), [../../decisions/0009-phase-specification-freeze.md](../../decisions/0009-phase-specification-freeze.md)
 > **Supersedes:** v0.3.0 of this document (awaiting authorization; no Definition of Success; single flat milestone list instead of the 4-milestone checkpoint plan)
@@ -75,9 +75,10 @@ Four milestones, matching [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS
 
 - [x] All deliverables above are shipped and meet [`../../08_DEFINITION_OF_DONE.md`](../../08_DEFINITION_OF_DONE.md).
 - [ ] [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) criteria are fully checked off. — Two criteria are deliberately not: QA-0001/QA-0002 (drag FPS/Profiler, live screen-reader pass), ruled non-blocking for sign-off by the project owner and tracked in [`QA/`](QA/README.md) rather than checked off without evidence.
-- [x] [`CURRENT_STATE.md`](CURRENT_STATE.md) reflects reality with no stale "In Progress" items. — Status is explicitly "Implementation Complete — Pending: QA, Owner Sign-off, Merge," not "Done."
+- [x] [`CURRENT_STATE.md`](CURRENT_STATE.md) reflects reality with no stale "In Progress" items. — Status is explicitly "RC2 — Pending: QA, Owner Sign-off, Merge," not "Done."
 - [x] A final checkpoint has been produced per [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md).
-- [ ] **Not yet done, and not part of the original Definition of Complete, but required before merge per the project owner:** owner sign-off (`08_ACCEPTANCE.md` §8) and disposition of the 5 findings from the post-implementation audit (see [`POST_IMPLEMENTATION_REVIEW.md`](POST_IMPLEMENTATION_REVIEW.md) and `CURRENT_STATE.md`'s "Known Issues").
+- [x] **Per [`../../12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md)'s merge criteria — no known BLOCKERs.** A post-implementation audit found 5 issues; one (`BUGS/BUG-0001`, panel-layout data loss) was classified 🔴 BLOCKER and is now fixed and verified, reaching RC2. The remaining four ([`BUGS/`](BUGS/README.md)) are MAJOR/MINOR, explicitly ruled non-blocking by the project owner.
+- [ ] **Not yet done:** owner sign-off (`08_ACCEPTANCE.md` §8) — the one remaining item before tag `v0.1.0-workbench` → merge → freeze.
 
 ## Definition of Success
 
@@ -130,7 +131,9 @@ Authorized by the project owner on 2026-07-20, after three specification review 
 - [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
 - [12_PANEL_INTERFACE.md](12_PANEL_INTERFACE.md)
 - [QA/README.md](QA/README.md)
+- [BUGS/README.md](BUGS/README.md)
 - [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
+- [../../12_BUG_CLASSIFICATION.md](../../12_BUG_CLASSIFICATION.md)
 - [IMPLEMENT.md](IMPLEMENT.md)
 - [../../02_ROADMAP.md](../../02_ROADMAP.md)
 - [../../09_CLAUDE_CODE_RULES.md](../../09_CLAUDE_CODE_RULES.md)
