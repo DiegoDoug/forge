@@ -3,8 +3,8 @@
 > **Purpose:** Index of every FDK implementation phase — the buildable work that realizes the roadmap in [`../02_ROADMAP.md`](../02_ROADMAP.md).
 > **Scope:** Index only. Each phase owns its own full spec in its own folder.
 > **Ownership:** TODO — assign an owner.
-> **Status:** Draft — all 8 phases are template scaffolds, none yet authorized for implementation
-> **Version:** 0.1.0
+> **Status:** Draft — Phase 01 at RC2 (implementation complete, pending QA/sign-off/merge); Phases 02–08 still template scaffolds
+> **Version:** 0.2.0
 > **Last Updated:** 2026-07-20
 > **Depends On:** [../02_ROADMAP.md](../02_ROADMAP.md)
 > **Supersedes:** —
@@ -15,7 +15,7 @@
 
 | # | Phase | Status |
 |---|-------|--------|
-| 01 | [Workbench](Phase-01-Workbench/README.md) | Not started — spec placeholder |
+| 01 | [Workbench](Phase-01-Workbench/README.md) | RC2 — implementation complete, no known BLOCKERs, pending QA/owner sign-off/merge |
 | 02 | [Project Initialization Engine](Phase-02-Project-Initialization-Engine/README.md) | Not started — spec placeholder |
 | 03 | [Prompt Studio](Phase-03-Prompt-Studio/README.md) | Not started — spec placeholder |
 | 04 | [Universal Converter](Phase-04-Universal-Converter/README.md) | Not started — spec placeholder |
@@ -26,11 +26,22 @@
 
 ## 2. Shape of every phase folder
 
-Each `Phase-XX-Name/` contains the same 12 files:
+Each `Phase-XX-Name/` starts, at spec-authoring time, with the same 12 files:
 
 `README.md`, `CURRENT_STATE.md`, `01_SPEC.md`, `02_UI.md`, `03_BACKEND.md`, `04_DATABASE.md`, `05_COMPONENTS.md`, `06_API.md`, `07_TESTING.md`, `08_ACCEPTANCE.md`, `09_IMPLEMENTATION_TASKS.md`, `IMPLEMENT.md`.
 
 A phase may add extra numbered docs beyond this base 12 when its design introduces a contract that doesn't fit an existing file — e.g. Phase 01 (Workbench) adds `12_PANEL_INTERFACE.md` to specify the `WorkbenchPanel` contract (per [ADR-0002](../decisions/0002-workbench-panel-architecture.md)). This is the exception, not the norm — don't add a numbered doc speculatively; only when a phase's own spec work surfaces a real need for one.
+
+### 2.1 End-of-phase additions (from Phase 02 onward)
+
+As a phase approaches RC/sign-off, it accumulates a few more standard artifacts — not written upfront, only once there's something real to put in them:
+
+- **`10_RELEASE_NOTES.md`** — the release-facing summary (New Features / Breaking Changes / Migrations / Bug Fixes / Known Issues / Upgrade Notes / Deferred Work). Copy [`RELEASE_NOTES_TEMPLATE.md`](RELEASE_NOTES_TEMPLATE.md) into the phase folder and fill it in at RC, finalize at sign-off. Adopted starting with Phase 01 (retroactively, since the practice didn't exist when Phase 01 began) — write it from the start for Phase 02 onward.
+- **`QA/`** — QA tickets for acceptance criteria that couldn't be verified by an automated session (a real device/browser/screen-reader requirement), ruled explicitly non-blocking for merge. See [`Phase-01-Workbench/QA/README.md`](Phase-01-Workbench/QA/README.md) for the pattern.
+- **`BUGS/`** — one issue file per finding from manual verification or a post-implementation audit, classified BLOCKER/MAJOR/MINOR per [`../12_BUG_CLASSIFICATION.md`](../12_BUG_CLASSIFICATION.md). See [`Phase-01-Workbench/BUGS/README.md`](Phase-01-Workbench/BUGS/README.md) for the pattern.
+- **`POST_IMPLEMENTATION_REVIEW.md`** — the retrospective (What Went Well / What Didn't / Unexpected Problems / Architecture Changes / Performance Notes / Accessibility Notes / Lessons Learned / Recommendations for the next phase). See [`Phase-01-Workbench/POST_IMPLEMENTATION_REVIEW.md`](Phase-01-Workbench/POST_IMPLEMENTATION_REVIEW.md) for the pattern.
+
+None of these four block a phase from starting — they're end-state artifacts, not upfront scaffolding.
 
 See [`../11_PROJECT_STRUCTURE.md`](../11_PROJECT_STRUCTURE.md) §5 for how this maps onto the repository as a whole.
 

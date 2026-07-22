@@ -3,14 +3,44 @@
 > **Purpose:** Live snapshot of where this phase actually stands, updated at every checkpoint.
 > **Scope:** This phase only — updated continuously, never left stale.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** In progress — Milestones 1 (Foundation), 2 (Backend), and 3 (Frontend) complete, Milestone 4 (Integration) next
-> **Version:** 0.6.0
+> **Status:** RC2 — Implementation Complete, no known BLOCKERs — Pending: QA ([`QA/`](QA/README.md)), Owner Sign-off, Merge
+> **Version:** 1.0.0
 > **Last Updated:** 2026-07-21
 > **Depends On:** [README.md](README.md), [IMPLEMENT.md](IMPLEMENT.md)
 > **Supersedes:** v0.2.0 of this document (pre-implementation)
 
 ---
 
+## Status
+
+| | |
+|---|---|
+| **Status** | RC2 |
+| **Pending** | QA ([QA-0001](QA/QA-0001-drag-performance.md), [QA-0002](QA/QA-0002-screen-reader-audit.md)) · Owner Sign-off ([`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) §8) · Merge (`feature/t13-workbench-nav-cutover` → `master`) |
+
+All 16 implementation tasks (T1–T16) are done and verified against `08_ACCEPTANCE.md`. This is not the same claim as "phase complete" — QA, owner sign-off, and the merge to `master` are still open, tracked explicitly rather than implied.
+
+### Release Candidate log
+
+Per [`../../12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md) §5:
+
+```
+RC1 → BUG-0001 found (BLOCKER, data loss) → fixed and verified → RC2 (current)
+```
+
+- **RC1** (2026-07-21): T16 Final Validation passed, but the independent post-implementation audit that followed it found `BUG-0001` — a real data-loss bug (see [`BUGS/BUG-0001-panel-deletion-data-loss.md`](BUGS/BUG-0001-panel-deletion-data-loss.md)). Classified 🔴 BLOCKER. RC1 was not sign-off-ready.
+- **RC2** (2026-07-21, current): `BUG-0001` fixed in `frontend/features/workbench/components/workbench-grid.tsx` and verified end-to-end (seeded an unregistered panel type, confirmed it survives a real visibility toggle and a real drag-reorder through the actual UI). `tsc`/`eslint`/`next build` clean. **No known BLOCKERs remain.** Four MAJOR/MINOR findings remain open, tracked in [`BUGS/`](BUGS/README.md), and do not gate this RC per the project owner's explicit ruling.
+
+### Merge criteria (per [`../../12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md) §6)
+
+- [x] Builds pass — `tsc --noEmit`, `eslint .`, backend pytest suite (47/47) all clean as of RC2.
+- [x] `docker compose build` passes — confirmed for `frontend` at T12/T16; not re-run at RC2 since only frontend TS logic changed and `next build` (the same compile step) is clean.
+- [x] `08_ACCEPTANCE.md` §1–§3 (functional/UX/quality) criteria all pass.
+- [x] No scope violations — confirmed via grep for capability-registry/`ProjectProvider`/workflow code (zero matches) at both T16 and the post-implementation audit.
+- [x] No known data-loss bugs — `BUG-0001` was the one, now fixed and verified.
+- [x] No regressions — re-verified the Secrets delete-confirmation flow (also touched by the T15 `AlertDialogAction` fix) end-to-end; no regression found.
+- [x] QA tasks documented — [`QA-0001`](QA/QA-0001-drag-performance.md), [`QA-0002`](QA/QA-0002-screen-reader-audit.md), both pending manual execution, neither blocking.
+- [ ] **Owner sign-off** — not yet recorded. This is the one remaining item before tag + merge + freeze.
 
 ## Current Status
 
@@ -18,9 +48,11 @@
 
 **Milestone 2 (Backend) complete — T5–T8 all done.** See [`../../history/2026-07-21-phase-01-milestone-2-backend.md`](../../history/2026-07-21-phase-01-milestone-2-backend.md) for the Milestone 2 checkpoint record. Merged to `master` via [#10](https://github.com/DiegoDoug/forge/pull/10).
 
-**Milestone 3 (Frontend) complete — T9–T12 all done.** See [`../../history/2026-07-21-phase-01-milestone-3-frontend.md`](../../history/2026-07-21-phase-01-milestone-3-frontend.md) for the Milestone 3 checkpoint record. Work is on branch `feature/t9-t12-workbench-frontend` (unmerged — see that checkpoint for exact status). Next up: Milestone 4 (Integration, T13–T16).
+**Milestone 3 (Frontend) complete — T9–T12 all done.** See [`../../history/2026-07-21-phase-01-milestone-3-frontend.md`](../../history/2026-07-21-phase-01-milestone-3-frontend.md) for the Milestone 3 checkpoint record. Merged to `master` via [#11](https://github.com/DiegoDoug/forge/pull/11).
 
-**Clarification (T5, still in effect through Milestone 3):** `03_BACKEND.md` §1 describes the Dashboard→Workbench move as a rename "in place." In practice `backend/app/services/dashboard.py` (and `/api/dashboard`) must keep working until T14 explicitly removes them (per `09_IMPLEMENTATION_TASKS.md` T14 and its ordering note "nothing deletes the fallback until Milestone 3's replacement is proven working") — so Milestone 2 added `backend/app/services/workbench.py`, `backend/app/schemas/workbench.py`, and `backend/app/api/routes/workbench.py` as new modules alongside the untouched `dashboard.py`/`routes/dashboard.py`, not a literal file rename. Milestone 3 continues this: the new Workbench frontend page lives at `/workbench`, not `/` — the actual home-route cutover (moving Workbench to `/`, removing the old Dashboard page/route) is T13/T14's job, per the same ordering notes. `/api/workbench*`/`/workbench` and `/api/dashboard`/`/` (old Dashboard) are all live simultaneously right now. This is a clarification of already-locked spec text, not a scope change, per ADR-0009 §2.
+**Milestone 4 (Integration) complete — T13–T16 all done.** The Dashboard→Workbench transition (ADR-0001) is now fully realized in code: `/` renders Workbench for real, `/api/dashboard` and every Dashboard file are gone, and the phase's own acceptance checklist (`08_ACCEPTANCE.md`) has been walked criterion-by-criterion against the running app. Work is on branch `feature/t13-workbench-nav-cutover` (unmerged as of this writing).
+
+**Historical note (T5 clarification, now resolved):** `03_BACKEND.md` §1 originally described the Dashboard→Workbench move as a rename "in place," but `dashboard.py`/`/api/dashboard` had to keep working until T14 — see the git history on this branch (or the T1–T12 entries below) for how that staged rollout played out. As of T14, the literal old files are deleted and this clarification no longer applies to the current codebase.
 
 ## Completed
 
@@ -52,19 +84,30 @@
 - [x] T12 — Drag/keyboard panel reorder, pin reorder, panel states ([02_UI.md](02_UI.md) §3.1–3.3). `WorkbenchGrid` and `PinnedToolsPanel` each wrap their sortable items in `@dnd-kit/core`'s `DndContext` + `@dnd-kit/sortable`'s `SortableContext` (`rectSortingStrategy`) with `PointerSensor` + `KeyboardSensor`, wiring T9's stubbed drag-handle props to `useSortable()`'s real activator/listeners. Verified keyboard reordering by dispatching real `KeyboardEvent`s (confirmed sensor wiring via `defaultPrevented`/`aria-describedby`, then a full pick-up/move/drop producing a `PUT` with the new order, an Escape-cancel firing no mutation, and the same for pin reorder) and round-tripped both edge-case empty states (zero pinned tools, all panels hidden) through the real API.
 
 **Milestone 3 verification (all of T9–T12):** `tsc --noEmit`, `eslint .`, and `next build` all clean across the whole frontend; `docker compose build frontend` succeeds (production Docker build, not just local `next build`). No backend files touched this milestone. Every empty/loading/error state in `02_UI.md` §3.2's table live-tested via the real API, not just read from code. `docker ps` showed an unrelated already-running Forge Docker Compose stack on this machine (`forge-frontend-1`/`forge-backend-1`/`forge-nginx-1`) — left untouched; only `docker compose build` (no `up`) was run, so that stack's running containers are unaffected by this milestone's image rebuild.
+- [x] T13 — Sidebar/command-palette rename, `/` cutover ([02_UI.md](02_UI.md) §2). `frontend/app/(app)/page.tsx` replaced with the Workbench page (moved from the T9-staged `frontend/app/(app)/workbench/page.tsx`, now deleted — `/workbench` 404s, no dangling duplicate route). `frontend/lib/nav-registry.ts`'s home entry relabeled "Dashboard" → "Workbench" (`href: "/"`, icon, and `D` shortcut unchanged); sidebar, mobile nav, and command palette all read this one registry entry, so nothing else needed a copy change. `backend/app/services/dashboard.py`/`/api/dashboard` untouched, per T14's ordering note. Deliberately did not add "Customize Workbench"/"Manage pinned tools" command-palette actions (`02_UI.md` §2 mentions them, but they trace beyond T13's stated FR1/FR12 scope and aren't gated by any `08_ACCEPTANCE.md` criterion) — flagged as a deferred follow-up, not folded in.
+- [x] T14 — Old Dashboard removal ([06_API.md](06_API.md) §1 note). Deleted `backend/app/api/routes/dashboard.py`, `backend/app/services/dashboard.py`, `frontend/features/dashboard/` outright — direct cutover, no alias (unlike Vault/Secrets). Removed `dashboard` from `backend/app/api/router.py`'s imports/`include_router` calls. Updated `ActivityLog`'s docstring (`backend/app/models/activity.py`) to say "Workbench's Recent Activity panel" instead of "the dashboard's." Left `DashboardNote` (`schemas/workbench.py`) and a test name referencing "dashboard_shape" alone — legitimate historical references from an already-merged milestone (T7/T8), not leftover Dashboard code, and renaming them is outside T14's scope. Updated shipped docs that still described `/api/dashboard`/`features/dashboard/` as current: `docs/API.md`, `docs/FolderStructure.md`, `docs/Database.md`, root `README.md`. Verified: `GET /api/dashboard` now 404s for real; backend suite still 47/47; `tsc`/`eslint`/`next build` clean.
+- [x] T15 — Manual verification pass ([07_TESTING.md](07_TESTING.md) §3). Full functional walkthrough against a fresh backend instance (pin/unpin persistence, coming-soon tiles, panel+pin keyboard reorder with persisted `PUT`s, hide/show + all-hidden empty state, reset-with-confirmation, `/search`, dark mode, mobile single-column). Performance: initial render and `PUT` round-trip both far under budget; drag FPS/re-render profiling not measurable in this session (see `08_ACCEPTANCE.md` §12 — the automated browser tab never services animation frames, confirmed directly, unrelated to app code). Accessibility: real Tab-key walkthrough, ARIA labels spot-checked, focus-management code reviewed as correct but not live-observable here for the same rAF reason. **Found and fixed a real, pre-existing bug**: `AlertDialogAction` (`frontend/components/ui/alert-dialog.tsx`) never closed its dialog on click (Base UI has no auto-closing "Action" primitive, unlike Radix) — this also silently broke the existing Secrets "Delete" confirmation, not something this phase introduced. Fixed by rebuilding it on `AlertDialogPrimitive.Close`, matching `AlertDialogCancel`'s already-correct pattern. Flagged two out-of-scope a11y issues (mobile-nav hamburger missing an accessible name; sidebar footer contrast) as separate background tasks.
+- [x] T16 — Automated accessibility scan + Final Validation ([08_ACCEPTANCE.md](08_ACCEPTANCE.md)). Injected `axe-core` 4.12.1 directly into the live page (already a transitive devDependency via `eslint-plugin-jsx-a11y`); scoped to Workbench's own `<main>`, zero violations across view mode, customize mode, the pin picker, and `/search`. A whole-page run found two violations, both in pre-existing global app-shell chrome — flagged separately. Walked every criterion in `08_ACCEPTANCE.md` against the running app; see that document (now v0.5.0) for the full result, including §11's bug writeup and §12's environment-limitation notes.
+- [x] **Independent code-review audit** (post-T16, requested explicitly as a fresh-eyes review). Read every Phase 01 spec doc and every line of the Workbench implementation and cross-checked one against the other. Found 5 additional issues beyond what T15/T16 caught, most notably a real data-loss bug: `WorkbenchGrid`'s panel drag-reorder and visibility-toggle handlers build their `PUT` payload from a pre-filtered "registered types only" list, so any panel `type` unrecognized by the running frontend build gets silently and permanently deleted from the persisted layout the next time the user reorders or toggles *any* panel — contradicting `12_PANEL_INTERFACE.md` §3 item 6's "safely inert until registered" guarantee. Also found: no duplicate-key validation on `pinned_tools` (asymmetric with the panel-type duplicate check); 3 of 4 layout-mutation failure paths show no error toast (only the Pin Picker's toggle does); `get_workbench()` computes and returns `recent_notes` that `RecentNotesPanel` never reads (it fetches independently); the `onError` panel-contract prop is never called by any of the five shipped panels. Full detail in the review's structured findings output. **None of these are fixed yet — disposition (fix now vs. file as post-freeze bug-fix work) is an open decision, not something resolved unilaterally.**
 
 ## In Progress
 
-- [ ] TODO: nothing in progress right now. T13 (sidebar/palette rename, wiring `/` to Workbench) starts Milestone 4 (Integration).
+- [ ] TODO: nothing in progress. All 16 tasks are complete. See "Status" at the top of this document for what's actually blocking the phase from being fully closed.
 
 ## Remaining
 
-- [ ] T13–T16 in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) — Milestone 4 (Integration): nav/palette rename, old Dashboard removal, manual verification, accessibility scan.
+- [ ] Project-owner sign-off on `08_ACCEPTANCE.md` §8 (phase ownership itself is still an unassigned TODO in `README.md`).
+- [ ] QA-0001 — drag-reorder FPS / React DevTools Profiler re-render verification ([`QA/QA-0001-drag-performance.md`](QA/QA-0001-drag-performance.md)) — ruled non-blocking for sign-off by the project owner; needs a real browser/device session.
+- [ ] QA-0002 — live NVDA/VoiceOver/keyboard-only screen-reader audit ([`QA/QA-0002-screen-reader-audit.md`](QA/QA-0002-screen-reader-audit.md)) — ruled non-blocking for sign-off by the project owner.
+- [ ] Merge `feature/t13-workbench-nav-cutover` → `master`, then tag `v0.1.0-workbench` and freeze the directory — all explicitly deferred until sign-off, per the project owner's stated sequencing.
 
 ## Known Issues
 
 - [ ] Temporary compatibility aliases from T1 are debt, per ADR-0006 §4: `/api/vault` (backend proxy) and the frontend `/vault` → `/secrets` redirect both need a later cleanup task to remove once nothing external depends on the old path.
 - [ ] Lower-priority prose in `docs/Deployment.md`/`docs/Security.md`/`docs/Roadmap.md`/`docs/DecisionLog.md`'s older entries was updated where it named the feature ("Vault"/"vault secret") but generic descriptive phrasing was left untouched where it wasn't clearly a proper-noun reference to the feature — not a gap, a deliberate line per this task's scope, but flagging in case a future pass wants full consistency.
+- [ ] Two out-of-scope accessibility issues found during T15/T16, flagged as separate background tasks (not fixed as part of this phase, since neither touches a file any Workbench task owns): the global mobile-nav hamburger trigger (`components/app-shell/`) has no accessible name (task_146af5a1, started); the sidebar footer text and the command palette's dialog-header landmark each have a minor axe violation (task_7f16eee4, started).
+- [x] ~~Panel drag-reorder/visibility-toggle data-loss bug~~ — was [`BUGS/BUG-0001`](BUGS/BUG-0001-panel-deletion-data-loss.md), 🔴 BLOCKER, **fixed and verified** at RC2. No longer an open issue.
+- [ ] Four MAJOR/MINOR findings from the post-T16 independent audit, tracked in [`BUGS/`](BUGS/README.md), explicitly ruled non-blocking for merge by the project owner: [BUG-0002](BUGS/BUG-0002-pinned-tools-duplicate-validation.md) (MINOR, no duplicate-key validation on `pinned_tools`), [BUG-0003](BUGS/BUG-0003-missing-error-toasts.md) (MAJOR, missing error toasts on 3 of 4 layout-mutation paths — awaiting a project-owner decision, which does not itself gate this phase), [BUG-0004](BUGS/BUG-0004-dead-recent-notes-computation.md) (MINOR, dead `recent_notes` backend computation), [BUG-0005](BUGS/BUG-0005-unused-onerror-prop.md) (MINOR, unused `onError` panel prop).
 
 ## Architectural Decisions
 
@@ -143,10 +186,38 @@ All eight are `Status: Accepted` as of 2026-07-20. [ADR-0008](../../decisions/00
 - [x] `forge-docs/implementation/Phase-01-Workbench/09_IMPLEMENTATION_TASKS.md` (T9–T12 checked off)
 - [x] `forge-docs/history/2026-07-21-phase-01-milestone-3-frontend.md` (new — this checkpoint)
 - [x] `.gitignore` (added `backend/.dev-data/`, the local `uvicorn --reload` data dir per `docs/Development.md`)
+- [x] `frontend/app/(app)/page.tsx` (T13 — replaced with the Workbench page)
+- [x] `frontend/app/(app)/workbench/page.tsx` (T13 — deleted; folded into `/`)
+- [x] `frontend/lib/nav-registry.ts` (T13 — home entry relabeled "Dashboard" → "Workbench")
+- [x] `forge-docs/implementation/Phase-01-Workbench/09_IMPLEMENTATION_TASKS.md` (T13, T14, T15, T16 checked off)
+- [x] `backend/app/api/routes/dashboard.py` (T14 — deleted)
+- [x] `backend/app/services/dashboard.py` (T14 — deleted)
+- [x] `frontend/features/dashboard/` (T14 — deleted)
+- [x] `backend/app/api/router.py` (T14 — `dashboard` import/route removed)
+- [x] `backend/app/models/activity.py` (T14 — docstring updated to reference Workbench, not the dashboard)
+- [x] `docs/API.md`, `docs/FolderStructure.md`, `docs/Database.md`, `README.md` (T14 — dashboard→workbench references updated)
+- [x] `frontend/components/ui/alert-dialog.tsx` (T15 — `AlertDialogAction` bug fix; see `08_ACCEPTANCE.md` §11)
+- [x] `forge-docs/implementation/Phase-01-Workbench/08_ACCEPTANCE.md` (T16, then post-audit — full criterion-by-criterion pass plus QA-ticket cross-links, v0.5.0)
+- [x] `forge-docs/implementation/Phase-01-Workbench/QA/README.md` (new — QA ticket index)
+- [x] `forge-docs/implementation/Phase-01-Workbench/QA/QA-0001-drag-performance.md` (new)
+- [x] `forge-docs/implementation/Phase-01-Workbench/QA/QA-0002-screen-reader-audit.md` (new)
+- [x] `forge-docs/implementation/Phase-01-Workbench/POST_IMPLEMENTATION_REVIEW.md` (new)
+- [x] `frontend/features/workbench/components/workbench-grid.tsx` (RC2 — `BUG-0001` data-loss fix: `handleVisibilityChange`/`handleDragEnd` now build the `PUT` payload from the full `data.layout.panels`, preserving unregistered entries)
+- [x] `forge-docs/12_BUG_CLASSIFICATION.md` (new — FDK-wide BLOCKER/MAJOR/MINOR triage matrix + RC/merge-criteria workflow)
+- [x] `forge-docs/08_DEFINITION_OF_DONE.md`, `forge-docs/10_CHECKPOINT_PROTOCOL.md` (cross-linked to the new bug-classification doc)
+- [x] `forge-docs/implementation/Phase-01-Workbench/BUGS/README.md` (new — bug tracker index)
+- [x] `forge-docs/implementation/Phase-01-Workbench/BUGS/BUG-0001-panel-deletion-data-loss.md` (new — 🔴 BLOCKER, fixed)
+- [x] `forge-docs/implementation/Phase-01-Workbench/BUGS/BUG-0002-pinned-tools-duplicate-validation.md` (new — 🟢 MINOR)
+- [x] `forge-docs/implementation/Phase-01-Workbench/BUGS/BUG-0003-missing-error-toasts.md` (new — 🟡 MAJOR)
+- [x] `forge-docs/implementation/Phase-01-Workbench/BUGS/BUG-0004-dead-recent-notes-computation.md` (new — 🟢 MINOR)
+- [x] `forge-docs/implementation/Phase-01-Workbench/BUGS/BUG-0005-unused-onerror-prop.md` (new — 🟢 MINOR)
+- [x] `forge-docs/implementation/Phase-01-Workbench/10_RELEASE_NOTES.md` (new)
+- [x] `forge-docs/implementation/RELEASE_NOTES_TEMPLATE.md` (new — template for Phase 02 onward)
+- [x] `forge-docs/implementation/README.md` (§2.1 added — the standard end-of-phase artifact set; Phase 01's status column corrected from stale "Not started")
 
 ## Next Milestone
 
-Milestone 4 — Integration (T13–T16): nav/palette rename, old Dashboard removal, manual verification, accessibility scan. See [`IMPLEMENT.md`](IMPLEMENT.md) "Milestone Plan" and [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md).
+None — this was the last milestone in Phase 01. Phase 01 is at **RC2** with no known BLOCKERs. Remaining before it can be formally closed: project-owner sign-off (`08_ACCEPTANCE.md` §8), then tag `v0.1.0-workbench`, merge `feature/t13-workbench-nav-cutover` → `master`, and freeze the directory (bug fixes only from that point). QA-0001/QA-0002 and the four non-blocking `BUGS/` findings are tracked but don't gate any of that. Phase 02 (Project Initialization Engine) is a separate phase with its own `forge-docs/implementation/Phase-02-Project-Initialization-Engine/` documents.
 
 ## Next Claude Prompt
 
@@ -155,34 +226,41 @@ You are working in the Forge repository as a Claude Code session.
 
 Read, in order:
 1. forge-docs/09_CLAUDE_CODE_RULES.md
-2. forge-docs/implementation/Phase-01-Workbench/README.md
-3. forge-docs/implementation/Phase-01-Workbench/CURRENT_STATE.md
-4. forge-docs/implementation/Phase-01-Workbench/IMPLEMENT.md
-5. forge-docs/history/2026-07-21-phase-01-milestone-3-frontend.md
+2. forge-docs/12_BUG_CLASSIFICATION.md
+3. forge-docs/implementation/Phase-01-Workbench/README.md
+4. forge-docs/implementation/Phase-01-Workbench/CURRENT_STATE.md
+5. forge-docs/implementation/Phase-01-Workbench/QA/README.md
+6. forge-docs/implementation/Phase-01-Workbench/BUGS/README.md
 
-Milestones 1 (Foundation, T1-T4), 2 (Backend, T5-T8), and 3 (Frontend, T9-T12)
-are complete. Begin work on: T13 in 09_IMPLEMENTATION_TASKS.md (sidebar and
-command-palette entries rename Dashboard -> Workbench; wire route / to the
-new Workbench page, per 02_UI.md §2), the first task of Milestone 4 --
-Integration.
+All 16 tasks (T1-T16) are complete. Phase 01 is at RC2 (see CURRENT_STATE.md's
+"Release Candidate log") with NO KNOWN BLOCKERS -- the one that existed
+(BUG-0001, a real data-loss bug) is fixed and verified. This phase has no
+more implementation tasks -- do not invent new ones. What's actually left
+is entirely process, not code:
 
-Follow the checkpoint protocol in forge-docs/10_CHECKPOINT_PROTOCOL.md exactly,
-plus the milestone checkpoints in IMPLEMENT.md — this is the LAST milestone;
-Final Validation against 08_ACCEPTANCE.md follows T16, not a checkpoint per se.
+1. Project-owner sign-off (08_ACCEPTANCE.md §8) is still an open TODO --
+   this requires a human decision, not implementation work. Per
+   12_BUG_CLASSIFICATION.md §6's merge criteria, every other box is
+   already checked.
+2. Once sign-off happens: tag v0.1.0-workbench, merge
+   feature/t13-workbench-nav-cutover -> master, then freeze this directory
+   (bug fixes only from that point -- new features go to Phase 02). Do
+   this sequence in this order, not out of order.
+3. QA-0001 (drag FPS/Profiler) and QA-0002 (screen-reader audit), and the
+   four MAJOR/MINOR findings in BUGS/ (BUG-0002 through BUG-0005), do NOT
+   block any of the above -- they're deliberately tracked separately, per
+   the project owner's explicit ruling. Don't reopen that decision or
+   treat them as blocking without a new instruction to do so.
+4. Two out-of-scope accessibility bugs were found and flagged as separate
+   background tasks (not fixed in this phase): the global mobile-nav
+   hamburger button has no accessible name, and the sidebar footer /
+   command palette have a couple of minor axe violations. Check whether
+   those tasks have been picked up before assuming they still need doing.
 
-The specification is locked per forge-docs/decisions/0009-phase-specification-freeze.md.
-Only bug fixes, clarifications, and typo corrections are in scope beyond the
-documented tasks — anything else (extra panels, workflows, a command palette,
-a capability registry, a Projects interface, a plugin system, AI additions)
-gets flagged and deferred, not built.
-
-Note: the Workbench frontend page currently lives at /workbench (staged there
-through Milestone 3 - see CURRENT_STATE.md's Clarification note). T13 is
-where it actually becomes /, and T14 is where dashboard.py/routes/dashboard.py/
-frontend/features/dashboard/ get removed for real - don't do either
-prematurely in T13 without also verifying the other now-obsolete surfaces
-(the /workbench staging route itself, once / renders Workbench, should not
-remain as a duplicate - fold it into the T13/T14 cutover, not left dangling).
+If asked to start the next phase, that's Phase 02
+(forge-docs/implementation/Phase-02-Project-Initialization-Engine/) --
+read its own 01_SPEC.md and IMPLEMENT.md before touching any code; nothing
+here authorizes starting it automatically.
 ```
 
 ## Session Notes
@@ -203,10 +281,22 @@ remain as a duplicate - fold it into the T13/T14 cutover, not left dangling).
 - 2026-07-21 — **T10 complete** (same branch). `PinPickerDialog` and `tool-metadata.ts` added; wired into the customize-mode toolbar.
 - 2026-07-21 — **T11 complete** (same branch). All five active panels registered. Found and fixed a real bug during browser verification: panel registration never ran because the bootstrap side-effect import lived in a Server Component — moved to the Client Component that consumes the registry.
 - 2026-07-21 — **T12 complete, Milestone 3 (Frontend) checkpoint** (same branch). Drag/keyboard panel reorder and pin reorder added via `@dnd-kit/sortable`. Verified keyboard-only reordering end-to-end via dispatched `KeyboardEvent`s (the browser-automation tool's synthetic key-press action didn't reliably reach the sensor's `keydown` handler, so verification used direct event dispatch instead — a testing-tool limitation, not an implementation gap; confirmed by proving the sensor correctly `preventDefault()`s a properly-formed native `keydown`). `tsc`/`eslint`/`next build`/`docker compose build frontend` all clean. Full checkpoint logged to `../../history/2026-07-21-phase-01-milestone-3-frontend.md` per `10_CHECKPOINT_PROTOCOL.md`. Milestone 4 (Integration, T13–T16) is next.
+- 2026-07-21 — **T13 complete, Milestone 4 (Integration) underway.** `frontend/app/(app)/page.tsx` now renders the Workbench (moved from the T9-staged `/workbench` route, which is deleted — confirmed `/workbench` 404s post-cutover, no dangling duplicate). `nav-registry.ts`'s home entry relabeled "Dashboard" → "Workbench" (route/icon/shortcut unchanged); sidebar, mobile nav, and command palette all pick this up from the single registry entry. `dashboard.py`/`/api/dashboard` left untouched per T14's ordering note. Verified: `tsc --noEmit`/`eslint .`/`next build` clean, full backend pytest suite still 47/47 (untouched), and a full browser walkthrough against a fresh backend instance (setup → unlock → `/` renders the default Workbench layout with correct pins, sidebar/palette read "Workbench", `/workbench` 404s). T14 (removing the now-fully-unreferenced `dashboard.py`/`routes/dashboard.py`/`/api/dashboard`/`frontend/features/dashboard/`) is next. Committed to branch `feature/t13-workbench-nav-cutover` (not yet pushed/PR'd).
+- 2026-07-21 — **T14 complete** (same branch). `backend/app/api/routes/dashboard.py`, `backend/app/services/dashboard.py`, and `frontend/features/dashboard/` deleted outright (direct cutover per `06_API.md` §1, unlike the Vault/Secrets alias). `router.py` updated. Shipped docs (`docs/API.md`, `docs/FolderStructure.md`, `docs/Database.md`, `README.md`) updated to describe Workbench instead of the now-removed Dashboard. Verified `GET /api/dashboard` returns a real 404 against a fresh backend instance; full suite still 47/47; `tsc`/`eslint`/`next build`/`docker compose build frontend` all clean.
+- 2026-07-21 — **T15 complete** (same branch). Full manual verification pass per `07_TESTING.md` §3 — functional checks all passed against a fresh instance; performance (initial render, `PUT` round-trip) both well under budget via Resource Timing measurements; drag FPS and React Profiler re-render counts could not be measured in this automated session (root-caused to the session's browser tab not servicing animation frames at all — confirmed directly via `getAnimations()`/`requestAnimationFrame`, not an app defect). **Found and fixed a real, pre-existing bug**: `frontend/components/ui/alert-dialog.tsx`'s `AlertDialogAction` never closed its dialog (Base UI has no auto-closing "Action" primitive unlike Radix) — silently broke both the Workbench reset-confirmation dialog and the pre-existing Secrets delete-confirmation dialog. Fixed by rebuilding it on `AlertDialogPrimitive.Close`. Flagged two unrelated, out-of-scope a11y issues (mobile-nav hamburger missing an accessible name; sidebar footer contrast) as separate background tasks rather than fixing them here.
+- 2026-07-21 — **T16 complete, Milestone 4 (Integration) and Phase 01 implementation complete.** Ran `axe-core` 4.12.1 (injected directly into the live page) against Workbench's own `<main>` region in both modes plus `/search` — zero violations. A whole-page run found two violations in pre-existing global chrome (sidebar footer contrast, command-palette dialog landmark), flagged separately, not fixed. Performed the full `08_ACCEPTANCE.md` criterion-by-criterion pass (now v0.4.0) — every criterion is checked with cited evidence except two genuinely open items (drag FPS/re-render profiling, a live screen-reader pass), which are marked unchecked rather than assumed. All 16 implementation tasks in `09_IMPLEMENTATION_TASKS.md` are now complete. Remaining before the phase is formally done: project-owner sign-off.
+- 2026-07-21 — **Independent code-review audit**, requested explicitly as a fresh-eyes review ("forget you implemented this... audit... as if written by another engineer"). Read every Phase 01 spec doc and every line of the Workbench implementation. Found 5 issues T15/T16 missed, reported via structured findings (most severe first): (1) `WorkbenchGrid`'s panel drag-reorder/visibility-toggle mutations silently and permanently delete any panel `type` unrecognized by the running frontend build from the persisted layout — a real data-loss bug contradicting `12_PANEL_INTERFACE.md` §3 item 6's extensibility guarantee; (2) `_validate_pinned_tools` has no duplicate-key check, asymmetric with `_validate_panels`'s explicit one; (3) 3 of 4 layout-mutation call sites (panel reorder, panel visibility, pin reorder) show no error toast on failure, only Pin Picker's toggle does; (4) `get_workbench()` computes and returns `recent_notes` that `RecentNotesPanel` never reads (dead backend work); (5) the `onError` panel-contract prop is never called by any of the five shipped panels (unexercised code path). Also re-verified the T15 `AlertDialogAction` fix against the Secrets delete-confirmation flow it also touches — confirmed no regression. None of the 5 new findings are fixed yet; disposition is an open decision.
+- 2026-07-21 — **Process follow-up per the project owner's direction, given the audit results.** Split the two genuinely-unverified acceptance criteria (drag FPS/Profiler, screen-reader pass) into `QA/QA-0001-drag-performance.md` and `QA/QA-0002-screen-reader-audit.md` — explicitly non-blocking for sign-off, tracked separately from implementation. `08_ACCEPTANCE.md` (now v0.5.0) cross-links both and records the project-owner's ruling in a new §8 note. `CURRENT_STATE.md` status changed from "In Progress" to "Implementation Complete — Pending: QA, Owner Sign-off, Merge" (see the new "Status" table at the top of this document), per the project owner's explicit requirement that this distinction not be blurred. Started `POST_IMPLEMENTATION_REVIEW.md`. **Freezing the directory and tagging `v0.1.0-workbench` were both described by the project owner as happening *after* sign-off** — since sign-off is still an open TODO (owner unassigned), neither was done yet; flagged back to the user rather than assumed.
+- 2026-07-21 — **BUG-0001 (the data-loss BLOCKER) fixed; RC2 reached; FDK bug-classification process adopted.** Per the project owner's decision matrix: fixed `BUG-0001` in `frontend/features/workbench/components/workbench-grid.tsx` — `handleVisibilityChange` and `handleDragEnd` now build their `PUT` payload from the full, unfiltered `data.layout.panels` (preserving any unregistered panel type in place) instead of the registered-only `savedPanels` filter. Verified via `tsc`/`eslint`/`next build` (all clean) and a live regression test: seeded a layout with `recent_projects` (unregistered) via direct `PUT`, then performed a real visibility toggle and a real keyboard-driven drag-reorder through the actual UI, confirming via `GET /api/workbench` that the unregistered entry survived both, unchanged, in its original relative position. Created `forge-docs/12_BUG_CLASSIFICATION.md` (BLOCKER/MAJOR/MINOR triage matrix + RC workflow + merge criteria, adopted as a standing FDK document for every future phase, cross-linked from `08_DEFINITION_OF_DONE.md` and `10_CHECKPOINT_PROTOCOL.md`). Created `BUGS/` (mirroring `QA/`'s pattern) with one issue file per audit finding: `BUG-0001` (🔴 BLOCKER, now fixed), `BUG-0002` (🟢 MINOR, pinned-tools duplicate validation), `BUG-0003` (🟡 MAJOR, missing error toasts — awaiting a project-owner decision that doesn't itself gate this phase), `BUG-0004` (🟢 MINOR, dead `recent_notes` computation), `BUG-0005` (🟢 MINOR, unused `onError` prop). Status is now **RC2 — no known BLOCKERs**, with a full merge-criteria checklist recorded in the "Status" section above. Tag/merge/freeze remain deliberately deferred until owner sign-off, per the project owner's explicit sequencing (RC → sign-off → tag → merge → freeze).
 
 ## Cross-references
 
 - [README.md](README.md)
 - [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
+- [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
+- [QA/README.md](QA/README.md)
+- [BUGS/README.md](BUGS/README.md)
+- [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
+- [../../12_BUG_CLASSIFICATION.md](../../12_BUG_CLASSIFICATION.md)
 - [../../10_CHECKPOINT_PROTOCOL.md](../../10_CHECKPOINT_PROTOCOL.md)
 - [../../history/README.md](../../history/README.md)

@@ -50,4 +50,5 @@ A feature (a full phase, or a major slice of one) is done only when, in addition
 - [07_CODING_STANDARDS.md](07_CODING_STANDARDS.md)
 - [09_CLAUDE_CODE_RULES.md](09_CLAUDE_CODE_RULES.md)
 - [10_CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md)
+- [12_BUG_CLASSIFICATION.md](12_BUG_CLASSIFICATION.md) — how to triage anything found that isn't yet "done" (BLOCKER/MAJOR/MINOR)
 - [implementation/](implementation/) — each phase's `08_ACCEPTANCE.md` and `09_IMPLEMENTATION_TASKS.md`

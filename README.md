@@ -14,7 +14,7 @@ converter into one application you run on your own hardware.
 - **Converters** — JSON formatter, regex tester, URL/Unicode tools, cron parser, diff viewer, timestamp converter
 - **Utilities** — QR code generator, checksum/file hashing, color picker, timezone converter
 - **Ingest** — convert PDFs, Office documents, HTML, images, and audio into clean Markdown
-- **Dashboard & search** — recent activity overview and a command palette (Ctrl+K) across the whole app
+- **Workbench & search** — a customizable home screen of pinned tools, recent activity, and quick actions, plus a command palette (Ctrl+K) across the whole app
 
 ## Requirements
 
