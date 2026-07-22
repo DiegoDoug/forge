@@ -3,9 +3,9 @@
 > **Purpose:** Durable, append-only log of every checkpoint produced under [10_CHECKPOINT_PROTOCOL.md](../10_CHECKPOINT_PROTOCOL.md), so state survives even after a phase's `CURRENT_STATE.md` is overwritten by its next update. Also holds each frozen phase's archived end-of-phase artifacts (`Phase-NN/`) — see §2.1.
 > **Scope:** Checkpoint records and frozen-phase archives. Architectural decisions belong in [`../decisions/`](../decisions/README.md), not here.
 > **Ownership:** TODO — assign an owner.
-> **Status:** 3 checkpoints logged (Phase 01, Milestones 1–3); Phase 01's post-freeze archive (`Phase-01/`) added
-> **Version:** 0.3.0
-> **Last Updated:** 2026-07-21
+> **Status:** 5 checkpoints logged (Phase 01, Milestones 1–3; Phase 02, Milestone 1 and Final); Phase 01's post-freeze archive (`Phase-01/`) added
+> **Version:** 0.5.0
+> **Last Updated:** 2026-07-22
 > **Depends On:** [../10_CHECKPOINT_PROTOCOL.md](../10_CHECKPOINT_PROTOCOL.md), [../13_PHASE_LIFECYCLE.md](../13_PHASE_LIFECYCLE.md)
 > **Supersedes:** —
 
@@ -26,6 +26,8 @@ At every checkpoint (per [`../10_CHECKPOINT_PROTOCOL.md`](../10_CHECKPOINT_PROTO
 | 2026-07-21 | Phase-01-Workbench | Milestone completion (Milestone 1 — Foundation, T1–T4) | [2026-07-21-phase-01-milestone-1-foundation.md](2026-07-21-phase-01-milestone-1-foundation.md) |
 | 2026-07-21 | Phase-01-Workbench | Milestone completion (Milestone 2 — Backend, T5–T8) | [2026-07-21-phase-01-milestone-2-backend.md](2026-07-21-phase-01-milestone-2-backend.md) |
 | 2026-07-21 | Phase-01-Workbench | Milestone completion (Milestone 3 — Frontend, T9–T12) | [2026-07-21-phase-01-milestone-3-frontend.md](2026-07-21-phase-01-milestone-3-frontend.md) |
+| 2026-07-22 | Phase-02-Project-Initialization-Engine | Milestone completion (Milestone 1 — Backend engine, T1–T9) | [2026-07-22-phase-02-milestone-1-backend-engine.md](2026-07-22-phase-02-milestone-1-backend-engine.md) |
+| 2026-07-22 | Phase-02-Project-Initialization-Engine | Milestone completion (Milestones 2–3 — Frontend UI & Validation, T10–T14; Implementation-stage DoD reached) | [2026-07-22-phase-02-final-checkpoint.md](2026-07-22-phase-02-final-checkpoint.md) |
 
 ## 2.1 Frozen-phase archives
 

@@ -1,24 +1,30 @@
 # Project Initialization Templates
 
-> **Purpose:** Hold the scaffolding templates that Phase 02 (Project Initialization Engine) will use to generate new project structures — both new phases within Forge and, per that phase's aspiration, new standalone projects bootstrapped with the FDK pattern.
-> **Scope:** Template files only — no engine logic (that belongs in `backend/app/services/` once Phase 02 is implemented).
-> **Ownership:** TODO — assign to whoever owns Phase 02.
-> **Status:** Empty — awaiting Phase 02 spec
-> **Version:** 0.1.0
-> **Last Updated:** 2026-07-20
-> **Depends On:** —
-> **Supersedes:** —
+> **Purpose:** Document the scaffolding templates Phase 02 (Project Initialization Engine) generates — the actual template *content* lives as code under `backend/app/services/project_init/templates/`, per §2 below.
+> **Scope:** Documentation of template scope only — no engine logic or template content lives in `forge-docs/`.
+> **Ownership:** Lead Software Engineer (session-assigned).
+> **Status:** Spec confirmed — see [`../../implementation/Phase-02-Project-Initialization-Engine/01_SPEC.md`](../../implementation/Phase-02-Project-Initialization-Engine/01_SPEC.md).
+> **Version:** 0.2.0
+> **Last Updated:** 2026-07-22
+> **Depends On:** [`../../implementation/Phase-02-Project-Initialization-Engine/01_SPEC.md`](../../implementation/Phase-02-Project-Initialization-Engine/01_SPEC.md)
+> **Supersedes:** v0.1.0 of this document (pre-spec placeholder).
 
 ---
 
-## 1. Intended contents (not yet created)
+## 1. Confirmed contents
 
-- [ ] TODO: A minimal "new phase" scaffold generator (mirrors the `implementation/Phase-XX-Name/` 12-file structure documented in [../../02_ROADMAP.md](../../02_ROADMAP.md)).
-- [ ] TODO: A minimal "new FDK-style repo" scaffold, if Phase 02's scope extends beyond Forge itself — see [`../../implementation/Phase-02-Project-Initialization-Engine/01_SPEC.md`](../../implementation/Phase-02-Project-Initialization-Engine/01_SPEC.md) for scope confirmation once written.
+Two template kinds, both fixed/built-in (no user-facing template editor — see [01_SPEC.md §5](../../implementation/Phase-02-Project-Initialization-Engine/01_SPEC.md)):
 
-## 2. TODO
+- **FDK Phase Scaffold** — the `implementation/Phase-XX-Name/` 12-file structure documented in [../../02_ROADMAP.md](../../02_ROADMAP.md) / [../../11_PROJECT_STRUCTURE.md §5](../../11_PROJECT_STRUCTURE.md).
+- **AI Project Instructions** — `CLAUDE.md`, `AGENTS.md`, `instructions.md` for an arbitrary target project.
 
-- [ ] TODO: Do not add templates here speculatively — wait for Phase 02's `01_SPEC.md` to define exact scope, then populate.
+## 2. Where the actual template content lives
+
+`backend/app/services/project_init/templates/fdk_phase/*` and `backend/app/services/project_init/templates/ai_instructions/*` — code, not FDK documentation, per this document's own original scope note ("no engine logic"). This `forge-docs/templates/project-initialization/` directory documents *what* the engine generates; it does not itself contain the template files.
+
+## 3. TODO
+
+None — scope confirmed by [`01_SPEC.md`](../../implementation/Phase-02-Project-Initialization-Engine/01_SPEC.md).
 
 ## 3. Cross-references
 

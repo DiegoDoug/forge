@@ -1,0 +1,70 @@
+# $phase_name — IMPLEMENT
+
+> **Purpose:** The execution contract for this phase — read this in full before writing any code for this phase.
+> **Scope:** This phase only. Inherits from, and never overrides, the repo-wide execution rules.
+> **Ownership:** TODO — assign a phase owner.
+> **Status:** Not authorized — 01_SPEC.md and 08_ACCEPTANCE.md are still generated-scaffold placeholders
+> **Last Updated:** $generated_date
+
+---
+
+## Role
+
+You are implementing the **$phase_name** phase. This document adds phase-specific detail only, on top of the repo-wide execution rules.
+
+## Mission
+
+$objective
+
+## Execution Rules
+
+- [ ] Do not begin any task in 09_IMPLEMENTATION_TASKS.md until 01_SPEC.md and 08_ACCEPTANCE.md are filled in and confirmed (currently generated-scaffold placeholders — this phase is **not yet authorized**).
+- [ ] Follow the repo-wide coding standards exactly — thin routers, `api.ts` as the only endpoint-shape-aware file, no cross-feature imports.
+- [ ] Update CURRENT_STATE.md as work progresses, not only at checkpoints.
+
+## Autonomy Rules
+
+Inherits the repo-wide autonomy rules in full. Phase-specific additions:
+
+- [ ] TODO: note anything this phase needs to ask about beyond the repo-wide defaults.
+
+## Quality Gates
+
+Every task must clear the project's Definition of Done task-level checklist before being marked complete in 09_IMPLEMENTATION_TASKS.md.
+
+## Testing Rules
+
+Follow 07_TESTING.md in full. No task is complete with failing or skipped tests.
+
+## Checkpoint Rules
+
+Follow the repo-wide checkpoint protocol exactly:
+
+- [ ] Checkpoint after every 10–12 completed tasks.
+- [ ] Checkpoint at ~70% context usage.
+- [ ] Checkpoint at every milestone completion.
+- [ ] Checkpoint immediately on any blocking architectural decision — draft it and stop for approval.
+- [ ] Log every checkpoint to the history log.
+
+## Definition of Done
+
+This phase is done when README.md's "Definition of Complete" is fully satisfied.
+
+## Stop Criteria
+
+Stop immediately and do not proceed on assumption when:
+
+- [ ] A checkpoint trigger from the checkpoint protocol is hit.
+- [ ] A task has no corresponding filled-in spec section.
+- [ ] A decision would violate a standing product/architecture principle.
+- [ ] Any global session safety rule would otherwise be triggered.
+
+## Resume Criteria
+
+A fresh session may resume this phase once it has read, in order: the repo-wide execution rules, this file, CURRENT_STATE.md, and the most recent history log entry if one exists.
+
+## Cross-references
+
+- [README.md](README.md)
+- [01_SPEC.md](01_SPEC.md)
+- [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)

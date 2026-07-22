@@ -2,9 +2,9 @@
 
 > **Purpose:** The execution contract for this phase — a Claude Code session must read this in full before writing any code for this phase.
 > **Scope:** This phase only. Inherits from, and never overrides, the repo-wide rules in ../../09_CLAUDE_CODE_RULES.md.
-> **Ownership:** TODO — assign a phase owner.
-> **Status:** Not authorized — 01_SPEC.md and 08_ACCEPTANCE.md are still template placeholders
-> **Last Updated:** 2026-07-20
+> **Ownership:** Lead Software Engineer (session-assigned).
+> **Status:** Implementation complete (T1–T14 done, Definition of Done satisfied — see CURRENT_STATE.md). Next per 13_PHASE_LIFECYCLE.md: Release Candidate audit, then Owner Sign-off.
+> **Last Updated:** 2026-07-22
 
 ---
 
@@ -21,15 +21,16 @@ New capability. Consumes and extends [`forge-docs/templates/project-initializati
 
 ## Execution Rules
 
-- [ ] Do not begin any task in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) until [`01_SPEC.md`](01_SPEC.md) and [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) are filled in and confirmed (currently template placeholders — this phase is **not yet authorized**).
-- [ ] Follow [`../../07_CODING_STANDARDS.md`](../../07_CODING_STANDARDS.md) exactly — thin routers, `api.ts` as the only endpoint-shape-aware file, no cross-feature imports.
-- [ ] Update [`CURRENT_STATE.md`](CURRENT_STATE.md) as work progresses, not only at checkpoints.
+- [x] [`01_SPEC.md`](01_SPEC.md) and [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) are filled in and confirmed — this phase is authorized.
+- [x] Followed [`../../07_CODING_STANDARDS.md`](../../07_CODING_STANDARDS.md) exactly — thin routers, `api.ts` as the only endpoint-shape-aware file, no cross-feature imports.
+- [x] Updated [`CURRENT_STATE.md`](CURRENT_STATE.md) at every checkpoint.
 
 ## Autonomy Rules
 
 Inherits [`../../09_CLAUDE_CODE_RULES.md`](../../09_CLAUDE_CODE_RULES.md) §3 in full. Phase-specific additions:
 
-- [ ] TODO: note anything this phase needs to ask about beyond the repo-wide defaults (e.g. Phase 05 Model Playground and Phase 03 Prompt Studio must always ask before enabling a new outbound LLM provider integration by default).
+- This phase introduces no LLM provider or outbound network call of any kind (pure template rendering) — the "ask before enabling a new outbound LLM provider" concern that applies to Phase 03/05 does not apply here.
+- No new external dependency is introduced (stdlib `string.Template` + `zipfile` only) — nothing to ask about under [`../../09_CLAUDE_CODE_RULES.md`](../../09_CLAUDE_CODE_RULES.md) §3's "adding a new external dependency" gate.
 
 ## Quality Gates
 
@@ -43,11 +44,11 @@ Follow [`07_TESTING.md`](07_TESTING.md) in full. No task is complete with failin
 
 Follow [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md) exactly:
 
-- [ ] Checkpoint after every 10–12 completed tasks.
-- [ ] Checkpoint at ~70% context usage.
-- [ ] Checkpoint at every milestone completion (see [`README.md`](README.md) Milestones).
-- [ ] Checkpoint immediately on any blocking architectural decision — draft it with [`../../decisions/ADR_TEMPLATE.md`](../../decisions/ADR_TEMPLATE.md) and stop for approval.
-- [ ] Log every checkpoint to [`../../history/`](../../history/README.md).
+- [x] Checkpoint after every 10–12 completed tasks.
+- [x] Checkpoint at ~70% context usage (n/a — phase completed before this threshold).
+- [x] Checkpoint at every milestone completion (see [`README.md`](README.md) Milestones) — Milestone 1 and Milestones 2–3 both checkpointed.
+- [x] No blocking architectural decision arose (n/a).
+- [x] Every checkpoint logged to [`../../history/`](../../history/README.md).
 
 ## Definition of Done
 

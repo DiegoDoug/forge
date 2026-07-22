@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Settings,
   ShieldHalf,
+  Sparkles,
   StickyNote,
   Repeat,
   Wand2,
@@ -30,5 +31,6 @@ export const NAV_ITEMS: NavItem[] = [
   { title: "Converters", href: "/converters", icon: Repeat, description: "JSON, YAML, regex, diff", shortcut: "O" },
   { title: "Utilities", href: "/utilities", icon: Wrench, description: "QR, checksums, timezones", shortcut: "U" },
   { title: "Ingest", href: "/ingest", icon: FileInput, description: "Documents → Markdown", shortcut: "I" },
+  { title: "Project Init", href: "/project-init", icon: Sparkles, description: "Generate FDK scaffolds & AI instructions" },
   { title: "Settings", href: "/settings", icon: Settings, description: "Theme, backup, about", shortcut: "," },
 ];

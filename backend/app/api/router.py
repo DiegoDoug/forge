@@ -10,6 +10,7 @@ from app.api.routes import (
     generators,
     ingest,
     notes,
+    project_init,
     search,
     secrets,
     settings,
@@ -31,3 +32,4 @@ api_router.include_router(ingest.router)
 api_router.include_router(search.router)
 api_router.include_router(settings.router)
 api_router.include_router(workbench.router)
+api_router.include_router(project_init.router)

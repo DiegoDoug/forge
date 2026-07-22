@@ -34,7 +34,7 @@ The following already exist in the application and are **not** re-specified here
 | # | Phase | Proposed relationship to shipped foundation | Status |
 |---|-------|----------------------------------------------|--------|
 | 01 | [Workbench](implementation/Phase-01-Workbench/README.md) | Replaces Dashboard outright with a panel-based, extensible home workspace (see [ADR-0001](decisions/0001-workbench-replaces-dashboard.md), [ADR-0002](decisions/0002-workbench-panel-architecture.md)) | ✓ Complete — 🔒 released & frozen as `v0.1.0-workbench` |
-| 02 | [Project Initialization Engine](implementation/Phase-02-Project-Initialization-Engine/README.md) | New — scaffolds new coding projects using this FDK's own template system | **Current** — not yet started |
+| 02 | [Project Initialization Engine](implementation/Phase-02-Project-Initialization-Engine/README.md) | New — generates FDK phase scaffolds and AI project instruction files (CLAUDE.md/AGENTS.md/instructions.md) as zip downloads | **Current** — implementation complete, pending Release Candidate audit + Owner Sign-off (not yet merged) |
 | 03 | [Prompt Studio](implementation/Phase-03-Prompt-Studio/README.md) | New — authoring/versioning workspace for LLM prompts | Not started |
 | 04 | [Universal Converter](implementation/Phase-04-Universal-Converter/README.md) | Unifies Converters + Ingest into one format-conversion surface | Not started |
 | 05 | [Model Playground](implementation/Phase-05-Model-Playground/README.md) | New — test/compare LLM providers and models | Not started |

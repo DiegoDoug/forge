@@ -5,6 +5,7 @@ from .activity import ActivityLog
 from .app_config import AppConfig
 from .document import Document
 from .note import Note
+from .project_init import ProjectInitGeneration
 from .secrets import Folder, Secret, SecretTagLink, SecretVersion, Tag
 from .workbench import WorkbenchLayout
 
@@ -13,6 +14,7 @@ __all__ = [
     "AppConfig",
     "Document",
     "Note",
+    "ProjectInitGeneration",
     "Folder",
     "Secret",
     "SecretTagLink",
