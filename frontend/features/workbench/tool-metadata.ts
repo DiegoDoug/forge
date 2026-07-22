@@ -26,15 +26,19 @@ const NAV_KEY_BY_HREF: Record<string, string> = {
 };
 
 // Tool-catalog keys with no frontend/lib/nav-registry.ts entry: Search isn't
-// a permanent sidebar item (ADR-0007), and Prompt Studio / Universal
-// Converter don't exist yet (Phases 03/04).
+// a permanent sidebar item (ADR-0007). Prompt Studio does have a nav-registry
+// entry now (Phase 03 shipped), but keeps its own metadata here too since its
+// icon differs from the sidebar's (MessageSquareText) - this entry is what
+// the Workbench pinned-tools tile renders, matching Search's precedent of a
+// tool having its own Workbench-facing metadata distinct from the sidebar's.
+// Universal Converter doesn't exist yet (Phase 04).
 const EXTRA_TOOL_METADATA: Record<string, Omit<ToolMetadata, "key">> = {
   search: { title: "Search", description: "Search secrets, notes, and documents", icon: Search, href: "/search" },
   prompt_studio: {
     title: "Prompt Studio",
     description: "Author and version LLM prompts",
     icon: Sparkles,
-    href: "#",
+    href: "/prompt-studio",
   },
   universal_converter: {
     title: "Universal Converter",

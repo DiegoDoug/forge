@@ -6,6 +6,7 @@ from .app_config import AppConfig
 from .document import Document
 from .note import Note
 from .project_init import ProjectInitGeneration
+from .prompt_studio import Prompt, PromptVersion
 from .secrets import Folder, Secret, SecretTagLink, SecretVersion, Tag
 from .workbench import WorkbenchLayout
 
@@ -15,6 +16,8 @@ __all__ = [
     "Document",
     "Note",
     "ProjectInitGeneration",
+    "Prompt",
+    "PromptVersion",
     "Folder",
     "Secret",
     "SecretTagLink",

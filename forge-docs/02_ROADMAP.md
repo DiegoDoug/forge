@@ -35,7 +35,7 @@ The following already exist in the application and are **not** re-specified here
 |---|-------|----------------------------------------------|--------|
 | 01 | [Workbench](implementation/Phase-01-Workbench/README.md) | Replaces Dashboard outright with a panel-based, extensible home workspace (see [ADR-0001](decisions/0001-workbench-replaces-dashboard.md), [ADR-0002](decisions/0002-workbench-panel-architecture.md)) | ✓ Complete — 🔒 released & frozen as `v0.1.0-workbench` |
 | 02 | [Project Initialization Engine](implementation/Phase-02-Project-Initialization-Engine/README.md) | New — generates FDK phase scaffolds and AI project instruction files (CLAUDE.md/AGENTS.md/instructions.md) as zip downloads | ✓ Complete — 🔒 released & frozen as `v0.2.0-project-init` |
-| 03 | [Prompt Studio](implementation/Phase-03-Prompt-Studio/README.md) | New — authoring/versioning workspace for LLM prompts | Not started |
+| 03 | [Prompt Studio](implementation/Phase-03-Prompt-Studio/README.md) | New — authoring/versioning workspace for LLM prompts, no live LLM execution (resolved 2026-07-22, see phase spec §4–§5) | ✅ Implementation complete, RC audit passed (zero BLOCKERs) 2026-07-22 — tagged `v0.3.0-prompt-studio`, PR open, awaiting merge to `master` |
 | 04 | [Universal Converter](implementation/Phase-04-Universal-Converter/README.md) | Unifies Converters + Ingest into one format-conversion surface | Not started |
 | 05 | [Model Playground](implementation/Phase-05-Model-Playground/README.md) | New — test/compare LLM providers and models | Not started |
 | 06 | [Projects](implementation/Phase-06-Projects/README.md) | New — cross-feature project/workspace grouping | Not started |
@@ -47,7 +47,7 @@ The following already exist in the application and are **not** re-specified here
 ## 4. Sequencing rationale (draft)
 
 - Phases 01–02 are foundational (workspace shell + project scaffolding) and should land before phases that assume a "project" concept (06, 07).
-- Phases 03 and 05 (Prompt Studio, Model Playground) share LLM-provider plumbing — TODO: confirm whether they should be built together or 05 first as the provider-integration base.
+- Phases 03 and 05 (Prompt Studio, Model Playground) were flagged here as sharing LLM-provider plumbing — **resolved for Phase 03** during its specification session (2026-07-22): Prompt Studio ships with zero outbound network calls and zero provider/API-key concepts; there is no shared plumbing to sequence. See [`implementation/Phase-03-Prompt-Studio/01_SPEC.md`](implementation/Phase-03-Prompt-Studio/01_SPEC.md) §4–§5. Phase 05 remains the sole owner of actual provider integration whenever it is specified.
 - Phases 04, 07, 08 are consolidations of existing features and carry lower architectural risk — candidates to interleave with the higher-risk new phases (01, 02, 03, 05, 06) for momentum.
 
 This ordering was validated by Phases 01–02 shipping in sequence without architectural conflicts. Phase 03 onwards should follow this sequencing, with periodic reviews after each checkpoint.
