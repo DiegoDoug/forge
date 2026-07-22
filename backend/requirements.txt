@@ -13,8 +13,12 @@ pyjwt>=2.9,<3
 croniter>=2.0,<3
 qrcode[pil]>=7.4,<8
 
-# Ingest document-to-markdown conversion (vendored service, see app/services/ingest)
-markitdown[all]>=0.1.2
+# Ingest document-to-markdown conversion (vendored service, see app/services/ingest).
+# Extras are pinned to the formats we actually convert (see formats.py's
+# KNOWN_EXTENSIONS) rather than markitdown[all] -- the "all" extra pulls in
+# youtube-transcript-api~=1.0.0, and every 1.0.x-1.2.2 release of that package
+# caps Requires-Python at <3.14, making the pin unsatisfiable on Python 3.14.
+markitdown[docx,outlook,pdf,pptx,xls,xlsx,audio-transcription]>=0.1.6
 
 # Documents tab: multi-format export (see app/services/documents/export.py).
 # python-docx, beautifulsoup4 and markdownify already ride in transitively via
