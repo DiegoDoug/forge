@@ -2,10 +2,10 @@
 
 > **Purpose:** The release-facing summary of Phase 01 — what shipped, what broke on purpose, what to do before upgrading. Not a duplicate of `CURRENT_STATE.md` (the day-to-day working log) or `POST_IMPLEMENTATION_REVIEW.md` (the retrospective) — this is the document a user or another engineer reads to understand what changed.
 > **Scope:** This phase only.
-> **Status:** Draft — written at RC2, to be finalized at sign-off/tag.
-> **Version:** v0.1.0-workbench (pending tag)
+> **Status:** Final — released as `v0.1.0-workbench`, tagged and merged to `master`, Phase 01 now frozen.
+> **Version:** v0.1.0-workbench
 > **Last Updated:** 2026-07-21
-> **Depends On:** [CURRENT_STATE.md](CURRENT_STATE.md), [08_ACCEPTANCE.md](08_ACCEPTANCE.md), [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
+> **Depends On:** [../../implementation/Phase-01-Workbench/CURRENT_STATE.md](../../implementation/Phase-01-Workbench/CURRENT_STATE.md), [../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md](../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md), [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
 
 ---
 
@@ -62,8 +62,8 @@ Tracked in [`BUGS/`](BUGS/README.md), all explicitly ruled non-blocking for this
 
 ## Cross-references
 
-- [CURRENT_STATE.md](CURRENT_STATE.md)
-- [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
+- [../../implementation/Phase-01-Workbench/CURRENT_STATE.md](../../implementation/Phase-01-Workbench/CURRENT_STATE.md)
+- [../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md](../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md)
 - [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
 - [BUGS/README.md](BUGS/README.md)
 - [QA/README.md](QA/README.md)

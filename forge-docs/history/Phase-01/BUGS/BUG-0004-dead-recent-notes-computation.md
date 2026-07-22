@@ -24,5 +24,5 @@ Remove `recent_notes` from `get_workbench()`'s query and return value, from `Wor
 ## Cross-references
 
 - [../../../../backend/app/services/workbench.py](../../../../backend/app/services/workbench.py)
-- [../12_PANEL_INTERFACE.md](../12_PANEL_INTERFACE.md)
-- [../CURRENT_STATE.md](../CURRENT_STATE.md)
+- [../../../implementation/Phase-01-Workbench/12_PANEL_INTERFACE.md](../../../implementation/Phase-01-Workbench/12_PANEL_INTERFACE.md)
+- [../../../implementation/Phase-01-Workbench/CURRENT_STATE.md](../../../implementation/Phase-01-Workbench/CURRENT_STATE.md)

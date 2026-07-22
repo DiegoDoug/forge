@@ -3,8 +3,8 @@
 > **Purpose:** Live snapshot of where this phase actually stands, updated at every checkpoint.
 > **Scope:** This phase only — updated continuously, never left stale.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** RC2 — Implementation Complete, no known BLOCKERs — Pending: QA ([`QA/`](QA/README.md)), Owner Sign-off, Merge
-> **Version:** 1.0.0
+> **Status:** 🔒 RELEASED & FROZEN — tagged `v0.1.0-workbench`, merged to `master`. Specification: Locked. Implementation: Closed. Future changes: bug fixes only — new features go to Phase 02.
+> **Version:** 1.1.0
 > **Last Updated:** 2026-07-21
 > **Depends On:** [README.md](README.md), [IMPLEMENT.md](IMPLEMENT.md)
 > **Supersedes:** v0.2.0 of this document (pre-implementation)
@@ -15,10 +15,14 @@
 
 | | |
 |---|---|
-| **Status** | RC2 |
-| **Pending** | QA ([QA-0001](QA/QA-0001-drag-performance.md), [QA-0002](QA/QA-0002-screen-reader-audit.md)) · Owner Sign-off ([`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) §8) · Merge (`feature/t13-workbench-nav-cutover` → `master`) |
+| **Status** | 🔒 Released & Frozen |
+| **Specification** | Locked |
+| **Implementation** | Closed |
+| **Future Changes** | Bug fixes only |
+| **Release** | Tagged `v0.1.0-workbench`, merged to `master` via [#14](https://github.com/DiegoDoug/forge/pull/14) |
+| **Sign-off** | Approved — Accepted for Release (project owner) |
 
-All 16 implementation tasks (T1–T16) are done and verified against `08_ACCEPTANCE.md`. This is not the same claim as "phase complete" — QA, owner sign-off, and the merge to `master` are still open, tracked explicitly rather than implied.
+All 16 implementation tasks (T1–T16) are done, verified against `08_ACCEPTANCE.md`, signed off by the project owner, and released. End-of-phase artifacts (`10_RELEASE_NOTES.md`, `POST_IMPLEMENTATION_REVIEW.md`, `QA/`, `BUGS/`) have been archived to [`../../history/Phase-01/`](../../history/Phase-01/) to keep this active implementation folder focused on the specification, per the project owner's direction. This document remains here as the live "how it actually went" record; it is not itself archived.
 
 ### Release Candidate log
 
@@ -28,10 +32,11 @@ Per [`../../12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md) §5:
 RC1 → BUG-0001 found (BLOCKER, data loss) → fixed and verified → RC2 (current)
 ```
 
-- **RC1** (2026-07-21): T16 Final Validation passed, but the independent post-implementation audit that followed it found `BUG-0001` — a real data-loss bug (see [`BUGS/BUG-0001-panel-deletion-data-loss.md`](BUGS/BUG-0001-panel-deletion-data-loss.md)). Classified 🔴 BLOCKER. RC1 was not sign-off-ready.
-- **RC2** (2026-07-21, current): `BUG-0001` fixed in `frontend/features/workbench/components/workbench-grid.tsx` and verified end-to-end (seeded an unregistered panel type, confirmed it survives a real visibility toggle and a real drag-reorder through the actual UI). `tsc`/`eslint`/`next build` clean. **No known BLOCKERs remain.** Four MAJOR/MINOR findings remain open, tracked in [`BUGS/`](BUGS/README.md), and do not gate this RC per the project owner's explicit ruling.
+- **RC1** (2026-07-21): T16 Final Validation passed, but the independent post-implementation audit that followed it found `BUG-0001` — a real data-loss bug (see [`BUGS/BUG-0001-panel-deletion-data-loss.md`](../../history/Phase-01/BUGS/BUG-0001-panel-deletion-data-loss.md)). Classified 🔴 BLOCKER. RC1 was not sign-off-ready.
+- **RC2** (2026-07-21): `BUG-0001` fixed in `frontend/features/workbench/components/workbench-grid.tsx` and verified end-to-end (seeded an unregistered panel type, confirmed it survives a real visibility toggle and a real drag-reorder through the actual UI). `tsc`/`eslint`/`next build` clean. **No known BLOCKERs remained.** Four MAJOR/MINOR findings stayed open, tracked in [`BUGS/`](../../history/Phase-01/BUGS/README.md), and did not gate this RC per the project owner's explicit ruling.
+- **Released** (2026-07-21): Project owner sign-off recorded — "APPROVED, Accepted for Release." Tagged `v0.1.0-workbench`, PR [#14](https://github.com/DiegoDoug/forge/pull/14) squash-merged to `master`, tag pushed. Phase 01 is now frozen.
 
-### Merge criteria (per [`../../12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md) §6)
+### Merge criteria (per [`../../12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md) §6) — all satisfied
 
 - [x] Builds pass — `tsc --noEmit`, `eslint .`, backend pytest suite (47/47) all clean as of RC2.
 - [x] `docker compose build` passes — confirmed for `frontend` at T12/T16; not re-run at RC2 since only frontend TS logic changed and `next build` (the same compile step) is clean.
@@ -39,8 +44,8 @@ RC1 → BUG-0001 found (BLOCKER, data loss) → fixed and verified → RC2 (curr
 - [x] No scope violations — confirmed via grep for capability-registry/`ProjectProvider`/workflow code (zero matches) at both T16 and the post-implementation audit.
 - [x] No known data-loss bugs — `BUG-0001` was the one, now fixed and verified.
 - [x] No regressions — re-verified the Secrets delete-confirmation flow (also touched by the T15 `AlertDialogAction` fix) end-to-end; no regression found.
-- [x] QA tasks documented — [`QA-0001`](QA/QA-0001-drag-performance.md), [`QA-0002`](QA/QA-0002-screen-reader-audit.md), both pending manual execution, neither blocking.
-- [ ] **Owner sign-off** — not yet recorded. This is the one remaining item before tag + merge + freeze.
+- [x] QA tasks documented — [`QA-0001`](../../history/Phase-01/QA/QA-0001-drag-performance.md), [`QA-0002`](../../history/Phase-01/QA/QA-0002-screen-reader-audit.md), both pending manual execution, neither blocking merge.
+- [x] **Owner sign-off** — recorded 2026-07-21: "APPROVED, Accepted for Release."
 
 ## Current Status
 
@@ -97,8 +102,8 @@ RC1 → BUG-0001 found (BLOCKER, data loss) → fixed and verified → RC2 (curr
 ## Remaining
 
 - [ ] Project-owner sign-off on `08_ACCEPTANCE.md` §8 (phase ownership itself is still an unassigned TODO in `README.md`).
-- [ ] QA-0001 — drag-reorder FPS / React DevTools Profiler re-render verification ([`QA/QA-0001-drag-performance.md`](QA/QA-0001-drag-performance.md)) — ruled non-blocking for sign-off by the project owner; needs a real browser/device session.
-- [ ] QA-0002 — live NVDA/VoiceOver/keyboard-only screen-reader audit ([`QA/QA-0002-screen-reader-audit.md`](QA/QA-0002-screen-reader-audit.md)) — ruled non-blocking for sign-off by the project owner.
+- [ ] QA-0001 — drag-reorder FPS / React DevTools Profiler re-render verification ([`QA/QA-0001-drag-performance.md`](../../history/Phase-01/QA/QA-0001-drag-performance.md)) — ruled non-blocking for sign-off by the project owner; needs a real browser/device session.
+- [ ] QA-0002 — live NVDA/VoiceOver/keyboard-only screen-reader audit ([`QA/QA-0002-screen-reader-audit.md`](../../history/Phase-01/QA/QA-0002-screen-reader-audit.md)) — ruled non-blocking for sign-off by the project owner.
 - [ ] Merge `feature/t13-workbench-nav-cutover` → `master`, then tag `v0.1.0-workbench` and freeze the directory — all explicitly deferred until sign-off, per the project owner's stated sequencing.
 
 ## Known Issues
@@ -106,8 +111,8 @@ RC1 → BUG-0001 found (BLOCKER, data loss) → fixed and verified → RC2 (curr
 - [ ] Temporary compatibility aliases from T1 are debt, per ADR-0006 §4: `/api/vault` (backend proxy) and the frontend `/vault` → `/secrets` redirect both need a later cleanup task to remove once nothing external depends on the old path.
 - [ ] Lower-priority prose in `docs/Deployment.md`/`docs/Security.md`/`docs/Roadmap.md`/`docs/DecisionLog.md`'s older entries was updated where it named the feature ("Vault"/"vault secret") but generic descriptive phrasing was left untouched where it wasn't clearly a proper-noun reference to the feature — not a gap, a deliberate line per this task's scope, but flagging in case a future pass wants full consistency.
 - [ ] Two out-of-scope accessibility issues found during T15/T16, flagged as separate background tasks (not fixed as part of this phase, since neither touches a file any Workbench task owns): the global mobile-nav hamburger trigger (`components/app-shell/`) has no accessible name (task_146af5a1, started); the sidebar footer text and the command palette's dialog-header landmark each have a minor axe violation (task_7f16eee4, started).
-- [x] ~~Panel drag-reorder/visibility-toggle data-loss bug~~ — was [`BUGS/BUG-0001`](BUGS/BUG-0001-panel-deletion-data-loss.md), 🔴 BLOCKER, **fixed and verified** at RC2. No longer an open issue.
-- [ ] Four MAJOR/MINOR findings from the post-T16 independent audit, tracked in [`BUGS/`](BUGS/README.md), explicitly ruled non-blocking for merge by the project owner: [BUG-0002](BUGS/BUG-0002-pinned-tools-duplicate-validation.md) (MINOR, no duplicate-key validation on `pinned_tools`), [BUG-0003](BUGS/BUG-0003-missing-error-toasts.md) (MAJOR, missing error toasts on 3 of 4 layout-mutation paths — awaiting a project-owner decision, which does not itself gate this phase), [BUG-0004](BUGS/BUG-0004-dead-recent-notes-computation.md) (MINOR, dead `recent_notes` backend computation), [BUG-0005](BUGS/BUG-0005-unused-onerror-prop.md) (MINOR, unused `onError` panel prop).
+- [x] ~~Panel drag-reorder/visibility-toggle data-loss bug~~ — was [`BUGS/BUG-0001`](../../history/Phase-01/BUGS/BUG-0001-panel-deletion-data-loss.md), 🔴 BLOCKER, **fixed and verified** at RC2. No longer an open issue.
+- [ ] Four MAJOR/MINOR findings from the post-T16 independent audit, tracked in [`BUGS/`](../../history/Phase-01/BUGS/README.md), explicitly ruled non-blocking for merge by the project owner: [BUG-0002](../../history/Phase-01/BUGS/BUG-0002-pinned-tools-duplicate-validation.md) (MINOR, no duplicate-key validation on `pinned_tools`), [BUG-0003](../../history/Phase-01/BUGS/BUG-0003-missing-error-toasts.md) (MAJOR, missing error toasts on 3 of 4 layout-mutation paths — awaiting a project-owner decision, which does not itself gate this phase), [BUG-0004](../../history/Phase-01/BUGS/BUG-0004-dead-recent-notes-computation.md) (MINOR, dead `recent_notes` backend computation), [BUG-0005](../../history/Phase-01/BUGS/BUG-0005-unused-onerror-prop.md) (MINOR, unused `onError` panel prop).
 
 ## Architectural Decisions
 
@@ -124,6 +129,8 @@ RC1 → BUG-0001 found (BLOCKER, data loss) → fixed and verified → RC2 (curr
 All eight are `Status: Accepted` as of 2026-07-20. [ADR-0008](../../decisions/0008-capability-registry-direction.md) (Capability Registry) was also proposed during this phase's planning and deliberately left `Status: Proposed` — not a Phase 01 dependency, revisit later per its own trigger condition. No code has been written against any ADR yet.
 
 ## Modified Files
+
+> Note: the list below is an accurate historical record of what was created and where, at the time each entry was written. Four items created late in the phase (`QA/`, `BUGS/`, `POST_IMPLEMENTATION_REVIEW.md`, `10_RELEASE_NOTES.md`) were subsequently **archived to [`../../history/Phase-01/`](../../history/Phase-01/)** as part of the freeze — their entries below still show the path they were created at, not their current path, since this section is a changelog, not a live index. Use the "Status" section at the top of this document for current, correct links.
 
 - [x] `backend/app/models/vault.py` → `backend/app/models/secrets.py`
 - [x] `backend/app/models/__init__.py`
@@ -217,50 +224,41 @@ All eight are `Status: Accepted` as of 2026-07-20. [ADR-0008](../../decisions/00
 
 ## Next Milestone
 
-None — this was the last milestone in Phase 01. Phase 01 is at **RC2** with no known BLOCKERs. Remaining before it can be formally closed: project-owner sign-off (`08_ACCEPTANCE.md` §8), then tag `v0.1.0-workbench`, merge `feature/t13-workbench-nav-cutover` → `master`, and freeze the directory (bug fixes only from that point). QA-0001/QA-0002 and the four non-blocking `BUGS/` findings are tracked but don't gate any of that. Phase 02 (Project Initialization Engine) is a separate phase with its own `forge-docs/implementation/Phase-02-Project-Initialization-Engine/` documents.
+**None — Phase 01 is released and frozen.** There is no next milestone within this phase; the next work in the roadmap is Phase 02 (Project Initialization Engine), a separate phase with its own `forge-docs/implementation/Phase-02-Project-Initialization-Engine/` documents. Per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md), this phase has completed its lifecycle through **Released → Frozen** and is now in **Maintenance** (bug fixes only).
 
 ## Next Claude Prompt
 
 ```
 You are working in the Forge repository as a Claude Code session.
 
-Read, in order:
-1. forge-docs/09_CLAUDE_CODE_RULES.md
-2. forge-docs/12_BUG_CLASSIFICATION.md
-3. forge-docs/implementation/Phase-01-Workbench/README.md
-4. forge-docs/implementation/Phase-01-Workbench/CURRENT_STATE.md
-5. forge-docs/implementation/Phase-01-Workbench/QA/README.md
-6. forge-docs/implementation/Phase-01-Workbench/BUGS/README.md
+Phase 01 (Workbench) is RELEASED and FROZEN -- tagged v0.1.0-workbench,
+merged to master, project-owner sign-off recorded. Read
+forge-docs/13_PHASE_LIFECYCLE.md if you're unsure what "frozen" permits.
 
-All 16 tasks (T1-T16) are complete. Phase 01 is at RC2 (see CURRENT_STATE.md's
-"Release Candidate log") with NO KNOWN BLOCKERS -- the one that existed
-(BUG-0001, a real data-loss bug) is fixed and verified. This phase has no
-more implementation tasks -- do not invent new ones. What's actually left
-is entirely process, not code:
-
-1. Project-owner sign-off (08_ACCEPTANCE.md §8) is still an open TODO --
-   this requires a human decision, not implementation work. Per
-   12_BUG_CLASSIFICATION.md §6's merge criteria, every other box is
-   already checked.
-2. Once sign-off happens: tag v0.1.0-workbench, merge
-   feature/t13-workbench-nav-cutover -> master, then freeze this directory
-   (bug fixes only from that point -- new features go to Phase 02). Do
-   this sequence in this order, not out of order.
-3. QA-0001 (drag FPS/Profiler) and QA-0002 (screen-reader audit), and the
-   four MAJOR/MINOR findings in BUGS/ (BUG-0002 through BUG-0005), do NOT
-   block any of the above -- they're deliberately tracked separately, per
-   the project owner's explicit ruling. Don't reopen that decision or
-   treat them as blocking without a new instruction to do so.
-4. Two out-of-scope accessibility bugs were found and flagged as separate
-   background tasks (not fixed in this phase): the global mobile-nav
-   hamburger button has no accessible name, and the sidebar footer /
-   command palette have a couple of minor axe violations. Check whether
-   those tasks have been picked up before assuming they still need doing.
+If you were asked to work on Phase 01 specifically:
+- Only bug fixes are in scope here now. New features, architectural
+  changes, or scope expansion do NOT belong in this directory -- they
+  belong in whichever future phase actually owns that surface area.
+- forge-docs/implementation/Phase-01-Workbench/ now holds only the living
+  specification + this CURRENT_STATE.md. The end-of-phase artifacts
+  (10_RELEASE_NOTES.md, POST_IMPLEMENTATION_REVIEW.md, QA/, BUGS/) were
+  archived to forge-docs/history/Phase-01/ -- read them there, don't
+  recreate them here.
+- Four MAJOR/MINOR findings from the post-implementation audit remain open
+  (forge-docs/history/Phase-01/BUGS/BUG-0002 through BUG-0005) -- if asked
+  to pick one up, treat it as a standalone bug fix against frozen code, not
+  a reason to reopen or re-scope the phase.
+- QA-0001 (drag FPS/Profiler) and QA-0002 (screen-reader audit) are still
+  open QA tickets (forge-docs/history/Phase-01/QA/) -- they were explicitly
+  ruled non-blocking for release, not resolved. If asked to run one, that's
+  a manual/device session, not something to fake with the automated
+  browser tool (see 08_ACCEPTANCE.md §12 for why that tool can't do it).
 
 If asked to start the next phase, that's Phase 02
 (forge-docs/implementation/Phase-02-Project-Initialization-Engine/) --
 read its own 01_SPEC.md and IMPLEMENT.md before touching any code; nothing
-here authorizes starting it automatically.
+here authorizes starting it automatically. forge-docs/02_ROADMAP.md marks
+it as the current phase.
 ```
 
 ## Session Notes
@@ -288,15 +286,19 @@ here authorizes starting it automatically.
 - 2026-07-21 — **Independent code-review audit**, requested explicitly as a fresh-eyes review ("forget you implemented this... audit... as if written by another engineer"). Read every Phase 01 spec doc and every line of the Workbench implementation. Found 5 issues T15/T16 missed, reported via structured findings (most severe first): (1) `WorkbenchGrid`'s panel drag-reorder/visibility-toggle mutations silently and permanently delete any panel `type` unrecognized by the running frontend build from the persisted layout — a real data-loss bug contradicting `12_PANEL_INTERFACE.md` §3 item 6's extensibility guarantee; (2) `_validate_pinned_tools` has no duplicate-key check, asymmetric with `_validate_panels`'s explicit one; (3) 3 of 4 layout-mutation call sites (panel reorder, panel visibility, pin reorder) show no error toast on failure, only Pin Picker's toggle does; (4) `get_workbench()` computes and returns `recent_notes` that `RecentNotesPanel` never reads (dead backend work); (5) the `onError` panel-contract prop is never called by any of the five shipped panels (unexercised code path). Also re-verified the T15 `AlertDialogAction` fix against the Secrets delete-confirmation flow it also touches — confirmed no regression. None of the 5 new findings are fixed yet; disposition is an open decision.
 - 2026-07-21 — **Process follow-up per the project owner's direction, given the audit results.** Split the two genuinely-unverified acceptance criteria (drag FPS/Profiler, screen-reader pass) into `QA/QA-0001-drag-performance.md` and `QA/QA-0002-screen-reader-audit.md` — explicitly non-blocking for sign-off, tracked separately from implementation. `08_ACCEPTANCE.md` (now v0.5.0) cross-links both and records the project-owner's ruling in a new §8 note. `CURRENT_STATE.md` status changed from "In Progress" to "Implementation Complete — Pending: QA, Owner Sign-off, Merge" (see the new "Status" table at the top of this document), per the project owner's explicit requirement that this distinction not be blurred. Started `POST_IMPLEMENTATION_REVIEW.md`. **Freezing the directory and tagging `v0.1.0-workbench` were both described by the project owner as happening *after* sign-off** — since sign-off is still an open TODO (owner unassigned), neither was done yet; flagged back to the user rather than assumed.
 - 2026-07-21 — **BUG-0001 (the data-loss BLOCKER) fixed; RC2 reached; FDK bug-classification process adopted.** Per the project owner's decision matrix: fixed `BUG-0001` in `frontend/features/workbench/components/workbench-grid.tsx` — `handleVisibilityChange` and `handleDragEnd` now build their `PUT` payload from the full, unfiltered `data.layout.panels` (preserving any unregistered panel type in place) instead of the registered-only `savedPanels` filter. Verified via `tsc`/`eslint`/`next build` (all clean) and a live regression test: seeded a layout with `recent_projects` (unregistered) via direct `PUT`, then performed a real visibility toggle and a real keyboard-driven drag-reorder through the actual UI, confirming via `GET /api/workbench` that the unregistered entry survived both, unchanged, in its original relative position. Created `forge-docs/12_BUG_CLASSIFICATION.md` (BLOCKER/MAJOR/MINOR triage matrix + RC workflow + merge criteria, adopted as a standing FDK document for every future phase, cross-linked from `08_DEFINITION_OF_DONE.md` and `10_CHECKPOINT_PROTOCOL.md`). Created `BUGS/` (mirroring `QA/`'s pattern) with one issue file per audit finding: `BUG-0001` (🔴 BLOCKER, now fixed), `BUG-0002` (🟢 MINOR, pinned-tools duplicate validation), `BUG-0003` (🟡 MAJOR, missing error toasts — awaiting a project-owner decision that doesn't itself gate this phase), `BUG-0004` (🟢 MINOR, dead `recent_notes` computation), `BUG-0005` (🟢 MINOR, unused `onError` prop). Status is now **RC2 — no known BLOCKERs**, with a full merge-criteria checklist recorded in the "Status" section above. Tag/merge/freeze remain deliberately deferred until owner sign-off, per the project owner's explicit sequencing (RC → sign-off → tag → merge → freeze).
+- 2026-07-21 — **Owner sign-off recorded: APPROVED, Accepted for Release.** Executed the release sequence: tagged `v0.1.0-workbench` (annotated), opened PR [#14](https://github.com/DiegoDoug/forge/pull/14) from `feature/t13-workbench-nav-cutover`, squash-merged to `master` (matching this repo's established per-PR-squash convention — the project owner said "main," this repo's actual default branch is `master`), pushed `master` and the tag to `origin`. Froze Phase 01: Status → Released & Frozen, Specification → Locked, Implementation → Closed, Future Changes → bug fixes only. Archived `10_RELEASE_NOTES.md`, `POST_IMPLEMENTATION_REVIEW.md`, `QA/`, and `BUGS/` to `forge-docs/history/Phase-01/` (fixed every cross-reference in the moved files and every file that linked to them) so this active implementation folder stays focused on the specification, per the project owner's explicit recommendation. Added `forge-docs/13_PHASE_LIFECYCLE.md` (the standard Draft → ... → Archived lifecycle every phase now follows) and updated `forge-docs/02_ROADMAP.md` (Phase 01 marked complete, Phase 02 marked current). This is the last entry expected in this section under normal operation — Phase 01 is now in Maintenance; only a genuine post-freeze bug fix should add to this log going forward.
 
 ## Cross-references
 
 - [README.md](README.md)
 - [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
 - [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
-- [QA/README.md](QA/README.md)
-- [BUGS/README.md](BUGS/README.md)
-- [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
+- [../../history/Phase-01/QA/README.md](../../history/Phase-01/QA/README.md) — archived
+- [../../history/Phase-01/BUGS/README.md](../../history/Phase-01/BUGS/README.md) — archived
+- [../../history/Phase-01/POST_IMPLEMENTATION_REVIEW.md](../../history/Phase-01/POST_IMPLEMENTATION_REVIEW.md) — archived
+- [../../history/Phase-01/10_RELEASE_NOTES.md](../../history/Phase-01/10_RELEASE_NOTES.md) — archived
 - [../../12_BUG_CLASSIFICATION.md](../../12_BUG_CLASSIFICATION.md)
+- [../../13_PHASE_LIFECYCLE.md](../../13_PHASE_LIFECYCLE.md)
+- [../../02_ROADMAP.md](../../02_ROADMAP.md)
 - [../../10_CHECKPOINT_PROTOCOL.md](../../10_CHECKPOINT_PROTOCOL.md)
 - [../../history/README.md](../../history/README.md)

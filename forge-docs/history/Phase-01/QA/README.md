@@ -2,7 +2,7 @@
 
 > **Purpose:** Tracks QA work that is deliberately separate from implementation — criteria that need a real device/browser/screen-reader session rather than an automated one, so they don't block Phase 01 sign-off while remaining genuinely open.
 > **Scope:** This phase only.
-> **Depends on:** [`../08_ACCEPTANCE.md`](../08_ACCEPTANCE.md) §§4–5, [`../CURRENT_STATE.md`](../CURRENT_STATE.md)
+> **Depends on:** [`../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md`](../../../implementation/Phase-01-Workbench/08_ACCEPTANCE.md) §§4–5, [`../../../implementation/Phase-01-Workbench/CURRENT_STATE.md`](../../../implementation/Phase-01-Workbench/CURRENT_STATE.md)
 
 ---
 
