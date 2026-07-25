@@ -3,7 +3,7 @@
 > **Purpose:** Entry point for the Universal Converter phase — objective, scope, deliverables, and completion criteria.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** **Implementation complete — all seven milestones done.** RC audit (Milestone 7) passed with zero open BLOCKERs. Awaiting the project owner's formal Sign-off decision (see [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) §5) before this phase moves to Released/Frozen per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md).
+> **Status:** 🔒 RELEASED & FROZEN — tagged `v0.4.0-universal-converter`, merged to `master` via [PR #19](https://github.com/DiegoDoug/forge/pull/19). Specification: Locked. Implementation: Closed. Future changes: bug fixes only.
 > **Last Updated:** 2026-07-25
 
 ---
@@ -60,7 +60,7 @@ Seven milestones (per the project owner's Stage 4 ordering, 2026-07-23), each in
 - [x] Milestone 4 — Browser provider abstraction (a declarative manifest for the nine client-side tools; no execution-location change). **Complete, approved by the project owner 2026-07-25** — zero existing tool files touched; verified live in browser (identical render, working Minify/Cron interactions) via a throwaway page, deleted afterward.
 - [x] Milestone 5 — Unified Converter UI and routing (the single `/converters` page, nav consolidation, `/ingest` redirect). **Complete, approved by the project owner 2026-07-25** — plus an unplanned but necessary fix to Workbench's own pinned-tools mapping (the dead `"ingest"` key and a redundant `"universal_converter"` placeholder, both retired in favor of `"converters"`), verified by the Workbench panel correctly showing a "Converter" tile post-fix. Full backend suite 183 passed, `tsc`/`lint`/`build` clean.
 - [x] Milestone 6 — Cleanup, documentation, and regression hardening (full acceptance-criteria sweep, shipped-app docs updated). **Complete, approved by the project owner 2026-07-25** — every `08_ACCEPTANCE.md` §1–§4 criterion now checked with cited evidence; `docs/Architecture.md`, `docs/API.md`, `docs/FolderStructure.md`, root `README.md`, and `forge-docs/02_ROADMAP.md` updated; dead-code sweep found nothing left over.
-- [x] Milestone 7 — Release candidate audit (independent verification pass, Docker clean-room check, sign-off readiness). **Complete** — plus a fresh-checkout reproducibility check added at the project owner's request (T20a), a dependency review (zero new dependencies, T20c), a repository-cleanliness check (T20d), and a drafted [`10_RELEASE_NOTES.md`](10_RELEASE_NOTES.md) (T20e). Zero open BLOCKERs. Awaiting the project owner's Sign-off decision.
+- [x] Milestone 7 — Release candidate audit (independent verification pass, Docker clean-room check, sign-off readiness). **Complete, approved by the project owner 2026-07-25 — APPROVED, Release Candidate accepted.** Plus a fresh-checkout reproducibility check added at the project owner's request (T20a), a dependency review (zero new dependencies, T20c), a repository-cleanliness check (T20d), and a drafted release notes document (T20e, now at [`../../history/Phase-04/10_RELEASE_NOTES.md`](../../history/Phase-04/10_RELEASE_NOTES.md)). Zero open BLOCKERs.
 
 > Each milestone completion is a checkpoint trigger — see [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md) §1.
 
@@ -78,7 +78,7 @@ Seven milestones (per the project owner's Stage 4 ordering, 2026-07-23), each in
 - [x] [`CURRENT_STATE.md`](CURRENT_STATE.md) reflects reality with no stale "In Progress" items.
 - [x] A final checkpoint has been produced per [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md).
 
-Implementation is complete. Per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md), the remaining stages (Owner Sign-off → Released → Frozen) are the project owner's decisions to make, not this document's to declare.
+**Released & Frozen (2026-07-25).** The project owner recorded formal Sign-off: APPROVED, Release Candidate accepted, zero blocking issues. Tagged `v0.4.0-universal-converter`, merged to `master` via [PR #19](https://github.com/DiegoDoug/forge/pull/19) (squash commit `8b5ee07`). Per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md), this phase's directory now accepts bug fixes only — no new features, no architectural changes; any further enhancement begins as a new phase.
 
 ## Cross-references
 
@@ -86,7 +86,7 @@ Implementation is complete. Per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYC
 - [01_SPEC.md](01_SPEC.md)
 - [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
 - [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
-- [10_RELEASE_NOTES.md](10_RELEASE_NOTES.md)
+- [../../history/Phase-04/10_RELEASE_NOTES.md](../../history/Phase-04/10_RELEASE_NOTES.md)
 - [IMPLEMENT.md](IMPLEMENT.md)
 - [../../02_ROADMAP.md](../../02_ROADMAP.md)
 - [../../09_CLAUDE_CODE_RULES.md](../../09_CLAUDE_CODE_RULES.md)

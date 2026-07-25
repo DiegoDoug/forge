@@ -3,7 +3,7 @@
 > **Purpose:** Live snapshot of where this phase actually stands, updated at every checkpoint.
 > **Scope:** This phase only — updated continuously, never left stale.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** **Implementation complete.** All seven milestones (T1–T21) done and approved. RC audit (Milestone 7) found zero open BLOCKERs. Awaiting the project owner's formal Sign-off decision.
+> **Status:** 🔒 RELEASED & FROZEN — tagged `v0.4.0-universal-converter`, merged to `master` via [PR #19](https://github.com/DiegoDoug/forge/pull/19) (squash commit `8b5ee07`). Specification: Locked. Implementation: Closed. Future changes: bug fixes only.
 > **Last Updated:** 2026-07-25
 
 ---
@@ -80,17 +80,19 @@ Design phase and Stage 4 milestone breakdown are complete (see below). The proje
 
 ## Next Milestone
 
-None — this was the final milestone. Next step is the project owner's Sign-off decision, then (per `13_PHASE_LIFECYCLE.md`) tag/merge to `master` and freeze this phase's specification.
+None. Phase 04 is Released & Frozen. Future work against this phase is limited to genuine bug fixes, per `13_PHASE_LIFECYCLE.md` §4.
 
 ## Next Claude Prompt
 
 ```
-Phase 04 (Universal Converter) implementation is complete — all seven
-milestones done, RC audit passed with zero open BLOCKERs. Awaiting the
-project owner's Sign-off decision (08_ACCEPTANCE.md §5). Once granted:
-tag/merge to master (Released), then freeze this phase's specification and
-move 10_RELEASE_NOTES.md, CURRENT_STATE.md's history, etc. to
-history/Phase-04/ per 13_PHASE_LIFECYCLE.md §5's Frozen-stage archival step.
+Phase 04 (Universal Converter) is released, merged (PR #19, commit
+8b5ee07), tagged v0.4.0-universal-converter, and frozen - see
+forge-docs/history/2026-07-25-phase-04-final-checkpoint.md. Begin Stage 1
+(Specification) for Phase 05 (Model Playground) per
+14_IMPLEMENTATION_PLAYBOOK.md, following the same disciplined process used
+for Phases 01-04: produce a complete spec before any code, flag ambiguities
+for clarification rather than assuming, and do not proceed to Stage 2
+without explicit owner approval of the spec.
 ```
 
 ## Session Notes
@@ -178,6 +180,17 @@ history/Phase-04/ per 13_PHASE_LIFECYCLE.md §5's Frozen-stage archival step.
   **T21:** This document, `README.md`, and `IMPLEMENT.md` updated to reflect implementation-complete status. Per the change-type rule, Milestone 7 introduced neither an architectural nor a behavioral change, as expected for an audit-only milestone.
 
   Zero open BLOCKERs. Phase 04's implementation is complete. The only remaining step is the project owner's formal Sign-off decision.
+- 2026-07-25 (same session, continued) — **Project owner recorded formal Sign-off: APPROVED.** Release Candidate accepted, zero blocking issues, known issues limited to those already documented in `10_RELEASE_NOTES.md`. Directed proceeding with the project's normal release process and explicitly noted that further code changes are inappropriate from here except to address a newly discovered BLOCKER — any enhancement begins as a new phase.
+
+  Executed the release process, confirming the established workflow first (three prior phases each used a feature branch → PR → squash-merge → tag → separate post-release freeze/archive commit, evidenced by `git log`, `git branch -a`, and the existing `v0.1.0`–`v0.3.0` tags) rather than assuming a different mechanism:
+  - Created branch `Phase04/Universal-Converter`, committed all Phase 04 changes (33 files), pushed to origin.
+  - Opened [PR #19](https://github.com/DiegoDoug/forge/pull/19), squash-merged to `master` (commit `8b5ee07`), deleted the feature branch.
+  - Tagged `v0.4.0-universal-converter` on the merge commit, pushed the tag.
+  - Archived end-of-phase artifacts per `13_PHASE_LIFECYCLE.md` §5 and Phase 01/03's exact precedent: `git mv`'d `10_RELEASE_NOTES.md` to `forge-docs/history/Phase-04/`, fixed its internal cross-references for the new location, finalized its status from Draft to Released & Frozen. Updated this document's and `README.md`'s status headers to 🔒 RELEASED & FROZEN, referencing PR #19 and commit `8b5ee07` (matching Phase 03's exact wording pattern). No version bump to `backend/app/core/version.py` or `frontend/package.json` (both still `0.1.0`) — following Phase 02/03's own precedent of not bumping these at release.
+  - Updated `forge-docs/02_ROADMAP.md`: header Status/Version/Last-Updated, Phase 04's table row to `✓ Complete — 🔒 released & frozen as v0.4.0-universal-converter`, and §4's sequencing rationale.
+  - Wrote `forge-docs/history/2026-07-25-phase-04-final-checkpoint.md`, mirroring Phase 03's final-checkpoint template exactly.
+
+  This phase's directory now accepts bug fixes only, per `13_PHASE_LIFECYCLE.md` §4. Phase 04 (Universal Converter) is released.
 - 2026-07-23 (same session, continued) — `08_ACCEPTANCE.md` filled in at the project owner's request, ahead of the task breakdown. The owner supplied nine release-gate categories (every existing conversion works, no API contract changes, browser converters never upload data, Ingest preserved, unified nav replaces old entries, `/ingest` redirects, no DB migrations, no performance regression, all existing tests pass); each was expanded into one or more independently-verifiable criteria (specific commands, diffs, or observations) rather than left as a subjective review point, per the owner's explicit instruction that these become "objective release gates rather than subjective review points." All criteria are unchecked pending Stage 5 RC verification.
 - 2026-07-23 (same session, continued) — `07_TESTING.md` filled in. The owner's approval-status message confirmed the design phase would be considered effectively complete, contingent on this document, with approval to proceed into Stage 4 (Milestone Breakdown) once it's finished and linked to the acceptance criteria. A real gap was surfaced and addressed rather than glossed over: `backend/tests/` has zero existing coverage for Converters or Ingest today, which would have made "no regression" claims unfalsifiable — this phase's test plan now includes baseline/characterization tests against the pipeline's pre-wrapper behavior, so the wrap-not-rewrite design in `03_BACKEND.md` has something concrete to be checked against. Every test in the document is traced to the specific `08_ACCEPTANCE.md` criterion it verifies. Design phase (Discovery → Specification → UI → Backend Architecture → Database → API → Acceptance Criteria → Testing Plan) is now complete per the owner's checklist.
 - 2026-07-23 (same session, continued) — `09_IMPLEMENTATION_TASKS.md` (Stage 4, Milestone Breakdown) filled in. The owner authorized proceeding to Stage 4 and specified: milestones must be independently reviewable, independently testable, reversible if necessary, and small enough to isolate a regression quickly; each milestone must include objective, scope, files/modules, dependencies, acceptance criteria, tests to execute, rollback considerations, and a complexity estimate; and specified the seven-milestone sequence (Baseline tests → Provider interface/registry → Ingest provider integration → Browser provider abstraction → Unified UI/routing → Cleanup/hardening → RC audit). All seven milestones were drafted against that sequence and those requirements, with 21 individual tasks (T1–T21) traced back to specific `01_SPEC.md`/`03_BACKEND.md`/`08_ACCEPTANCE.md` items. `README.md`'s Milestones section was updated to match (the earlier 3-milestone sketch is superseded). Per the owner's explicit instruction, implementation stays locked until this milestone breakdown is reviewed and approved — Milestone 1 has not started.

@@ -2,10 +2,10 @@
 
 > **Purpose:** The release-facing summary of this phase — what shipped, what broke on purpose, what to do before upgrading. Written at RC (Milestone 7), updated through sign-off; not a duplicate of `CURRENT_STATE.md` (the day-to-day working log) — this is the document a user or another engineer reads to understand what changed, not how it was built.
 > **Scope:** This phase only.
-> **Status:** Draft — filled in at RC (Milestone 7, T20e). Finalized at the Released stage per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md), after Owner Sign-off.
-> **Version:** [tag this phase ships as, e.g. `v0.4.0-universal-converter` — TODO: confirm exact tag with the project owner at sign-off]
+> **Status:** Finalized — Released & Frozen. Tagged `v0.4.0-universal-converter`, merged to `master` via [PR #19](https://github.com/DiegoDoug/forge/pull/19) (squash commit `8b5ee07`).
+> **Version:** `v0.4.0-universal-converter`
 > **Last Updated:** 2026-07-25
-> **Depends On:** [CURRENT_STATE.md](CURRENT_STATE.md), [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
+> **Depends On:** [../../implementation/Phase-04-Universal-Converter/CURRENT_STATE.md](../../implementation/Phase-04-Universal-Converter/CURRENT_STATE.md), [../../implementation/Phase-04-Universal-Converter/08_ACCEPTANCE.md](../../implementation/Phase-04-Universal-Converter/08_ACCEPTANCE.md)
 
 ---
 
@@ -40,14 +40,14 @@ No special upgrade steps. A normal `docker compose up --build` picks up the chan
 
 ## Deferred Work
 
-- **Any new conversion direction** (e.g. Markdown → DOCX/PDF, server-side JSON ↔ YAML ↔ XML round-trips) — this phase is explicitly consolidation-only; see [`01_SPEC.md`](01_SPEC.md) §5. The new `ConverterProvider` registry exists specifically so a future phase can add one without re-architecting the page.
+- **Any new conversion direction** (e.g. Markdown → DOCX/PDF, server-side JSON ↔ YAML ↔ XML round-trips) — this phase is explicitly consolidation-only; see [`01_SPEC.md`](../../implementation/Phase-04-Universal-Converter/01_SPEC.md) §5. The new `ConverterProvider` registry exists specifically so a future phase can add one without re-architecting the page.
 - **Moving the client-side text tools to the backend** — confirmed with the project owner they stay client-side; only the presentation layer unified.
 - **Conversion history/presets persistence** — file-based conversion keeps Ingest's exact ephemeral, TTL-cleaned model; no new database table.
 
 ## Cross-references
 
-- [CURRENT_STATE.md](CURRENT_STATE.md)
-- [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
-- [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
+- [../../implementation/Phase-04-Universal-Converter/CURRENT_STATE.md](../../implementation/Phase-04-Universal-Converter/CURRENT_STATE.md)
+- [../../implementation/Phase-04-Universal-Converter/08_ACCEPTANCE.md](../../implementation/Phase-04-Universal-Converter/08_ACCEPTANCE.md)
+- [../../implementation/Phase-04-Universal-Converter/09_IMPLEMENTATION_TASKS.md](../../implementation/Phase-04-Universal-Converter/09_IMPLEMENTATION_TASKS.md)
 - [../../12_BUG_CLASSIFICATION.md](../../12_BUG_CLASSIFICATION.md)
 - [../../02_ROADMAP.md](../../02_ROADMAP.md)
