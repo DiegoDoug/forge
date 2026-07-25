@@ -32,10 +32,10 @@ full reference.
 | `/api/secrets` | Secrets, folders, tags, version history (`/api/vault` still resolves as a temporary compatibility alias, see [DecisionLog.md](DecisionLog.md)) |
 | `/api/generators` | Password/UUID/NanoID/random-bytes/API-key/JWT-secret generation, entropy estimate |
 | `/api/crypto` | Base64, hashing, AES-256-GCM, JWT decode/verify/build, RSA, ECDSA |
-| `/api/converters` | Cron expression parsing (other converters run client-side) |
+| `/api/converters` | Cron expression parsing (other converters run client-side), plus a read-only `providers` listing of registered document-conversion providers |
 | `/api/notes` | Note CRUD + full-text search |
 | `/api/documents` | Document CRUD, full-text search, and multi-format export (txt/md/doc/docx/pdf/xml) |
-| `/api/ingest` | Document upload → Markdown conversion jobs, preview, save-to-notes |
+| `/api/ingest` | Document upload → Markdown conversion jobs, preview, save-to-notes (reached via the unified Converter page's Documents section; `/ingest` itself redirects to `/converters`) |
 | `/api/search` | Combined secrets + notes + documents search for the command palette |
 | `/api/workbench` | Home-page Workbench: layout (panels + pinned tools), storage/recent-activity/recent-notes aggregation, layout update/reset |
 | `/api/settings` | Theme, backup export/import, about |

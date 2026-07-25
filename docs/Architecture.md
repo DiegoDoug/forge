@@ -75,11 +75,22 @@ encrypts secret values at rest and signs session cookies; the master password
 only decides whether the *current browser* gets a session. See
 [Security.md](Security.md) for the full model.
 
-## Ingest
+## Converter
 
-The `/ingest` feature is a direct port of the standalone
-[Ingest](https://github.com/DiegoDoug/Ingest) project's conversion pipeline
+The Converter page (`/converters`) unifies two format-conversion surfaces
+that used to be separate pages (Phase 04, Universal Converter): client-side
+text/data tools (JSON, YAML, XML, CSV, regex, cron, diff, timestamp,
+URL/Unicode) and document conversion, backed by a direct port of the
+standalone [Ingest](https://github.com/DiegoDoug/Ingest) project's pipeline
 (`app/services/ingest/`) — MarkItDown-based document→Markdown conversion, an
 in-memory job store with TTL cleanup, and optional vision-LLM assistance for
-scanned PDFs/images. It's intentionally *not* persisted to the database:
-uploads and results are scratch data, unlike secrets and notes.
+scanned PDFs/images. The old `/ingest` route redirects to `/converters`.
+Ingest's pipeline is intentionally *not* persisted to the database: uploads
+and results are scratch data, unlike secrets and notes.
+
+`backend/app/services/converters/providers/` holds a small `ConverterProvider`
+registry that wraps the Ingest pipeline (`MarkItDownProvider`) without
+modifying it — additive scaffolding so a future conversion direction can
+register as a new provider rather than requiring another page.
+`GET /api/converters/providers` exposes the registry; `/api/ingest/*` and
+`/api/converters/cron/parse` keep their original paths unchanged.

@@ -14,7 +14,7 @@ forge/
 │   │   │   ├── notes/
 │   │   │   ├── generators/
 │   │   │   ├── crypto/
-│   │   │   ├── converters/
+│   │   │   ├── converters/         cron parsing + a small provider registry (providers/) wrapping ingest/
 │   │   │   ├── ingest/             ported from the standalone Ingest project
 │   │   │   ├── search/
 │   │   │   └── settings/

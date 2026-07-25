@@ -1,4 +1,4 @@
-import { Repeat, Search, Sparkles, type LucideIcon } from "lucide-react";
+import { Search, Sparkles, type LucideIcon } from "lucide-react";
 
 import { NAV_ITEMS } from "@/lib/nav-registry";
 
@@ -14,6 +14,11 @@ export interface ToolMetadata {
 // its nav-registry.ts href. Manually synced, like the backend catalog itself
 // is manually synced with nav-registry.ts (03_BACKEND.md §3's documented,
 // tracked gap) - not a bug, the same known seam on the frontend side.
+//
+// "/ingest" was removed here as part of Universal Converter (Phase 04)
+// Milestone 5 - the page was consolidated into "/converters" (see
+// Phase-04-Universal-Converter/01_SPEC.md §3), and the backend's matching
+// "ingest" tool key was retired alongside it.
 const NAV_KEY_BY_HREF: Record<string, string> = {
   "/secrets": "secrets",
   "/notes": "notes",
@@ -22,7 +27,6 @@ const NAV_KEY_BY_HREF: Record<string, string> = {
   "/crypto": "crypto",
   "/converters": "converters",
   "/utilities": "utilities",
-  "/ingest": "ingest",
 };
 
 // Tool-catalog keys with no frontend/lib/nav-registry.ts entry: Search isn't
@@ -31,7 +35,12 @@ const NAV_KEY_BY_HREF: Record<string, string> = {
 // icon differs from the sidebar's (MessageSquareText) - this entry is what
 // the Workbench pinned-tools tile renders, matching Search's precedent of a
 // tool having its own Workbench-facing metadata distinct from the sidebar's.
-// Universal Converter doesn't exist yet (Phase 04).
+//
+// The forward-looking "universal_converter" placeholder that used to live
+// here (anticipating Phase 04) was removed rather than activated: Phase 04's
+// actual design unified Converters and Ingest into the single existing
+// "/converters" page rather than shipping a separate tile, so "converters"
+// (mapped above from nav-registry.ts, unchanged) already covers it.
 const EXTRA_TOOL_METADATA: Record<string, Omit<ToolMetadata, "key">> = {
   search: { title: "Search", description: "Search secrets, notes, and documents", icon: Search, href: "/search" },
   prompt_studio: {
@@ -39,12 +48,6 @@ const EXTRA_TOOL_METADATA: Record<string, Omit<ToolMetadata, "key">> = {
     description: "Author and version LLM prompts",
     icon: Sparkles,
     href: "/prompt-studio",
-  },
-  universal_converter: {
-    title: "Universal Converter",
-    description: "Unified document and data format conversion",
-    icon: Repeat,
-    href: "#",
   },
 };
 

@@ -98,7 +98,11 @@ async def test_reset_layout_restores_the_default_layout(db_session):
     assert json.loads(layout.panels) == workbench_service.DEFAULT_LAYOUT_PANELS
     assert len(json.loads(layout.panels)) == 5
     assert json.loads(layout.pinned_tools) == workbench_service.DEFAULT_PINNED_TOOLS
-    assert len(json.loads(layout.pinned_tools)) == 6
+    # 5, not 6: Universal Converter (Phase 04) Milestone 5 retired the dead
+    # "ingest" key and the now-redundant "universal_converter" placeholder,
+    # both folded into the existing "converters" key — see workbench.py's
+    # DEFAULT_PINNED_TOOLS comment.
+    assert len(json.loads(layout.pinned_tools)) == 5
 
 
 async def test_get_workbench_matches_dashboard_shape_minus_recent_secrets(db_session):

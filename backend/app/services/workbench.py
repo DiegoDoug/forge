@@ -17,6 +17,15 @@ from app.models.workbench import WorkbenchLayout
 
 # Forward-looking tools carry "available": False until their own phase ships;
 # they can still be pinned (rendered as "coming soon"), per 03_BACKEND.md §3.
+#
+# "ingest" and "universal_converter" were removed here as part of Universal
+# Converter (Phase 04) Milestone 5: Ingest's page was consolidated into
+# `/converters` (see Phase-04-Universal-Converter/01_SPEC.md §3), so the
+# "ingest" key is dead, and "universal_converter" — a forward-looking
+# placeholder anticipating this exact phase — turned out to just *be*
+# "converters" once unified, not a separate tile. "converters" (already
+# below, already available) now covers both. This mirrors Phase 03's own
+# precedent of flipping a forward-looking placeholder once its phase ships.
 WORKBENCH_TOOL_KEYS: dict[str, dict[str, bool]] = {
     "secrets": {"available": True},
     "notes": {"available": True},
@@ -25,10 +34,8 @@ WORKBENCH_TOOL_KEYS: dict[str, dict[str, bool]] = {
     "crypto": {"available": True},
     "converters": {"available": True},
     "utilities": {"available": True},
-    "ingest": {"available": True},
     "search": {"available": True},
     "prompt_studio": {"available": True},
-    "universal_converter": {"available": False},
 }
 
 DEFAULT_LAYOUT_PANELS: list[dict[str, object]] = [
@@ -39,7 +46,7 @@ DEFAULT_LAYOUT_PANELS: list[dict[str, object]] = [
     {"type": "recent_notes", "visible": True},
 ]
 
-DEFAULT_PINNED_TOOLS: list[str] = ["ingest", "notes", "prompt_studio", "universal_converter", "secrets", "search"]
+DEFAULT_PINNED_TOOLS: list[str] = ["converters", "notes", "prompt_studio", "secrets", "search"]
 
 
 def _validate_panels(panels: list[dict]) -> None:
