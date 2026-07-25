@@ -11,3 +11,14 @@ class CronParseIn(BaseModel):
 class CronParseOut(BaseModel):
     description: str
     next_runs: list[str]
+
+
+class ProviderOut(BaseModel):
+    slug: str
+    label: str
+    input_extensions: list[str]
+    output_format: str
+
+
+class ProvidersOut(BaseModel):
+    providers: list[ProviderOut]

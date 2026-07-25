@@ -1,7 +1,7 @@
 # Forge
 
 Forge is a self-hosted developer toolbox that combines a password/secrets
-manager, a notes board, code/crypto utilities, and a document-to-Markdown
+manager, a notes board, code/crypto utilities, and a universal format
 converter into one application you run on your own hardware.
 
 ## Features
@@ -11,9 +11,8 @@ converter into one application you run on your own hardware.
 - **Documents** — rich text editor with pin/history sidebar and export to TXT, Markdown, Word (.doc/.docx), PDF, and XML
 - **Generators** — passwords, UUIDs, NanoIDs, random bytes, API keys, JWT secrets
 - **Crypto** — Base64, hashing, AES-256-GCM, JWT decode/verify/build, RSA, ECDSA
-- **Converters** — JSON formatter, regex tester, URL/Unicode tools, cron parser, diff viewer, timestamp converter
+- **Converter** — JSON/YAML/XML/CSV formatting, regex tester, URL/Unicode tools, cron parser, diff viewer, timestamp converter, and document conversion (PDF, Office, HTML, images, audio) into clean Markdown
 - **Utilities** — QR code generator, checksum/file hashing, color picker, timezone converter
-- **Ingest** — convert PDFs, Office documents, HTML, images, and audio into clean Markdown
 - **Workbench & search** — a customizable home screen of pinned tools, recent activity, and quick actions, plus a command palette (Ctrl+K) across the whole app
 
 ## Requirements
