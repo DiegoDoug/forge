@@ -18,7 +18,7 @@ from app.services.model_playground.providers import PROVIDER_REGISTRY
 
 logger = logging.getLogger("forge.model_playground")
 
-TIMEOUT_SECONDS = 60.0  # per ADR-0010 SS2.5
+TIMEOUT_SECONDS = 60.0  # per ADR-0011 SS2.5
 
 
 @dataclass

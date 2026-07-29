@@ -22,7 +22,7 @@ Model Playground is implemented end-to-end (backend, frontend, 27 new tests, ful
 
 ## Completed
 
-- [x] [ADR-0010](../../decisions/0010-model-playground-provider-credential-security.md) and [ADR-0011](../../decisions/0011-model-playground-provider-sdk-selection.md) — both **Accepted** 2026-07-29.
+- [x] [ADR-0011](../../decisions/0011-model-playground-provider-credential-security.md) and [ADR-0012](../../decisions/0012-model-playground-provider-sdk-selection.md) — both **Accepted** 2026-07-29.
 - [x] `01_SPEC.md`, `08_ACCEPTANCE.md`, `02_UI.md`, `03_BACKEND.md`, `04_DATABASE.md`, `05_COMPONENTS.md`, `06_API.md`, `07_TESTING.md`, `09_IMPLEMENTATION_TASKS.md` all filled in and confirmed.
 - [x] `docs/Security.md` "Outbound network calls" section added.
 - [x] `06_TECH_STACK.md`, `03_ARCHITECTURE.md` §4, `08_DEFINITION_OF_DONE.md` §4 TODOs resolved/pointed at the accepted ADRs.
@@ -46,18 +46,18 @@ Model Playground is implemented end-to-end (backend, frontend, 27 new tests, ful
 ## Known Issues
 
 - **AC18 (keyboard navigation) partially verified only.** Tab order was confirmed correct and reaches every interactive element in a sensible sequence. Enter-key *activation* of a focused button could not be conclusively verified via this session's automated browser: the identical non-activation was reproduced on the pre-existing, already-shipped Secrets feature's "New secret" button, indicating a testing-tool artifact in this environment rather than a defect this phase introduced (this phase's buttons use the same native `<button>`/Base UI trigger patterns as every other feature, with no custom keyboard handling). Recommend a real human keyboard-only pass before or shortly after release. Not treated as blocking, per the reasoning above — tracked honestly rather than dropped, per [01_PRODUCT_PRINCIPLES.md](../../01_PRODUCT_PRINCIPLES.md) §1.3.
-- **"Custom / OpenAI-compatible" provider is deferred, not missing.** Per [ADR-0011](../../decisions/0011-model-playground-provider-sdk-selection.md) §2.3, this was evaluated and explicitly deferred — a future roadmap candidate, not an oversight.
+- **"Custom / OpenAI-compatible" provider is deferred, not missing.** Per [ADR-0012](../../decisions/0012-model-playground-provider-sdk-selection.md) §2.3, this was evaluated and explicitly deferred — a future roadmap candidate, not an oversight.
 
 ## Architectural Decisions
 
-- [ADR-0010](../../decisions/0010-model-playground-provider-credential-security.md) — provider credential storage & outbound-call security posture. **Accepted.**
-- [ADR-0011](../../decisions/0011-model-playground-provider-sdk-selection.md) — provider/SDK selection for v1 (OpenAI + Anthropic; "Custom/OpenAI-compatible" pseudo-provider explicitly deferred). **Accepted.**
+- [ADR-0011](../../decisions/0011-model-playground-provider-credential-security.md) — provider credential storage & outbound-call security posture. **Accepted.**
+- [ADR-0012](../../decisions/0012-model-playground-provider-sdk-selection.md) — provider/SDK selection for v1 (OpenAI + Anthropic; "Custom/OpenAI-compatible" pseudo-provider explicitly deferred). **Accepted.**
 
 ## Modified Files
 
 **Planning docs:**
 - `forge-docs/implementation/Phase-05-Model-Playground/{README,01_SPEC,02_UI,03_BACKEND,04_DATABASE,05_COMPONENTS,06_API,07_TESTING,08_ACCEPTANCE,09_IMPLEMENTATION_TASKS,IMPLEMENT,CURRENT_STATE}.md`
-- `forge-docs/decisions/{0010-model-playground-provider-credential-security,0011-model-playground-provider-sdk-selection}.md` (new), `forge-docs/decisions/README.md`
+- `forge-docs/decisions/{0011-model-playground-provider-credential-security,0012-model-playground-provider-sdk-selection}.md` (new), `forge-docs/decisions/README.md`
 - `forge-docs/{02_ROADMAP,03_ARCHITECTURE,06_TECH_STACK,08_DEFINITION_OF_DONE}.md`
 - `docs/Security.md`
 
@@ -101,7 +101,7 @@ Milestone 4A or any autonomous phase progression until that freeze is complete a
 ## Session Notes
 
 - 2026-07-20 — Phase scaffold created by the Lead Architect FDK setup. No implementation work has occurred.
-- 2026-07-29 — Spec and acceptance criteria drafted. Two blocking architectural decisions identified and drafted as ADR-0010/ADR-0011 (Proposed). User reviewed and approved both as proposed, deferring the "Custom/OpenAI-compatible" provider sub-question. Remaining planning docs (`02_UI.md` through `09_IMPLEMENTATION_TASKS.md`) filled in against the accepted decisions; `IMPLEMENT.md` authorized. Backend and frontend implemented in full, 27 new tests written and passing alongside the full existing suite, and a live manual verification pass completed in a running dev server (real OpenAI call exercising the failure-isolation path, full credential/run CRUD, mobile + dark mode, confirmation dialogs). One item — full keyboard-activation verification — is tracked as a Known Issue rather than silently assumed.
+- 2026-07-29 — Spec and acceptance criteria drafted. Two blocking architectural decisions identified and drafted as ADR-0011/ADR-0012 (Proposed). User reviewed and approved both as proposed, deferring the "Custom/OpenAI-compatible" provider sub-question. Remaining planning docs (`02_UI.md` through `09_IMPLEMENTATION_TASKS.md`) filled in against the accepted decisions; `IMPLEMENT.md` authorized. Backend and frontend implemented in full, 27 new tests written and passing alongside the full existing suite, and a live manual verification pass completed in a running dev server (real OpenAI call exercising the failure-isolation path, full credential/run CRUD, mobile + dark mode, confirmation dialogs). One item — full keyboard-activation verification — is tracked as a Known Issue rather than silently assumed.
 - 2026-07-29 (later same day) — User reviewed the implementation and recorded sign-off ("Phase 05 implementation is accepted"), then instructed preparation of the Release Candidate PR, explicitly excluding Verification Framework Milestone 4 and autonomous phase progression from this effort. RC audit run (zero BLOCKERs), `10_RELEASE_NOTES.md`/`POST_IMPLEMENTATION_REVIEW.md`/`QA/QA-0001` written, `docker compose build` confirmed clean for both touched services. Proceeding to open the PR per Phase 01–04 precedent; merge/tag/freeze deliberately left for a subsequent step.
 
 ## Cross-references

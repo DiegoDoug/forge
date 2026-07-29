@@ -3,7 +3,7 @@
 > **Purpose:** Backend service design for this phase — modules, business logic boundaries, and integration with existing services.
 > **Scope:** Backend only. Schema detail lives in 04_DATABASE.md; endpoint contracts live in 06_API.md.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** Confirmed — filled in against [ADR-0010](../../decisions/0010-model-playground-provider-credential-security.md), [ADR-0011](../../decisions/0011-model-playground-provider-sdk-selection.md).
+> **Status:** Confirmed — filled in against [ADR-0011](../../decisions/0011-model-playground-provider-credential-security.md), [ADR-0012](../../decisions/0012-model-playground-provider-sdk-selection.md).
 > **Last Updated:** 2026-07-29
 
 ---
@@ -29,12 +29,12 @@ No existing service is extended — this is a new, self-contained subpackage (pe
 
 ## 2. Business logic
 
-**`credentials.py`** (mirrors `services/secrets/service.py`'s shape, per ADR-0010):
+**`credentials.py`** (mirrors `services/secrets/service.py`'s shape, per ADR-0011):
 - `list_credentials(session) -> list[ProviderCredential]` — metadata only, never decrypts.
 - `list_provider_availability(session) -> list[ProviderAvailability]` — for every provider in `PROVIDER_REGISTRY` (openai, anthropic), reports `configured: bool` and its supported model list, joined against which providers have a stored credential. This is what powers `02_UI.md`'s "greyed out until configured" providers list and the runnable model list in the composer.
 - `create_or_replace_credential(session, provider, label, api_key) -> ProviderCredential` — enforces one credential per provider (upsert on the unique `provider` column per `04_DATABASE.md` §1); encrypts via `get_vault_crypto()`.
 - `delete_credential(session, credential_id) -> None`.
-- No `reveal_credential` function exists — the key is never re-exposed once written (per spec FR3 / ADR-0010 §2.2). This is an intentional omission, not an oversight.
+- No `reveal_credential` function exists — the key is never re-exposed once written (per spec FR3 / ADR-0011 §2.2). This is an intentional omission, not an oversight.
 
 **`runs.py`**:
 - `create_run(session, prompt, targets: list[RunTarget]) -> PlaygroundRun` — validates `targets` is non-empty and capped (see `06_API.md` §4), validates every target's provider has a configured credential (else raises a validation error before any outbound call is made — no partial-request round trip for an unconfigured provider), then:
@@ -48,7 +48,7 @@ No existing service is extended — this is a new, self-contained subpackage (pe
 
 **`providers/base.py`**:
 - `ProviderAdapter` — a small `Protocol`/ABC with one method: `async def complete(self, *, api_key: str, model: str, prompt: str) -> AdapterResult`, where `AdapterResult` carries `response_text`, `prompt_tokens: int | None`, `completion_tokens: int | None`.
-- `openai_adapter.py`/`anthropic_adapter.py` implement this against the `openai`/`anthropic` SDKs respectively (per ADR-0011) — each owns its own client construction and its own provider-specific model list (`PROVIDER_REGISTRY` in `runs.py` or `providers/__init__.py` maps provider key → adapter instance + supported models).
+- `openai_adapter.py`/`anthropic_adapter.py` implement this against the `openai`/`anthropic` SDKs respectively (per ADR-0012) — each owns its own client construction and its own provider-specific model list (`PROVIDER_REGISTRY` in `runs.py` or `providers/__init__.py` maps provider key → adapter instance + supported models).
 
 ## 3. Integration with existing services
 
@@ -71,5 +71,5 @@ None. The only cross-cutting dependency is `app/core/security.py::get_vault_cryp
 - [06_API.md](06_API.md)
 - [../../03_ARCHITECTURE.md](../../03_ARCHITECTURE.md)
 - [../../07_CODING_STANDARDS.md](../../07_CODING_STANDARDS.md)
-- [../../decisions/0010-model-playground-provider-credential-security.md](../../decisions/0010-model-playground-provider-credential-security.md)
-- [../../decisions/0011-model-playground-provider-sdk-selection.md](../../decisions/0011-model-playground-provider-sdk-selection.md)
+- [../../decisions/0011-model-playground-provider-credential-security.md](../../decisions/0011-model-playground-provider-credential-security.md)
+- [../../decisions/0012-model-playground-provider-sdk-selection.md](../../decisions/0012-model-playground-provider-sdk-selection.md)

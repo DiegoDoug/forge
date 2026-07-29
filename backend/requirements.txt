@@ -33,6 +33,6 @@ reportlab>=4.2,<5
 openai>=1.40,<2
 pymupdf>=1.24,<2
 
-# Model Playground: provider SDKs (see app/services/model_playground/providers, ADR-0011).
+# Model Playground: provider SDKs (see app/services/model_playground/providers, ADR-0012).
 # openai above is reused directly; anthropic is new.
 anthropic>=0.34,<1

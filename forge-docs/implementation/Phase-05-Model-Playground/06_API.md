@@ -53,7 +53,7 @@ New Pydantic schemas in `backend/app/schemas/model_playground.py` (never expose 
 Per [`../../../docs/Security.md`](../../../docs/Security.md)'s existing posture (no app-level rate limiting; a self-hosted, typically LAN-only or single-operator tool relies on the deployment's own reverse proxy/VPN for that), no new rate-limiting mechanism is introduced. Two defensive caps exist instead, to bound how much a single request can fan out:
 
 - **Max targets per run: 6** (proposed — one per model across both v1 providers is well under this; leaves headroom without allowing an unbounded fan-out from one request). Enforced server-side (400 if exceeded) and reflected in the UI by disabling further selection past the cap.
-- **Per-call timeout: 60s** (per ADR-0010 §2.5) bounds worst-case total request time to ~60s regardless of target count, since calls run concurrently, not sequentially (per `03_BACKEND.md` §2).
+- **Per-call timeout: 60s** (per ADR-0011 §2.5) bounds worst-case total request time to ~60s regardless of target count, since calls run concurrently, not sequentially (per `03_BACKEND.md` §2).
 
 ## 5. TODO
 

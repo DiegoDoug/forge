@@ -50,7 +50,7 @@
 | Document conversion | `markitdown[all]` | Ingest pipeline (ported project) |
 | Document export | `python-docx`, `beautifulsoup4`, `markdownify`, `reportlab` | Documents tab export formats |
 | Optional vision-LLM | `openai`, `pymupdf` | disabled unless configured — see [`../docs/Security.md`](../docs/Security.md) |
-| Model Playground providers | `openai` (reused), `anthropic` | OpenAI + Anthropic SDKs, opt-in per configured credential — see [ADR-0011](decisions/0011-model-playground-provider-sdk-selection.md), [`../docs/Security.md`](../docs/Security.md) |
+| Model Playground providers | `openai` (reused), `anthropic` | OpenAI + Anthropic SDKs, opt-in per configured credential — see [ADR-0012](decisions/0012-model-playground-provider-sdk-selection.md), [`../docs/Security.md`](../docs/Security.md) |
 
 ## 3. Infrastructure
 
@@ -71,7 +71,7 @@ Before adding anything to this stack for a new phase:
 
 ## 5. Anticipated additions (not yet added — TODO)
 
-- [x] LLM provider SDK(s) for Model Playground (Phase 05) chosen and added: `openai` (already a dependency, reused) + `anthropic` (new, added to `requirements.txt` §2 above) — see [ADR-0011](decisions/0011-model-playground-provider-sdk-selection.md), Accepted 2026-07-29. Prompt Studio (Phase 03) carries no SDK requirement — it ships with zero outbound calls.
+- [x] LLM provider SDK(s) for Model Playground (Phase 05) chosen and added: `openai` (already a dependency, reused) + `anthropic` (new, added to `requirements.txt` §2 above) — see [ADR-0012](decisions/0012-model-playground-provider-sdk-selection.md), Accepted 2026-07-29. Prompt Studio (Phase 03) carries no SDK requirement — it ships with zero outbound calls.
 - [ ] TODO: Confirm whether Universal Converter (Phase 04) needs any new format libraries beyond what Converters/Ingest already cover.
 
 ## 6. Cross-references

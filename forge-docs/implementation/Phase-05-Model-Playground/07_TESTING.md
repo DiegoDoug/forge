@@ -54,7 +54,7 @@ No frontend test tooling exists yet in this repo (per [`../../06_TECH_STACK.md`]
 
 New, fully isolated `features/model-playground/` and `services/model_playground/` — no existing feature's code is modified except:
 - `frontend/lib/nav-registry.ts` (one new entry appended — low risk, purely additive per `02_UI.md` §2).
-- `docs/Security.md`, `06_TECH_STACK.md`, `03_ARCHITECTURE.md`, `08_DEFINITION_OF_DONE.md` (documentation only, already updated alongside ADR-0010/0011 acceptance).
+- `docs/Security.md`, `06_TECH_STACK.md`, `03_ARCHITECTURE.md`, `08_DEFINITION_OF_DONE.md` (documentation only, already updated alongside ADR-0011/0012 acceptance).
 
 No shared component, no existing table, no existing route is touched. Regression risk for this phase is low and confined to "does the new nav entry render correctly," which is covered by manual verification above.
 

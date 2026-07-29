@@ -42,7 +42,7 @@ A normal `docker compose up --build` picks up the change: the new migration appl
 
 ## Deferred Work
 
-- **A generic "Custom / OpenAI-compatible" pseudo-provider** (base-URL override, for self-hosted models or OpenRouter-style endpoints) — evaluated and explicitly deferred in [ADR-0011](../../decisions/0011-model-playground-provider-sdk-selection.md) §2.3, to keep v1's credential form and provider list simple. The adapter-interface design means adding it later is additive, not a rework, if real demand shows up.
+- **A generic "Custom / OpenAI-compatible" pseudo-provider** (base-URL override, for self-hosted models or OpenRouter-style endpoints) — evaluated and explicitly deferred in [ADR-0012](../../decisions/0012-model-playground-provider-sdk-selection.md) §2.3, to keep v1's credential form and provider list simple. The adapter-interface design means adding it later is additive, not a rework, if real demand shows up.
 - **Streaming (SSE) responses** — v1 waits for each provider's complete response; see [`01_SPEC.md`](01_SPEC.md) §5. Revisit once non-streaming is proven stable.
 - **Multi-turn chat / conversation history within a run, cost estimation beyond echoing provider-reported token usage, revealing a stored credential's raw key** — all explicitly out of scope for v1, per [`01_SPEC.md`](01_SPEC.md) §5.
 
@@ -53,7 +53,7 @@ A normal `docker compose up --build` picks up the change: the new migration appl
 - [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
 - [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
 - [QA/README.md](QA/README.md)
-- [../../decisions/0010-model-playground-provider-credential-security.md](../../decisions/0010-model-playground-provider-credential-security.md)
-- [../../decisions/0011-model-playground-provider-sdk-selection.md](../../decisions/0011-model-playground-provider-sdk-selection.md)
+- [../../decisions/0011-model-playground-provider-credential-security.md](../../decisions/0011-model-playground-provider-credential-security.md)
+- [../../decisions/0012-model-playground-provider-sdk-selection.md](../../decisions/0012-model-playground-provider-sdk-selection.md)
 - [../../12_BUG_CLASSIFICATION.md](../../12_BUG_CLASSIFICATION.md)
 - [../../02_ROADMAP.md](../../02_ROADMAP.md)

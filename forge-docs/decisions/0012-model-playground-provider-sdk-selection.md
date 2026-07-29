@@ -1,9 +1,9 @@
-# ADR-0011 — Model Playground provider & SDK selection (v1)
+# ADR-0012 — Model Playground provider & SDK selection (v1)
 
 > **Decision summary (approved 2026-07-29):** v1 ships OpenAI + Anthropic via their official SDKs behind a per-provider adapter interface. A "Custom / OpenAI-compatible" pseudo-provider is explicitly **deferred**, not included in v1 — see §2.3.
 
 > **Purpose:** Decide which LLM provider(s) Model Playground supports at launch and which SDK dependency each requires — the choice [06_TECH_STACK.md](../06_TECH_STACK.md) §5 has flagged as "not yet chosen" since Phase 05 was scaffolded.
-> **Scope:** This decision only. Credential storage/security posture is [ADR-0010](0010-model-playground-provider-credential-security.md).
+> **Scope:** This decision only. Credential storage/security posture is [ADR-0011](0011-model-playground-provider-credential-security.md).
 > **Ownership:** Project owner (approved 2026-07-29)
 > **Status:** Accepted
 > **Version:** 1.0.0
@@ -36,12 +36,12 @@ Model Playground's stated mission is to "test/compare LLM providers and models s
 
 - **Easier:** future providers are additive (new adapter + credential provider enum value), not architectural changes, once the adapter boundary in §2.2 exists.
 - **Harder / forecloses:** any provider not in the confirmed list is unavailable in v1 even if a user wants it — tracked as a roadmap item, not silently worked around with a generic HTTP fallback.
-- **Touches:** [06_TECH_STACK.md](../06_TECH_STACK.md) (new dependency row(s) + §5 TODO resolved) and, if the "Custom / OpenAI-compatible" sub-question in §2.3 is answered yes, the credential schema shape decided in [ADR-0010](0010-model-playground-provider-credential-security.md) (would need an optional `base_url` field).
+- **Touches:** [06_TECH_STACK.md](../06_TECH_STACK.md) (new dependency row(s) + §5 TODO resolved) and, if the "Custom / OpenAI-compatible" sub-question in §2.3 is answered yes, the credential schema shape decided in [ADR-0011](0011-model-playground-provider-credential-security.md) (would need an optional `base_url` field).
 - Resolves the [06_TECH_STACK.md](../06_TECH_STACK.md) §5 TODO for Model Playground specifically (Prompt Studio's own TODO there is unaffected — Phase 03 was resolved to zero outbound calls and carries no provider dependency).
 
 ## 5. Cross-references
 
 - [../06_TECH_STACK.md](../06_TECH_STACK.md)
 - [../implementation/Phase-05-Model-Playground/01_SPEC.md](../implementation/Phase-05-Model-Playground/01_SPEC.md)
-- [0010-model-playground-provider-credential-security.md](0010-model-playground-provider-credential-security.md)
+- [0011-model-playground-provider-credential-security.md](0011-model-playground-provider-credential-security.md)
 - [README.md](README.md)

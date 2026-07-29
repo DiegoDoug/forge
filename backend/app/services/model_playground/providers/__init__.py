@@ -15,7 +15,7 @@ class ProviderSpec:
     adapter: ProviderAdapter
 
 
-# v1 provider list per ADR-0011 - exactly these two, nothing more without a
+# v1 provider list per ADR-0012 - exactly these two, nothing more without a
 # new ADR (see IMPLEMENT.md "Autonomy Rules").
 PROVIDER_REGISTRY: dict[str, ProviderSpec] = {
     "openai": ProviderSpec(

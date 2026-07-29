@@ -16,7 +16,7 @@ Provide a UI for testing and comparing LLM provider/model outputs side by side, 
 ## Scope
 
 **In scope:**
-- [x] UI-configurable, encrypted, per-provider API key storage (OpenAI, Anthropic) — [ADR-0010](../../decisions/0010-model-playground-provider-credential-security.md).
+- [x] UI-configurable, encrypted, per-provider API key storage (OpenAI, Anthropic) — [ADR-0011](../../decisions/0011-model-playground-provider-credential-security.md).
 - [x] Sending one prompt to multiple selected provider/model combinations and viewing results side by side, each panel independent (success/error/timeout isolated per target).
 - [x] Persisted run history (indefinite retention, manual delete) — reopen and re-view a past comparison.
 - [x] `docs/Security.md` outbound-network-calls addendum.
@@ -26,7 +26,7 @@ Provide a UI for testing and comparing LLM provider/model outputs side by side, 
 - Streaming (SSE) responses.
 - Revealing a stored credential's raw key after creation.
 - Cost estimation/billing tracking beyond echoing provider-reported token usage.
-- Any provider beyond OpenAI/Anthropic, including a generic "Custom / OpenAI-compatible" pseudo-provider — deferred per [ADR-0011](../../decisions/0011-model-playground-provider-sdk-selection.md) §2.3; candidate for a future roadmap item, not this phase.
+- Any provider beyond OpenAI/Anthropic, including a generic "Custom / OpenAI-compatible" pseudo-provider — deferred per [ADR-0012](../../decisions/0012-model-playground-provider-sdk-selection.md) §2.3; candidate for a future roadmap item, not this phase.
 - Prompt template management/versioning (Prompt Studio's territory, not shared with this phase).
 
 ## Relationship to the shipped application
@@ -48,7 +48,7 @@ New capability — the first Forge feature with first-class outbound LLM provide
 
 ## Dependencies
 
-Outbound network calls and provider API-key storage are resolved: [ADR-0010](../../decisions/0010-model-playground-provider-credential-security.md) (credential storage & security posture) and [ADR-0011](../../decisions/0011-model-playground-provider-sdk-selection.md) (provider/SDK selection), both **Accepted 2026-07-29**. No other phase dependency blocks this one — Phase 05 has no upstream phase prerequisite per [`../../02_ROADMAP.md`](../../02_ROADMAP.md) §4.
+Outbound network calls and provider API-key storage are resolved: [ADR-0011](../../decisions/0011-model-playground-provider-credential-security.md) (credential storage & security posture) and [ADR-0012](../../decisions/0012-model-playground-provider-sdk-selection.md) (provider/SDK selection), both **Accepted 2026-07-29**. No other phase dependency blocks this one — Phase 05 has no upstream phase prerequisite per [`../../02_ROADMAP.md`](../../02_ROADMAP.md) §4.
 
 ## Milestones
 
@@ -62,8 +62,8 @@ Outbound network calls and provider API-key storage are resolved: [ADR-0010](../
 
 - **Technical:** concurrent outbound calls with independent timeouts is more orchestration complexity than any existing Forge feature has needed — mitigated by keeping the adapter interface minimal and testing failure-isolation explicitly (per `07_TESTING.md` §1).
 - **Technical:** provider SDKs (`openai`, `anthropic`) evolve independently of Forge's release cycle — a breaking SDK upgrade could surface here first among Forge's dependencies. No mitigation beyond normal dependency-update vigilance; not a blocking risk for v1.
-- **Product/UX:** two providers is a thin "comparison" experience — acceptable for v1 per ADR-0011, but the value proposition weakens if a user expects more providers immediately. Tracked as a future roadmap item, not a v1 blocker.
-- **Security:** this is Forge's first UI-configurable outbound-credential feature — mitigated by ADR-0010's write-only, encrypted-at-rest, decrypt-only-at-call-time design, matching Secrets' existing encryption guarantee.
+- **Product/UX:** two providers is a thin "comparison" experience — acceptable for v1 per ADR-0012, but the value proposition weakens if a user expects more providers immediately. Tracked as a future roadmap item, not a v1 blocker.
+- **Security:** this is Forge's first UI-configurable outbound-credential feature — mitigated by ADR-0011's write-only, encrypted-at-rest, decrypt-only-at-call-time design, matching Secrets' existing encryption guarantee.
 - **Existing features:** none touched beyond an additive `nav-registry.ts` entry — no consolidation risk (unlike Phase 04/07/08).
 
 ## Definition of Complete

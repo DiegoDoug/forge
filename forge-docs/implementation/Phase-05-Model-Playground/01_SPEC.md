@@ -3,7 +3,7 @@
 > **Purpose:** The functional specification for this phase — what it does, from a user's perspective, in enough detail to build from.
 > **Scope:** Functional behavior only. UI layout detail lives in 02_UI.md; data model detail lives in 04_DATABASE.md.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** Confirmed — [ADR-0010](../../decisions/0010-model-playground-provider-credential-security.md) and [ADR-0011](../../decisions/0011-model-playground-provider-sdk-selection.md) both Accepted 2026-07-29.
+> **Status:** Confirmed — [ADR-0011](../../decisions/0011-model-playground-provider-credential-security.md) and [ADR-0012](../../decisions/0012-model-playground-provider-sdk-selection.md) both Accepted 2026-07-29.
 > **Last Updated:** 2026-07-29
 
 ---
@@ -29,8 +29,8 @@ This is the first Forge feature whose core purpose is first-class outbound calls
 ## 3. Functional requirements
 
 **Provider credentials**
-- FR1: The user can add a credential for a supported provider (see ADR-0011 for the v1 provider list) consisting of, at minimum, a label and an API key.
-- FR2: Credential values are encrypted at rest using the existing `VaultCrypto` primitive (`app/core/security.py`, `get_vault_crypto()`) — the same encryption-at-rest guarantee Secrets already provides — not a new crypto scheme (see ADR-0010).
+- FR1: The user can add a credential for a supported provider (see ADR-0012 for the v1 provider list) consisting of, at minimum, a label and an API key.
+- FR2: Credential values are encrypted at rest using the existing `VaultCrypto` primitive (`app/core/security.py`, `get_vault_crypto()`) — the same encryption-at-rest guarantee Secrets already provides — not a new crypto scheme (see ADR-0011).
 - FR3: A stored credential's key value is never returned to the client after creation — the UI can only show that a credential exists (label, provider, created/updated timestamps), matching Secrets' "reveal is an explicit, logged action" pattern. Revealing the raw key is out of scope for v1 (see §5) — a credential can be replaced or deleted, not viewed.
 - FR4: The user can delete a provider credential. Deleting a credential does not delete past run history that used it (past responses remain readable; the run row records which provider/model was used, not the credential's live key).
 - FR5: A provider with no credential configured does not appear in the runnable provider/model list. This must be true with zero configuration and zero internet access (per [01_PRODUCT_PRINCIPLES.md](../../01_PRODUCT_PRINCIPLES.md) §1.2) — the rest of Forge works normally.
@@ -40,7 +40,7 @@ This is the first Forge feature whose core purpose is first-class outbound calls
 - FR7: Each selected provider/model call executes independently — one provider failing or timing out does not block or fail the others' results.
 - FR8: Each result panel shows: the response text, the model identifier, wall-clock latency, token usage if the provider's API reports it, and, on failure, a user-legible error message (never a raw stack trace — per [`../../../docs/Security.md`](../../../docs/Security.md) "Input handling").
 - FR9: Every outbound call has a hard timeout (proposed default: 60s, matching the existing vision-LLM precedent in `services/ingest/vision.py`) after which that panel shows a timeout error; it does not hang the UI.
-- FR10: A completed run (prompt + all panel results) is persisted so the user can return to it later (see §4/ADR-0010 for what is and isn't stored).
+- FR10: A completed run (prompt + all panel results) is persisted so the user can return to it later (see §4/ADR-0011 for what is and isn't stored).
 
 **History**
 - FR11: The user can see a list of their past runs (prompt text, providers/models used, timestamp) and reopen one to view its stored results.
@@ -56,7 +56,7 @@ Reuses, rather than reinvents:
 - The `services/<feature>/` + thin-router pattern from [03_ARCHITECTURE.md](../../03_ARCHITECTURE.md) §1.1 — new `services/model_playground/` subpackage, no edits to `services/secrets/` or `services/ingest/`.
 
 Does not reuse:
-- The Secrets feature's storage directly. See ADR-0010 §3 for why provider credentials get their own table rather than being stored as regular Secret rows.
+- The Secrets feature's storage directly. See ADR-0011 §3 for why provider credentials get their own table rather than being stored as regular Secret rows.
 
 ## 5. Explicitly out of scope (v1)
 
@@ -64,7 +64,7 @@ Does not reuse:
 - Streaming responses (SSE/token-by-token rendering) — v1 waits for each provider's complete response. Revisit once non-streaming is proven stable; streaming adds meaningful complexity (partial-failure UI states, cancellation) not justified for a first cut.
 - Revealing a stored credential's raw key value after creation (write-only, like a password field — replace or delete only).
 - Cost estimation / billing tracking beyond echoing whatever token-usage numbers a provider's API returns.
-- Any provider not explicitly approved in ADR-0011.
+- Any provider not explicitly approved in ADR-0012.
 - Sharing a run with another user (Forge is single-tenant — no concept of "another user" applies here anyway, per [01_PRODUCT_PRINCIPLES.md](../../01_PRODUCT_PRINCIPLES.md) §1.1).
 - Prompt template management / versioning — that's Prompt Studio's (Phase 03) territory; Model Playground consumes a raw prompt string the user types or pastes, it does not manage a prompt library. (Sequencing note from [02_ROADMAP.md](../../02_ROADMAP.md) §4: Phase 03 was resolved to have zero shared plumbing with Phase 05 — nothing here changes that; Model Playground does not read from or write to Prompt Studio's storage.)
 
@@ -72,8 +72,8 @@ Does not reuse:
 
 The two blocking questions are resolved:
 
-- [x] **Resolved by [ADR-0010](../../decisions/0010-model-playground-provider-credential-security.md)** (Accepted 2026-07-29): provider API keys live in a new `ProviderCredential` table, encrypted with the existing `VaultCrypto` primitive, write-only after creation, decrypted only in-memory at call time. `docs/Security.md` now has an "Outbound network calls" section.
-- [x] **Resolved by [ADR-0011](../../decisions/0011-model-playground-provider-sdk-selection.md)** (Accepted 2026-07-29): v1 ships OpenAI + Anthropic via their official SDKs behind a per-provider adapter interface. A generic "Custom / OpenAI-compatible" pseudo-provider is explicitly deferred, not in v1.
+- [x] **Resolved by [ADR-0011](../../decisions/0011-model-playground-provider-credential-security.md)** (Accepted 2026-07-29): provider API keys live in a new `ProviderCredential` table, encrypted with the existing `VaultCrypto` primitive, write-only after creation, decrypted only in-memory at call time. `docs/Security.md` now has an "Outbound network calls" section.
+- [x] **Resolved by [ADR-0012](../../decisions/0012-model-playground-provider-sdk-selection.md)** (Accepted 2026-07-29): v1 ships OpenAI + Anthropic via their official SDKs behind a per-provider adapter interface. A generic "Custom / OpenAI-compatible" pseudo-provider is explicitly deferred, not in v1.
 
 Remaining, non-blocking (resolved in the docs named):
 
@@ -91,5 +91,5 @@ Remaining, non-blocking (resolved in the docs named):
 - [04_DATABASE.md](04_DATABASE.md)
 - [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
 - [../../01_PRODUCT_PRINCIPLES.md](../../01_PRODUCT_PRINCIPLES.md)
-- [../../decisions/0010-model-playground-provider-credential-security.md](../../decisions/0010-model-playground-provider-credential-security.md)
-- [../../decisions/0011-model-playground-provider-sdk-selection.md](../../decisions/0011-model-playground-provider-sdk-selection.md)
+- [../../decisions/0011-model-playground-provider-credential-security.md](../../decisions/0011-model-playground-provider-credential-security.md)
+- [../../decisions/0012-model-playground-provider-sdk-selection.md](../../decisions/0012-model-playground-provider-sdk-selection.md)

@@ -44,8 +44,8 @@ Derived from [02_UI.md](02_UI.md):
 - [x] All tests in [`07_TESTING.md`](07_TESTING.md) pass. 27 new tests (`test_model_playground_service.py`, `test_model_playground_api.py`) plus the full existing backend suite pass (exit code 0); frontend type-check, lint, and production build all pass clean.
 - [x] No architectural invariant violated (per [`../../03_ARCHITECTURE.md`](../../03_ARCHITECTURE.md) §2) — thin routers, no cross-feature imports, explicit Alembic migration (`0006_model_playground.py`) for the new credential/run tables.
 - [x] [`../../08_DEFINITION_OF_DONE.md`](../../08_DEFINITION_OF_DONE.md) feature-level checklist satisfied.
-- [x] [ADR-0010](../../decisions/0010-model-playground-provider-credential-security.md) and [ADR-0011](../../decisions/0011-model-playground-provider-sdk-selection.md) are both **Accepted** (not merely Proposed) before this phase is marked complete.
-- [x] `docs/Security.md` has been updated with the outbound-network-calls addendum described in ADR-0010 §2.
+- [x] [ADR-0011](../../decisions/0011-model-playground-provider-credential-security.md) and [ADR-0012](../../decisions/0012-model-playground-provider-sdk-selection.md) are both **Accepted** (not merely Proposed) before this phase is marked complete.
+- [x] `docs/Security.md` has been updated with the outbound-network-calls addendum described in ADR-0011 §2.
 - [x] `06_TECH_STACK.md` §5 ("Anticipated additions") is updated to reflect the actual provider SDK(s) added, with the TODO marker removed.
 
 ## 4. Sign-off
@@ -62,5 +62,5 @@ Derived from [02_UI.md](02_UI.md):
 - [07_TESTING.md](07_TESTING.md)
 - [README.md](README.md) — Definition of Complete
 - [../../08_DEFINITION_OF_DONE.md](../../08_DEFINITION_OF_DONE.md)
-- [../../decisions/0010-model-playground-provider-credential-security.md](../../decisions/0010-model-playground-provider-credential-security.md)
-- [../../decisions/0011-model-playground-provider-sdk-selection.md](../../decisions/0011-model-playground-provider-sdk-selection.md)
+- [../../decisions/0011-model-playground-provider-credential-security.md](../../decisions/0011-model-playground-provider-credential-security.md)
+- [../../decisions/0012-model-playground-provider-sdk-selection.md](../../decisions/0012-model-playground-provider-sdk-selection.md)

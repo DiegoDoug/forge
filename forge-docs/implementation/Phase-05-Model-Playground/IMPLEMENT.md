@@ -24,14 +24,14 @@ New capability — the first Forge feature with first-class outbound LLM provide
 - [x] [`01_SPEC.md`](01_SPEC.md) and [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) are filled in and confirmed — this phase is authorized. [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md) is populated (T1–T19) and is the task list to execute against.
 - [ ] Follow [`../../07_CODING_STANDARDS.md`](../../07_CODING_STANDARDS.md) exactly — thin routers, `api.ts` as the only endpoint-shape-aware file, no cross-feature imports.
 - [ ] Update [`CURRENT_STATE.md`](CURRENT_STATE.md) as work progresses, not only at checkpoints.
-- [ ] Follow [ADR-0010](../../decisions/0010-model-playground-provider-credential-security.md) and [ADR-0011](../../decisions/0011-model-playground-provider-sdk-selection.md) exactly for credential storage and provider/SDK choices — do not deviate without a new ADR.
+- [ ] Follow [ADR-0011](../../decisions/0011-model-playground-provider-credential-security.md) and [ADR-0012](../../decisions/0012-model-playground-provider-sdk-selection.md) exactly for credential storage and provider/SDK choices — do not deviate without a new ADR.
 
 ## Autonomy Rules
 
 Inherits [`../../09_CLAUDE_CODE_RULES.md`](../../09_CLAUDE_CODE_RULES.md) §3 in full. Phase-specific additions:
 
-- Enabling a new outbound LLM provider **beyond** OpenAI/Anthropic (the two named in ADR-0011) requires a new ADR before implementation — this phase's authorization covers exactly those two providers, nothing more.
-- Any change to the credential-storage design in ADR-0010 (e.g. a different encryption approach, exposing a "reveal key" action) requires revising that ADR first, not a silent implementation deviation.
+- Enabling a new outbound LLM provider **beyond** OpenAI/Anthropic (the two named in ADR-0012) requires a new ADR before implementation — this phase's authorization covers exactly those two providers, nothing more.
+- Any change to the credential-storage design in ADR-0011 (e.g. a different encryption approach, exposing a "reveal key" action) requires revising that ADR first, not a silent implementation deviation.
 
 ## Quality Gates
 

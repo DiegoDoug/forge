@@ -7,7 +7,7 @@ from .base import new_id, utcnow
 
 class ProviderCredential(SQLModel, table=True):
     """A user-configured API key for one LLM provider. Encrypted at rest with
-    the same VaultCrypto primitive Secrets uses (see ADR-0010) - never
+    the same VaultCrypto primitive Secrets uses (see ADR-0011) - never
     decrypted except in-memory at the moment of an outbound call. One
     credential per provider (upsert on ``provider``), write-only after
     creation: no code path ever re-reads ``encrypted_api_key`` back out as
@@ -42,7 +42,7 @@ class PlaygroundResult(SQLModel, table=True):
     """One provider/model's outcome within a run. ``provider``/``model`` are
     plain string snapshots, not foreign keys to ProviderCredential - deleting
     a credential later must never orphan or corrupt past results (spec FR4,
-    ADR-0010 SS2.4)."""
+    ADR-0011 SS2.4)."""
 
     __tablename__ = "playground_results"
 

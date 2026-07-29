@@ -1,7 +1,7 @@
-# ADR-0010 — Model Playground provider credential storage & outbound-call security posture
+# ADR-0011 — Model Playground provider credential storage & outbound-call security posture
 
 > **Purpose:** Decide how Model Playground stores user-configured, per-provider LLM API keys, and what security posture governs the outbound calls those keys enable — the "new territory" both [03_ARCHITECTURE.md](../03_ARCHITECTURE.md) §4 and [08_DEFINITION_OF_DONE.md](../08_DEFINITION_OF_DONE.md) §4 flag as unresolved for this phase.
-> **Scope:** This decision only. Provider/SDK selection is [ADR-0011](0011-model-playground-provider-sdk-selection.md).
+> **Scope:** This decision only. Provider/SDK selection is [ADR-0012](0012-model-playground-provider-sdk-selection.md).
 > **Ownership:** Project owner (approved 2026-07-29)
 > **Status:** Accepted
 > **Version:** 1.0.0
@@ -45,5 +45,5 @@ This is exactly the situation [03_ARCHITECTURE.md](../03_ARCHITECTURE.md) §4 an
 - [../03_ARCHITECTURE.md](../03_ARCHITECTURE.md)
 - [../08_DEFINITION_OF_DONE.md](../08_DEFINITION_OF_DONE.md)
 - [../implementation/Phase-05-Model-Playground/01_SPEC.md](../implementation/Phase-05-Model-Playground/01_SPEC.md)
-- [0011-model-playground-provider-sdk-selection.md](0011-model-playground-provider-sdk-selection.md)
+- [0012-model-playground-provider-sdk-selection.md](0012-model-playground-provider-sdk-selection.md)
 - [../../docs/Security.md](../../docs/Security.md)

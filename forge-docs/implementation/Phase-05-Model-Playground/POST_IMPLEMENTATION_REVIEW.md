@@ -10,11 +10,11 @@
 
 ## What Went Well
 
-- **Stopping for the two blocking ADRs before writing any code paid off exactly as designed.** `03_ARCHITECTURE.md` §4 and `08_DEFINITION_OF_DONE.md` §4 had flagged, since Phase 05 was scaffolded, that provider credential storage and outbound-call security posture were unresolved. Drafting [ADR-0010](../../decisions/0010-model-playground-provider-credential-security.md)/[ADR-0011](../../decisions/0011-model-playground-provider-sdk-selection.md) as concrete proposals (not vague questions) and getting a real yes/no/adjust decision in one round-trip meant implementation never had to guess at the credential-storage design or provider list.
+- **Stopping for the two blocking ADRs before writing any code paid off exactly as designed.** `03_ARCHITECTURE.md` §4 and `08_DEFINITION_OF_DONE.md` §4 had flagged, since Phase 05 was scaffolded, that provider credential storage and outbound-call security posture were unresolved. Drafting [ADR-0011](../../decisions/0011-model-playground-provider-credential-security.md)/[ADR-0012](../../decisions/0012-model-playground-provider-sdk-selection.md) as concrete proposals (not vague questions) and getting a real yes/no/adjust decision in one round-trip meant implementation never had to guess at the credential-storage design or provider list.
 - **Reusing `get_vault_crypto()` instead of inventing a new encryption scheme kept this phase's biggest risk (a new credential-storage concept) small.** Secrets already proved the encryption-at-rest pattern; Model Playground applies the same primitive to a new table rather than adding a second crypto approach to the codebase.
 - **The provider-adapter interface (`ProviderAdapter` protocol) made "two providers, one orchestration path" clean.** `runs.py`'s dispatch logic never branches on provider identity — it just calls `spec.adapter.complete(...)` — so the failure-isolation and timeout logic is provider-agnostic and was easy to test with a fake adapter instead of mocking two different SDKs' internals.
 - **Manual verification used the real OpenAI API, not a mock, for the browser pass.** Configuring a real (invalid) key and watching the actual 401 flow through to a clean "Authentication failed" message end-to-end caught the one thing that matters most for this phase's security posture — that a real provider error never leaks a stack trace or raw exception text to the client — in a way a mocked test alone wouldn't have proven.
-- **The plain-string (not foreign-key) design for `PlaygroundResult.provider`/`.model` (ADR-0010 §2.4) was tested, not just designed.** `test_deleting_credential_does_not_corrupt_past_run_results` exercises exactly the scenario the design exists to protect against, and it passes.
+- **The plain-string (not foreign-key) design for `PlaygroundResult.provider`/`.model` (ADR-0011 §2.4) was tested, not just designed.** `test_deleting_credential_does_not_corrupt_past_run_results` exercises exactly the scenario the design exists to protect against, and it passes.
 
 ## What Didn't
 
@@ -31,8 +31,8 @@
 
 None beyond what the accepted ADRs called for. Specifically confirmed:
 
-- No new crypto primitive — `VaultCrypto`/`get_vault_crypto()` reused exactly as ADR-0010 specified.
-- No third provider, no "Custom/OpenAI-compatible" pseudo-provider — ADR-0011 §2.3's deferral held; only `openai`/`anthropic` appear in `PROVIDER_REGISTRY`.
+- No new crypto primitive — `VaultCrypto`/`get_vault_crypto()` reused exactly as ADR-0011 specified.
+- No third provider, no "Custom/OpenAI-compatible" pseudo-provider — ADR-0012 §2.3's deferral held; only `openai`/`anthropic` appear in `PROVIDER_REGISTRY`.
 - No cross-feature import — `services/model_playground/` never imports `services/secrets/*`; the only shared dependency is `app/core/security.py`, a `core/` module per `03_ARCHITECTURE.md` §2's own carve-out.
 - One deliberate, spec-consistent addition beyond the original ADRs' text: registering `"model_playground"` in `services/workbench.py`'s `WORKBENCH_TOOL_KEYS`, matching every prior phase's precedent (Secrets, Notes, Documents, ..., Prompt Studio all did the same) so the new page can be pinned to the Workbench. This wasn't explicitly named in `03_BACKEND.md`'s integration section, but it's the established pattern for every other feature page in the app, not a new one invented for this phase.
 
@@ -49,7 +49,7 @@ None beyond what the accepted ADRs called for. Specifically confirmed:
 
 ## Lessons Learned
 
-1. **A concrete, drafted decision gets approved faster than an open question.** Presenting ADR-0010/ADR-0011 as fully-reasoned proposals (with alternatives considered and consequences stated) rather than "what should we do about credentials?" turned a potentially multi-round negotiation into a single approve-with-one-adjustment round-trip.
+1. **A concrete, drafted decision gets approved faster than an open question.** Presenting ADR-0011/ADR-0012 as fully-reasoned proposals (with alternatives considered and consequences stated) rather than "what should we do about credentials?" turned a potentially multi-round negotiation into a single approve-with-one-adjustment round-trip.
 2. **When a verification tool produces a surprising result, check whether it's already been seen before you write it up as new.** This phase's keyboard-activation "bug" turned out to be independently documented in a different phase's retrospective a month earlier. A five-minute grep through `history/` turned a would-be new finding into a two-line confirmation.
 3. **"Verified live" and "verified by an automated test" are different claims worth keeping distinct in the acceptance-criteria writeup**, per Phase 01's own recommendation — this phase's `08_ACCEPTANCE.md` names, for almost every criterion, which specific test or live action verified it, which is what made this review possible to write without re-deriving anything.
 4. **Reuse-first ("does an existing pattern already solve this?") is worth deliberately checking before designing new backend/frontend structure**, not just for crypto (`get_vault_crypto()`) but for smaller things too — the Workbench pinned-tools registration would have been easy to miss if the existing `services/workbench.py` file hadn't been read before considering the backend implementation "done."

@@ -89,7 +89,7 @@ Rules that apply to both, and to any future outbound-call feature:
 
 - **Never sent, regardless of feature:** `FORGE_MASTER_KEY`, the master password or its hash, any Secrets/Vault value, or one provider's API key when calling a different provider.
 - **Opt-in, not on-by-default:** with no key configured, the feature is simply absent/disabled — the rest of the app functions normally (per [`../forge-docs/01_PRODUCT_PRINCIPLES.md`](../forge-docs/01_PRODUCT_PRINCIPLES.md) §1.2).
-- **Credential storage:** provider API keys are encrypted at rest with the same `VaultCrypto` primitive (`app/core/security.py`) Secrets uses, decrypted only in-memory at the moment of the outbound call, and never echoed back by any API response after creation (write-only, like a password field) — see [ADR-0010](../forge-docs/decisions/0010-model-playground-provider-credential-security.md) for the full design rationale.
+- **Credential storage:** provider API keys are encrypted at rest with the same `VaultCrypto` primitive (`app/core/security.py`) Secrets uses, decrypted only in-memory at the moment of the outbound call, and never echoed back by any API response after creation (write-only, like a password field) — see [ADR-0011](../forge-docs/decisions/0011-model-playground-provider-credential-security.md) for the full design rationale.
 - **Failure isolation:** every outbound call has a hard timeout (60s default) and a provider failure/timeout produces a user-legible, per-call error — never a stack trace, and never one provider's failure blocking or corrupting another's result in the same operation.
 
 ## Things intentionally out of scope

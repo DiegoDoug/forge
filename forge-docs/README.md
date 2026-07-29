@@ -4,8 +4,8 @@
 > **Scope:** Index only — points to every root document and subsystem. Content lives in the linked files, not here.
 > **Ownership:** TODO — assign an FDK owner.
 > **Status:** Draft
-> **Version:** 0.1.0
-> **Last Updated:** 2026-07-20
+> **Version:** 0.2.0
+> **Last Updated:** 2026-07-25
 > **Depends On:** —
 > **Supersedes:** —
 
@@ -31,6 +31,7 @@ If you are a Claude Code session about to do implementation work in this reposit
 | 09 | [CLAUDE_CODE_RULES.md](09_CLAUDE_CODE_RULES.md) | The Claude Code execution contract |
 | 10 | [CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md) | When and how to checkpoint |
 | 11 | [PROJECT_STRUCTURE.md](11_PROJECT_STRUCTURE.md) | Physical repository map |
+| 15 | [VERIFICATION_FRAMEWORK.md](15_VERIFICATION_FRAMEWORK.md) | The Autonomous Multi-Agent Verification Framework — automated phase-transition audits |
 
 ## 3. Subsystems
 

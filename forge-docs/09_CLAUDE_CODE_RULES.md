@@ -4,9 +4,9 @@
 > **Scope:** How Claude Code should read this documentation system, what it may do autonomously, and what requires a stop-and-ask. Per-phase execution contracts live in each phase's `IMPLEMENT.md` and inherit from this document.
 > **Ownership:** TODO — assign an owner (recommended: whoever directs Claude Code sessions day-to-day).
 > **Status:** Draft
-> **Version:** 0.1.0
-> **Last Updated:** 2026-07-20
-> **Depends On:** [08_DEFINITION_OF_DONE.md](08_DEFINITION_OF_DONE.md), [10_CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md)
+> **Version:** 0.2.0
+> **Last Updated:** 2026-07-25
+> **Depends On:** [08_DEFINITION_OF_DONE.md](08_DEFINITION_OF_DONE.md), [10_CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md), [15_VERIFICATION_FRAMEWORK.md](15_VERIFICATION_FRAMEWORK.md)
 > **Supersedes:** —
 
 ---
@@ -17,7 +17,8 @@
 2. [02_ROADMAP.md](02_ROADMAP.md) — confirm which phase is currently active.
 3. The active phase's `README.md` and `CURRENT_STATE.md` under `implementation/Phase-XX-*/`.
 4. The active phase's `IMPLEMENT.md` — the actual execution contract for that phase.
-5. Only then begin work.
+5. If the session is completing a phase's implementation or evaluating whether to continue to the next phase, [15_VERIFICATION_FRAMEWORK.md](15_VERIFICATION_FRAMEWORK.md) — the phases it applies to (Phase 05 onward) also need the active phase's `VERIFICATION_CONTRACT.md`.
+6. Only then begin work.
 
 Do not begin implementation work against a phase whose `01_SPEC.md` and `08_ACCEPTANCE.md` are still template placeholders (`[ ] TODO` only, no filled-in content) — that phase is not yet authorized. Flag this to the user instead of guessing.
 
@@ -38,6 +39,7 @@ This mirrors [01_PRODUCT_PRINCIPLES.md](01_PRODUCT_PRINCIPLES.md) §1.8.
 - Write/update tests for code being changed in the same task.
 - Update a phase's `CURRENT_STATE.md` as work progresses.
 - Fix a bug in code being actively touched, if it's clearly in-scope and low-risk.
+- For phases with a `VERIFICATION_CONTRACT.md` (Phase 05 onward), run the Verification Framework after implementation completes, and — on a PASS result — continue directly into the next phase's implementation without waiting for confirmation of that specific transition. This is a narrow, ADR-0010-authorized exception to this session's normal confirm-before-proceeding posture; it does not extend to anything in "Must ask first" below, and it never authorizes release actions (tag/merge/push) on its own — see [15_VERIFICATION_FRAMEWORK.md](15_VERIFICATION_FRAMEWORK.md) §1.
 
 **Must ask first:**
 - Anything listed as "Prohibited" or "Explicit permission required" under this session's top-level safety rules (destructive git operations, sending messages, publishing content, etc. — those rules are global and take precedence over everything in this file).
@@ -74,6 +76,8 @@ This document governs *project-specific* workflow (what order to read docs, when
 
 ## 9. Cross-references
 
+- [15_VERIFICATION_FRAMEWORK.md](15_VERIFICATION_FRAMEWORK.md) — the automated phase-transition audit referenced in §1 and §3
+- [decisions/0010-fdk-verification-automation-exception.md](decisions/0010-fdk-verification-automation-exception.md) — the ADR authorizing §3's verification-continuation exception
 - [10_CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md)
 - [08_DEFINITION_OF_DONE.md](08_DEFINITION_OF_DONE.md)
 - [01_PRODUCT_PRINCIPLES.md](01_PRODUCT_PRINCIPLES.md)
