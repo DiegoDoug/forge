@@ -4,8 +4,8 @@
 > **Scope:** Index only. Each phase owns its own full spec in its own folder.
 > **Ownership:** TODO — assign an owner.
 > **Status:** Draft — Phase 01 🔒 released & frozen (v0.1.0-workbench); Phase 02 current; Phases 03–08 still template scaffolds
-> **Version:** 0.3.0
-> **Last Updated:** 2026-07-20
+> **Version:** 0.4.0
+> **Last Updated:** 2026-07-25
 > **Depends On:** [../02_ROADMAP.md](../02_ROADMAP.md)
 > **Supersedes:** —
 
@@ -32,7 +32,13 @@ Each `Phase-XX-Name/` starts, at spec-authoring time, with the same 12 files:
 
 A phase may add extra numbered docs beyond this base 12 when its design introduces a contract that doesn't fit an existing file — e.g. Phase 01 (Workbench) adds `12_PANEL_INTERFACE.md` to specify the `WorkbenchPanel` contract (per [ADR-0002](../decisions/0002-workbench-panel-architecture.md)). This is the exception, not the norm — don't add a numbered doc speculatively; only when a phase's own spec work surfaces a real need for one.
 
-### 2.1 End-of-phase additions (from Phase 02 onward)
+### 2.1 Verification Contract (from Phase 05 onward)
+
+- **`VERIFICATION_CONTRACT.md`** — the machine-verifiable contract the Verification Orchestrator operates against for this phase, per [`../15_VERIFICATION_FRAMEWORK.md`](../15_VERIFICATION_FRAMEWORK.md) §5. Copy [`VERIFICATION_CONTRACT_TEMPLATE.md`](VERIFICATION_CONTRACT_TEMPLATE.md) into the phase folder and fill it in alongside `01_SPEC.md` through `08_ACCEPTANCE.md`, before implementation begins.
+
+This applies from Phase 05 onward only. Phases 01–04 are already Frozen or Released and are not retrofitted — per [`../13_PHASE_LIFECYCLE.md`](../13_PHASE_LIFECYCLE.md) §4, a frozen phase's spec cannot be reopened.
+
+### 2.2 End-of-phase additions (from Phase 02 onward)
 
 As a phase approaches RC/sign-off, it accumulates a few more standard artifacts — not written upfront, only once there's something real to put in them:
 
@@ -60,4 +66,5 @@ A phase is not authorized for implementation until its `01_SPEC.md` and `08_ACCE
 - [../10_CHECKPOINT_PROTOCOL.md](../10_CHECKPOINT_PROTOCOL.md)
 - [../12_BUG_CLASSIFICATION.md](../12_BUG_CLASSIFICATION.md)
 - [../13_PHASE_LIFECYCLE.md](../13_PHASE_LIFECYCLE.md)
+- [../15_VERIFICATION_FRAMEWORK.md](../15_VERIFICATION_FRAMEWORK.md) — the Verification Contract this folder shape supports from Phase 05 onward
 - [../history/](../history/) — where a phase's end-of-phase artifacts land once it freezes

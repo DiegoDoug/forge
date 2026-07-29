@@ -3,9 +3,9 @@
 > **Purpose:** Durable record of every architectural exception, blocking decision, or cross-cutting choice made during FDK-driven development — the things [09_CLAUDE_CODE_RULES.md](../09_CLAUDE_CODE_RULES.md) requires stopping for.
 > **Scope:** Decisions that affect architecture, principles, or cross-phase behavior. Day-to-day implementation choices belong in a phase's own docs, not here.
 > **Ownership:** TODO — assign an owner (recommended: whoever owns [03_ARCHITECTURE.md](../03_ARCHITECTURE.md)).
-> **Status:** Active — 9 decisions recorded (8 accepted, 1 proposed)
-> **Version:** 0.4.0
-> **Last Updated:** 2026-07-20
+> **Status:** Active — 10 decisions recorded (9 accepted, 1 proposed)
+> **Version:** 0.5.0
+> **Last Updated:** 2026-07-25
 > **Depends On:** [../01_PRODUCT_PRINCIPLES.md](../01_PRODUCT_PRINCIPLES.md), [../03_ARCHITECTURE.md](../03_ARCHITECTURE.md)
 > **Supersedes:** —
 
@@ -40,6 +40,7 @@ Add one whenever:
 | [0007](0007-search-dedicated-page.md) | Search becomes a dedicated Workbench-reachable page | Accepted | 2026-07-20 |
 | [0008](0008-capability-registry-direction.md) | Everything is a Capability (direction, not yet adopted) | **Proposed** | 2026-07-20 |
 | [0009](0009-phase-specification-freeze.md) | Phase Specification Freeze | Accepted | 2026-07-20 |
+| [0010](0010-fdk-verification-automation-exception.md) | FDK verification automation exception | Accepted | 2026-07-25 |
 
 ## 4. TODO
 
