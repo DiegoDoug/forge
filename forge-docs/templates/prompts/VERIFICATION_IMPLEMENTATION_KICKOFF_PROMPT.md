@@ -1,10 +1,10 @@
 # Prompt Template — FDK Verification Framework Implementation Kickoff
 
 > **Purpose:** Copy this prompt to start a Claude Code session that operationalizes the Autonomous Multi-Agent Verification Framework specified in [15_VERIFICATION_FRAMEWORK.md](../../15_VERIFICATION_FRAMEWORK.md) — the `.claude/agents/*` verifiers, the orchestrator, the repair loop, and FDK phase-lifecycle integration. Distinct from [VERIFICATION_FRAMEWORK_KICKOFF_PROMPT.md](VERIFICATION_FRAMEWORK_KICKOFF_PROMPT.md), which produced the specification this prompt implements against.
-> **Scope:** Code/config implementation across five independently-reviewable milestones (1, 2, 3, 4A, 4B — Milestone 4 was split so integration plumbing and autonomous-progression activation are separately reviewable and separately gated). Not for phase implementation work — for that, use [SESSION_START_PROMPT.md](SESSION_START_PROMPT.md).
+> **Scope:** Code/config implementation across five independently-reviewable milestones (1, 2, 3, 4A, 4B — Milestone 4 was split so integration plumbing and autonomous-progression activation are separately reviewable and separately gated; 4A and 4B ship as separate pull requests, not just separate commits). Not for phase implementation work — for that, use [SESSION_START_PROMPT.md](SESSION_START_PROMPT.md).
 > **Ownership:** TODO — assign an owner.
 > **Status:** Draft
-> **Last Updated:** 2026-07-25
+> **Last Updated:** 2026-07-29
 
 ---
 
@@ -133,73 +133,122 @@ Milestone 3 — Orchestration:
   This test is what makes replaceability a pass/fail check instead of a
   code-review opinion.
 
-Milestone 4A — FDK integration, autonomous progression disabled:
-- Hook the orchestrator into the phase lifecycle described in
-  forge-docs/13_PHASE_LIFECYCLE.md's Release Candidate stage: locate the
-  active phase, discover its VERIFICATION_CONTRACT.md (per
-  forge-docs/implementation/README.md §2.1) without a human pointing to
-  it explicitly, and run the full Milestone 1-3 verify -> repair ->
-  escalate pipeline against it, producing a persisted verification
-  report and, if applicable, a persisted escalation report.
-- Do not implement a function that starts the next phase's
-  implementation. Not a function gated behind a flag or config value —
-  no such function exists in the codebase after this milestone. This
-  mirrors Milestone 1's own rule ("nothing runs automatically... that
-  capability doesn't exist until Milestone 4B") applied one level down:
-  the guarantee is the capability's absence, not a runtime check that
-  could be misconfigured or accidentally left on.
-- Add a regression test asserting no advance-to-next-phase
-  function/symbol exists anywhere in this package's public API — so a
-  later, unrelated change can't silently introduce autonomous progression
-  without that being a visible, deliberate diff against this test.
-- Add a regression check confirming Owner Sign-off remains a recorded
-  human decision and every release action (git tag/merge/push) remains
-  explicit-permission-gated, per forge-docs/15_VERIFICATION_FRAMEWORK.md
-  §1 and forge-docs/09_CLAUDE_CODE_RULES.md §7. Nothing in 4A could reach
-  past "a report was produced," but this check is a durable trip-wire for
-  every milestone from here on, not a one-time confirmation — it must
-  still pass after 4B lands.
-- 4A is done when the integration plumbing runs correctly against a real
-  or fixture phase and produces a correct report/escalation output, with
-  zero ability anywhere in the codebase to act on a PASS beyond reporting it.
+Milestones 4A and 4B are each their own pull request, not just their own
+commit within one PR. 4A must be safe to merge on its own — it contains
+no code path that can advance a phase, so there is nothing in it that
+needs 4B's dry run to be trustworthy. 4B is deliberately small and
+reviewable on its own, containing only the activation capability and the
+dry run that justified it, so a reviewer isn't re-reviewing 4A's
+plumbing to approve 4B's one new behavior.
 
-Milestone 4B — Activation, gated on a real dry run. Do not begin this
-milestone until the phase that's active at the time (Phase 05 or
-whichever phase FDK has reached) has a filled-in 01_SPEC.md,
-08_ACCEPTANCE.md, and VERIFICATION_CONTRACT.md — this milestone cannot be
-satisfied against a fabricated or fixture phase:
-- Run the Validation requirement below in full, against that real phase,
-  before writing any activation code. If any item fails, fix the
-  underlying issue and rerun the full validation requirement — do not
-  patch around one failure and call the rest close enough.
-- Once every item passes, write the dry-run result as a permanent,
-  checked-in governance record — a history/ entry per this repo's
-  existing history/CHECKPOINT_LOG_TEMPLATE.md convention, not a chat-only
-  claim — documenting what was tested, against which framework version,
-  and with what results.
-- That record is evidence that validation occurred. It is not consulted
-  by runtime code, and must not become one. Governance (the durable
-  record of why activation was introduced) and runtime (what the
-  activation function actually does when called) are separate concerns —
-  coupling them means routine documentation maintenance (archiving old
-  reports, rebasing history, renumbering framework versions) could
-  silently change runtime behavior, which is worse than either concern
-  alone. Once written, implement the advance-to-next-phase function so
-  its behavior is governed purely by implementation state, never by
-  checking for the history record's presence, a version number in it, or
-  any other artifact from the step above.
-- The commit (or equivalent single review unit) that introduces the
-  advance-to-next-phase function must contain nothing else — no unrelated
-  refactors, no other feature work bundled in. Its diff and commit
-  message should make "this is what turns on autonomous phase
-  progression, and this is the dry run that justified it" legible to a
-  reviewer without archaeology.
-- Auto-continue on PASS: only now does the framework gain the actual
-  ADR-0010-authorized behavior — starting the next phase's implementation
-  automatically when the Orchestrator reports PASS, with no human
-  confirming that specific transition. Auto-continue must never be
-  allowed to reach past "next phase's implementation starts" — reconfirm
-  4A's Owner Sign-off/release-action regression check still passes.
+Build both milestones as a vertical slice, not horizontally. Horizontal
+means building each component to completion across the whole system
+before connecting anything (e.g. "wire contract discovery everywhere,
+then report persistence everywhere, then hook up the lifecycle") — it
+produces a system that's only checkable once every piece is done, which
+is exactly the failure mode this staged-milestone approach exists to
+avoid. Vertical means each numbered step below chains onto the previous
+one into a single, narrow, already-executable path — discover contract
+-> verify -> repair -> escalate -> persist -> hook into the lifecycle —
+so the slice is reviewable and testable after every step, not just at
+the end.
+
+Milestone 4A — Lifecycle integration, autonomous progression disabled.
+Goal: integrate the Milestone 1-3 framework into the Release Candidate
+workflow while making it impossible for it to advance a phase. Build in
+this order, each step landing on top of a working previous step:
+
+1. Phase discovery — discover the active implementation phase and locate
+   its VERIFICATION_CONTRACT.md per forge-docs/implementation/README.md
+   §2.1, without a human pointing to it explicitly. Fail cleanly (a clear
+   error, not a silent no-op) if the contract is absent.
+2. Verification entry point — the single function/entry point the FDK
+   lifecycle will call: load the discovered contract, build the verifier
+   registry (verifiers.default_registry()), and run Orchestrator.run()
+   to produce a VerificationReport. Nothing else yet.
+3. Repair integration — wrap step 2's verification call with RepairLoop,
+   respecting the 3-cycle limit from §7. Still no lifecycle decision of
+   any kind made from the result.
+4. Escalation integration — evaluate the escalation policy (evaluate())
+   against the RepairLoop's result and produce the structured escalation
+   output (render_escalation_report()) when applicable. Still stop here
+   — nothing yet acts on the outcome beyond producing this output.
+5. Report persistence — persist the verification report and, if
+   applicable, the escalation report, following this repo's existing
+   history/ conventions (see history/CHECKPOINT_LOG_TEMPLATE.md for the
+   pattern this repo already uses for durable records).
+6. Lifecycle hook — invoke the step 1-5 pipeline from
+   forge-docs/13_PHASE_LIFECYCLE.md's Release Candidate stage, replacing
+   the manual audit *only* as the audit mechanism. This step must not
+   change phase state in any way — it runs the pipeline and persists its
+   output, nothing more.
+7. Regression guard — add tests proving: no advance-to-next-phase
+   API/symbol exists anywhere in this package's public API; no automatic
+   phase transition occurs under any input, including a clean PASS;
+   Owner Sign-off remains untouched as a recorded human decision; every
+   release action (git tag/merge/push) remains explicit-permission-gated,
+   per forge-docs/15_VERIFICATION_FRAMEWORK.md §1 and
+   forge-docs/09_CLAUDE_CODE_RULES.md §7. This is a durable trip-wire, not
+   a one-time confirmation — it must still pass after 4B lands.
+
+4A acceptance: contract is automatically discovered; verification runs
+automatically at the RC stage; reports are generated and persisted; the
+repair loop is functional; escalation is functional; no autonomous
+progression capability exists anywhere in the codebase.
+
+Milestone 4B — Activation. Precondition, not optional: a real phase
+(Phase 05, or whichever phase FDK has reached) has a complete,
+authorized 01_SPEC.md, 08_ACCEPTANCE.md, and VERIFICATION_CONTRACT.md.
+This milestone cannot be satisfied against a fabricated or fixture phase
+— do not begin it until that precondition is genuinely true. Build in
+this order:
+
+1. Dry run — execute an actual Release Candidate verification against
+   the real phase via 4A's pipeline. Exercise PASS, FAIL, retry, and
+   escalation — the full Validation requirement below is the concrete
+   checklist for this step, not a separate, later task.
+2. Review — confirm every verifier behaved correctly, the repair loop
+   behaved correctly, escalation behaved correctly, and the persisted
+   reports are correct. If anything failed, fix the underlying issue and
+   rerun step 1 in full — do not patch around one failure and call the
+   rest close enough.
+3. Governance artifact — once every review item passes, write the
+   dry-run result as a permanent, checked-in record (a history/ entry per
+   history/CHECKPOINT_LOG_TEMPLATE.md, not a chat-only claim) documenting
+   the framework version, the phase validated, the outcome, and
+   observations. This record is evidence that validation occurred. It is
+   not consulted by runtime code, and must never become one — coupling
+   governance (why activation was introduced) to runtime (what the
+   activation function does when called) means routine documentation
+   maintenance (archiving old reports, rebasing history, renumbering
+   framework versions) could silently change runtime behavior, which is
+   worse than keeping the two concerns independent.
+4. Introduce activation — only now, implement advance_to_next_phase(...)
+   (or equivalent). This function did not exist before this step. Its
+   behavior is governed purely by implementation state, never by checking
+   for the governance record's presence, a version number in it, or any
+   other artifact from step 3.
+5. Lifecycle wiring — wire Release Candidate -> Verification -> PASS ->
+   advance to the next implementation phase. FAIL continues to route to
+   Repair Loop -> Escalation exactly as 4A already built it — 4B adds
+   exactly one new edge (PASS -> advance), nothing else changes.
+6. Regression verification — prove PASS advances correctly to the actual
+   next phase per forge-docs/02_ROADMAP.md, not a hardcoded or assumed
+   one; FAIL never advances; escalation never advances; retry-limit-
+   exceeded never advances; Owner Sign-off still requires human
+   confirmation; every release action stays human-only. Reconfirm 4A's
+   step-7 regression guard still passes unmodified.
+7. Dedicated activation commit — the introduction of autonomous
+   progression lands in one commit whose sole purpose is enabling that
+   capability after successful validation. No unrelated refactors, no
+   other feature work bundled in. Its diff and commit message should make
+   "this is what turns on autonomous phase progression, and this is the
+   dry run that justified it" legible to a reviewer without archaeology.
+
+4B acceptance: a successful real dry run occurred; a permanent validation
+record was written; autonomous progression is enabled; human governance
+(Owner Sign-off, release actions) is unchanged; all regression tests,
+including 4A's, pass.
 
 Architectural acceptance criterion (gates Milestone 2 completion; the
 Milestone 3 replaceability validation above is the concrete test that
@@ -223,28 +272,32 @@ Orchestrator entirely from requiring changes to every verifier later.
 Treat a violation of either check as a blocker for its own milestone, not
 a Milestone 6 cleanup item.
 
-Validation requirement (gates Milestone 4B — must be run and its result
-recorded per 4B's steps above BEFORE the advance-to-next-phase function is
-written, not after): run at least one real end-to-end dry run against an
-actual phase (Phase 05, once its 01_SPEC.md and 08_ACCEPTANCE.md are
-filled in and authorized — do not fabricate a fake phase to satisfy this
-check) and confirm all of the following actually happened, not just that
-code exists to do them:
+Validation requirement (this is 4B step 1's "Dry run" made concrete —
+must be run and its result recorded per 4B's steps 1-3 BEFORE step 4
+writes any activation code, not after): run at least one real end-to-end
+dry run against an actual phase (Phase 05, once its 01_SPEC.md and
+08_ACCEPTANCE.md are filled in and authorized — do not fabricate a fake
+phase to satisfy this check) and confirm all of the following actually
+happened, not just that code exists to do them. At this point in the
+sequence advance_to_next_phase does not exist yet (it isn't introduced
+until step 4) — nothing below should involve an actual phase transition
+attempt; that verification happens later, in step 6, against the
+now-introduced activation function:
 - Contract generation/discovery worked without manual pointing.
 - Every declared verifier actually executed.
 - The consolidated report was generated in the format from §6.
 - The PASS path was exercised: a genuinely passing implementation
-  produced PASS and the framework attempted to continue to the next
-  phase.
+  produced PASS, and — since no advance-to-next-phase capability exists
+  at this point in the sequence — the run correctly did nothing beyond
+  persisting the PASS report. (Confirming PASS actually triggers an
+  advance, to the correct next phase per forge-docs/02_ROADMAP.md, is
+  step 6's job, once step 4 has introduced that capability.)
 - The FAIL path was exercised: a genuinely failing check (introduce one
   deliberately if the real phase doesn't happen to have one) produced
   FAIL and a remediation report with specific, actionable items.
 - The retry/repair loop actually ran at least one real cycle.
 - At least one escalation condition was deliberately triggered and
   produced a stop-and-report, not a silent continue.
-- The handoff into the next implementation phase was verified to be the
-  actual next phase per forge-docs/02_ROADMAP.md, not a hardcoded or
-  assumed one.
 - Owner Sign-off and every release action (tag/merge/push) were
   confirmed to still require explicit human action throughout — this is
   the single most important thing to verify, since it's the boundary
