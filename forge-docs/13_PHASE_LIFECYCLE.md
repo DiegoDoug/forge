@@ -4,9 +4,9 @@
 > **Scope:** Every phase, from the moment its folder is scaffolded to the moment (if ever) it's archived.
 > **Ownership:** TODO — assign an owner.
 > **Status:** Draft
-> **Version:** 0.1.0
-> **Last Updated:** 2026-07-21
-> **Depends On:** [12_BUG_CLASSIFICATION.md](12_BUG_CLASSIFICATION.md), [10_CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md), [08_DEFINITION_OF_DONE.md](08_DEFINITION_OF_DONE.md)
+> **Version:** 0.2.0
+> **Last Updated:** 2026-07-25
+> **Depends On:** [12_BUG_CLASSIFICATION.md](12_BUG_CLASSIFICATION.md), [10_CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md), [08_DEFINITION_OF_DONE.md](08_DEFINITION_OF_DONE.md), [15_VERIFICATION_FRAMEWORK.md](15_VERIFICATION_FRAMEWORK.md)
 > **Supersedes:** —
 
 ---
@@ -27,7 +27,7 @@ Every phase passes through these stages **in this order**. A phase can sit at an
 | **Specification** | `01_SPEC.md` through `08_ACCEPTANCE.md` (and any extra numbered docs the phase needs) are being actively drafted and reviewed with the project owner. | Every exit-criteria document in the phase's `README.md` is content-complete. |
 | **Authorized** | The specification is locked (per an ADR like [ADR-0009](decisions/0009-phase-specification-freeze.md) for Phase 01), and the project owner has explicitly approved implementation to begin. | `IMPLEMENT.md` says "Approved to begin" and the first implementation task starts. |
 | **Implementation** | Tasks in `09_IMPLEMENTATION_TASKS.md` are being executed, milestone by milestone, per [10_CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md). | Every task is checked off and `08_ACCEPTANCE.md` has had a first full pass. |
-| **Release Candidate** | Implementation is done. An independent verification/audit pass (manual and/or a dedicated code-review pass, per Phase 01's precedent) runs against the spec. Findings are classified per [12_BUG_CLASSIFICATION.md](12_BUG_CLASSIFICATION.md) §2. Any 🔴 BLOCKER is fixed and the phase re-enters Release Candidate (RC1 → RC2 → ... until zero BLOCKERs remain). | Zero known BLOCKERs remain. |
+| **Release Candidate** | Implementation is done. For phases with a Verification Contract (Phase 05 onward), the Verification Orchestrator runs the required verifiers automatically against the contract, per [15_VERIFICATION_FRAMEWORK.md](15_VERIFICATION_FRAMEWORK.md) — a manual audit/code-review pass (Phase 01's original precedent) remains the fallback for phases without a contract, or for the escalation cases §8 of that document defines. Findings are classified per [12_BUG_CLASSIFICATION.md](12_BUG_CLASSIFICATION.md) §2. Any 🔴 BLOCKER is fixed and the phase re-enters Release Candidate (RC1 → RC2 → ... until zero BLOCKERs remain, capped per [15_VERIFICATION_FRAMEWORK.md](15_VERIFICATION_FRAMEWORK.md) §7 when the Orchestrator is driving the cycle). | Zero known BLOCKERs remain. |
 | **QA** | Acceptance criteria that need a real device/browser/screen-reader session (not verifiable by an automated Claude Code session) are tracked as tickets in the phase's `QA/` folder. QA does not block progression to sign-off — see §3. | QA tickets exist and are documented (not necessarily *run* — see §3). |
 | **Owner Sign-off** | The project owner reviews the Release Candidate's merge criteria (per [12_BUG_CLASSIFICATION.md](12_BUG_CLASSIFICATION.md) §6) and records an explicit decision. | Sign-off is recorded as APPROVED (or the phase returns to Release Candidate with specific fixes required). |
 | **Released** | The phase's branch is tagged (`vX.Y.Z-phase-name`) and merged to the main branch. `10_RELEASE_NOTES.md` is finalized. | Tag and merge are both pushed. |
@@ -77,6 +77,7 @@ Phase 01 (Workbench) is the first phase to traverse this entire lifecycle, and i
 
 ## 8. Cross-references
 
+- [15_VERIFICATION_FRAMEWORK.md](15_VERIFICATION_FRAMEWORK.md) — automates the Release Candidate audit step above, for phases with a Verification Contract
 - [12_BUG_CLASSIFICATION.md](12_BUG_CLASSIFICATION.md)
 - [10_CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md)
 - [08_DEFINITION_OF_DONE.md](08_DEFINITION_OF_DONE.md)

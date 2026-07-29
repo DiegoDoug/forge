@@ -4,9 +4,9 @@
 > **Scope:** Implementation workflow, not architecture or product decisions (see [`03_ARCHITECTURE.md`](03_ARCHITECTURE.md) and [`01_PRODUCT_PRINCIPLES.md`](01_PRODUCT_PRINCIPLES.md)).
 > **Ownership:** Lead Software Engineer (phase-assigned).
 > **Status:** Draft — first edition, patterns from Phase 01–02.
-> **Version:** 0.1.0
-> **Last Updated:** 2026-07-22
-> **Depends On:** [`10_CHECKPOINT_PROTOCOL.md`](10_CHECKPOINT_PROTOCOL.md), [`12_BUG_CLASSIFICATION.md`](12_BUG_CLASSIFICATION.md), [`13_PHASE_LIFECYCLE.md`](13_PHASE_LIFECYCLE.md)
+> **Version:** 0.2.0
+> **Last Updated:** 2026-07-25
+> **Depends On:** [`10_CHECKPOINT_PROTOCOL.md`](10_CHECKPOINT_PROTOCOL.md), [`12_BUG_CLASSIFICATION.md`](12_BUG_CLASSIFICATION.md), [`13_PHASE_LIFECYCLE.md`](13_PHASE_LIFECYCLE.md), [`15_VERIFICATION_FRAMEWORK.md`](15_VERIFICATION_FRAMEWORK.md)
 
 ---
 
@@ -59,7 +59,7 @@
 
 ## 6. Bug Classification & Release Candidate
 
-- [ ] **Run an independent audit before signing off.** This is the Release Candidate phase. Have fresh eyes (or a separate pass by the same engineer) review the implementation against the spec. Look for:
+- [ ] **Run the Release Candidate audit before signing off.** For phases with a Verification Contract (Phase 05 onward), this runs automatically via the Verification Orchestrator by default — see [`15_VERIFICATION_FRAMEWORK.md`](15_VERIFICATION_FRAMEWORK.md). A manual pass (fresh eyes, or a separate pass by the same engineer) remains available as the fallback for phases without a contract, and for the escalation cases that document's §8 defines. Either way, look for:
   - Acceptance criteria actually met (not just "looks good")
   - Scope creep (did we build something not in the spec?)
   - Regressions (did we break existing features?)
@@ -119,7 +119,7 @@ A feature is production-ready when **all** of these are true:
 
 - [ ] Spec is complete, locked, and accepted.
 - [ ] All acceptance criteria in 08_ACCEPTANCE.md are verified (or honestly marked unverifiable + filed as QA tickets).
-- [ ] Independent Release Candidate audit is done; zero BLOCKERs remain.
+- [ ] Release Candidate audit is done (via the Verification Orchestrator by default for phases with a Verification Contract, or an independent manual pass otherwise — see §6); zero BLOCKERs remain.
 - [ ] Backend and frontend build/test suites pass.
 - [ ] `docker compose build` and full-stack boot succeed.
 - [ ] Feature is manually verified in the real running app (not just unit tests).
@@ -134,6 +134,8 @@ If any one of these is false, the feature is not ready to merge.
 ## 11. The Release Ceremony
 
 Once a phase passes RC and gets owner sign-off:
+
+> A Verification Orchestrator PASS (per [`15_VERIFICATION_FRAMEWORK.md`](15_VERIFICATION_FRAMEWORK.md)) is a precondition for reaching this ceremony, never a substitute for it — every step below still requires explicit human confirmation, per [`09_CLAUDE_CODE_RULES.md`](09_CLAUDE_CODE_RULES.md) §7 and the project's global safety rules governing destructive/externally-visible actions.
 
 1. [ ] **Tag the release:** `git tag v0.N.0-phase-slug` (e.g., `v0.2.0-project-init`).
 2. [ ] **Merge to `master`:** `git checkout master && git merge --no-ff Phase-NN-Name` (preserves branch history).
@@ -166,6 +168,7 @@ Once a phase passes RC and gets owner sign-off:
 
 ## 13. Cross-References
 
+- [`15_VERIFICATION_FRAMEWORK.md`](15_VERIFICATION_FRAMEWORK.md) — automates §6's RC audit for phases with a Verification Contract (Phase 05 onward)
 - [`10_CHECKPOINT_PROTOCOL.md`](10_CHECKPOINT_PROTOCOL.md) — how to structure checkpoints
 - [`12_BUG_CLASSIFICATION.md`](12_BUG_CLASSIFICATION.md) — BLOCKER vs. MAJOR vs. MINOR
 - [`13_PHASE_LIFECYCLE.md`](13_PHASE_LIFECYCLE.md) — full phase lifecycle (Spec → Implement → RC → Sign-off → Release → Freeze)
