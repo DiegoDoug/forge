@@ -3,9 +3,9 @@
 > **Purpose:** Durable record of every architectural exception, blocking decision, or cross-cutting choice made during FDK-driven development — the things [09_CLAUDE_CODE_RULES.md](../09_CLAUDE_CODE_RULES.md) requires stopping for.
 > **Scope:** Decisions that affect architecture, principles, or cross-phase behavior. Day-to-day implementation choices belong in a phase's own docs, not here.
 > **Ownership:** TODO — assign an owner (recommended: whoever owns [03_ARCHITECTURE.md](../03_ARCHITECTURE.md)).
-> **Status:** Active — 10 decisions recorded (9 accepted, 1 proposed)
-> **Version:** 0.5.0
-> **Last Updated:** 2026-07-25
+> **Status:** Active — 12 decisions recorded (11 accepted, 1 proposed)
+> **Version:** 0.6.0
+> **Last Updated:** 2026-07-29
 > **Depends On:** [../01_PRODUCT_PRINCIPLES.md](../01_PRODUCT_PRINCIPLES.md), [../03_ARCHITECTURE.md](../03_ARCHITECTURE.md)
 > **Supersedes:** —
 
@@ -41,6 +41,8 @@ Add one whenever:
 | [0008](0008-capability-registry-direction.md) | Everything is a Capability (direction, not yet adopted) | **Proposed** | 2026-07-20 |
 | [0009](0009-phase-specification-freeze.md) | Phase Specification Freeze | Accepted | 2026-07-20 |
 | [0010](0010-fdk-verification-automation-exception.md) | FDK verification automation exception | Accepted | 2026-07-25 |
+| [0011](0011-model-playground-provider-credential-security.md) | Model Playground provider credential storage & outbound-call security posture | Accepted | 2026-07-29 |
+| [0012](0012-model-playground-provider-sdk-selection.md) | Model Playground provider & SDK selection (v1) | Accepted | 2026-07-29 |
 
 ## 4. TODO
 

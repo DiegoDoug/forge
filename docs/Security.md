@@ -76,6 +76,22 @@ on non-HTTPS origins); set it to `true` once you're behind TLS.
   exception handler (`app/core/errors.py`) logs the full exception
   server-side and returns a generic `internal_error` envelope.
 
+## Outbound network calls
+
+Forge is self-hosted-first (see [`../forge-docs/01_PRODUCT_PRINCIPLES.md`](../forge-docs/01_PRODUCT_PRINCIPLES.md) §1.2) — every feature must work with zero internet access, and any feature that calls out to a third-party service must be opt-in and degrade to "disabled," never to a broken app.
+
+Two features currently make outbound calls, both to third-party LLM providers:
+
+- **Ingest's optional vision-LLM path** (`app/services/ingest/vision.py`). A single API key, configured once via `FORGE_VISION_API_KEY` (an environment variable, never touched by the UI or stored in the database). Disabled unless both `FORGE_VISION_ENABLED=1` and a key are set. What leaves the instance: image bytes / PDF page renders and a fixed transcription prompt, sent to whatever `base_url` is configured (OpenAI by default, or any OpenAI-compatible endpoint).
+- **Model Playground** (`app/services/model_playground/`, see [`../forge-docs/implementation/Phase-05-Model-Playground/`](../forge-docs/implementation/Phase-05-Model-Playground/)). Unlike Ingest's vision path, this feature is UI-configurable: a user adds a per-provider API key (OpenAI or Anthropic in v1) from the Model Playground page itself, no redeploy required. What leaves the instance: the prompt text the user submits, sent to whichever provider(s)/model(s) they selected for that run.
+
+Rules that apply to both, and to any future outbound-call feature:
+
+- **Never sent, regardless of feature:** `FORGE_MASTER_KEY`, the master password or its hash, any Secrets/Vault value, or one provider's API key when calling a different provider.
+- **Opt-in, not on-by-default:** with no key configured, the feature is simply absent/disabled — the rest of the app functions normally (per [`../forge-docs/01_PRODUCT_PRINCIPLES.md`](../forge-docs/01_PRODUCT_PRINCIPLES.md) §1.2).
+- **Credential storage:** provider API keys are encrypted at rest with the same `VaultCrypto` primitive (`app/core/security.py`) Secrets uses, decrypted only in-memory at the moment of the outbound call, and never echoed back by any API response after creation (write-only, like a password field) — see [ADR-0011](../forge-docs/decisions/0011-model-playground-provider-credential-security.md) for the full design rationale.
+- **Failure isolation:** every outbound call has a hard timeout (60s default) and a provider failure/timeout produces a user-legible, per-call error — never a stack trace, and never one provider's failure blocking or corrupting another's result in the same operation.
+
 ## Things intentionally out of scope
 
 - **CSRF tokens**: the session cookie is `SameSite=Lax`, and every

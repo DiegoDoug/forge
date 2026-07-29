@@ -4,6 +4,7 @@ and ``SQLModel.metadata.create_all`` (tests) see the full schema."""
 from .activity import ActivityLog
 from .app_config import AppConfig
 from .document import Document
+from .model_playground import PlaygroundResult, PlaygroundRun, ProviderCredential
 from .note import Note
 from .project_init import ProjectInitGeneration
 from .prompt_studio import Prompt, PromptVersion
@@ -15,6 +16,9 @@ __all__ = [
     "AppConfig",
     "Document",
     "Note",
+    "PlaygroundResult",
+    "PlaygroundRun",
+    "ProviderCredential",
     "ProjectInitGeneration",
     "Prompt",
     "PromptVersion",

@@ -36,6 +36,7 @@ WORKBENCH_TOOL_KEYS: dict[str, dict[str, bool]] = {
     "utilities": {"available": True},
     "search": {"available": True},
     "prompt_studio": {"available": True},
+    "model_playground": {"available": True},
 }
 
 DEFAULT_LAYOUT_PANELS: list[dict[str, object]] = [
