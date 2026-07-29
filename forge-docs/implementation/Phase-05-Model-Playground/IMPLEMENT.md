@@ -3,8 +3,8 @@
 > **Purpose:** The execution contract for this phase — a Claude Code session must read this in full before writing any code for this phase.
 > **Scope:** This phase only. Inherits from, and never overrides, the repo-wide rules in ../../09_CLAUDE_CODE_RULES.md.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** Not authorized — 01_SPEC.md and 08_ACCEPTANCE.md are still template placeholders
-> **Last Updated:** 2026-07-20
+> **Status:** Implementation complete; phase at Release Candidate, Owner Sign-off recorded 2026-07-29. See CURRENT_STATE.md.
+> **Last Updated:** 2026-07-29
 
 ---
 
@@ -21,15 +21,17 @@ New capability — the first Forge feature with first-class outbound LLM provide
 
 ## Execution Rules
 
-- [ ] Do not begin any task in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) until [`01_SPEC.md`](01_SPEC.md) and [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) are filled in and confirmed (currently template placeholders — this phase is **not yet authorized**).
+- [x] [`01_SPEC.md`](01_SPEC.md) and [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) are filled in and confirmed — this phase is authorized. [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md) is populated (T1–T19) and is the task list to execute against.
 - [ ] Follow [`../../07_CODING_STANDARDS.md`](../../07_CODING_STANDARDS.md) exactly — thin routers, `api.ts` as the only endpoint-shape-aware file, no cross-feature imports.
 - [ ] Update [`CURRENT_STATE.md`](CURRENT_STATE.md) as work progresses, not only at checkpoints.
+- [ ] Follow [ADR-0010](../../decisions/0010-model-playground-provider-credential-security.md) and [ADR-0011](../../decisions/0011-model-playground-provider-sdk-selection.md) exactly for credential storage and provider/SDK choices — do not deviate without a new ADR.
 
 ## Autonomy Rules
 
 Inherits [`../../09_CLAUDE_CODE_RULES.md`](../../09_CLAUDE_CODE_RULES.md) §3 in full. Phase-specific additions:
 
-- [ ] TODO: note anything this phase needs to ask about beyond the repo-wide defaults (e.g. Phase 05 Model Playground and Phase 03 Prompt Studio must always ask before enabling a new outbound LLM provider integration by default).
+- Enabling a new outbound LLM provider **beyond** OpenAI/Anthropic (the two named in ADR-0011) requires a new ADR before implementation — this phase's authorization covers exactly those two providers, nothing more.
+- Any change to the credential-storage design in ADR-0010 (e.g. a different encryption approach, exposing a "reveal key" action) requires revising that ADR first, not a silent implementation deviation.
 
 ## Quality Gates
 

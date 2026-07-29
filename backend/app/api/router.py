@@ -9,6 +9,7 @@ from app.api.routes import (
     documents,
     generators,
     ingest,
+    model_playground,
     notes,
     project_init,
     prompt_studio,
@@ -35,3 +36,4 @@ api_router.include_router(settings.router)
 api_router.include_router(workbench.router)
 api_router.include_router(project_init.router)
 api_router.include_router(prompt_studio.router)
+api_router.include_router(model_playground.router)
