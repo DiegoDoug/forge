@@ -1,10 +1,10 @@
 # QA-0001 — Keyboard-only activation audit
 
-> **Purpose:** Close out [`../08_ACCEPTANCE.md`](../08_ACCEPTANCE.md) AC18 (keyboard navigation reaches every interactive element) with a real-hardware pass, since this session's automated browser could not conclusively verify Enter-key *activation* (only Tab focus order).
+> **Purpose:** Close out [`../../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md`](../../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md) AC18 (keyboard navigation reaches every interactive element) with a real-hardware pass, since this session's automated browser could not conclusively verify Enter-key *activation* (only Tab focus order).
 > **Status:** Open — not yet run
 > **Owner:** TODO — assign a QA owner
 > **Type:** Manual audit — real keyboard hardware, no mouse
-> **Blocks Phase 05 sign-off:** No — tracked here specifically so it does not block. See [`../08_ACCEPTANCE.md`](../08_ACCEPTANCE.md) §2 (AC18) and [`../CURRENT_STATE.md`](../CURRENT_STATE.md) for why.
+> **Blocks Phase 05 sign-off:** No — tracked here specifically so it does not block. See [`../../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md`](../../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md) §2 (AC18) and [`../../../implementation/Phase-05-Model-Playground/CURRENT_STATE.md`](../../../implementation/Phase-05-Model-Playground/CURRENT_STATE.md) for why.
 
 ---
 
@@ -36,7 +36,7 @@ _Not yet run. Fill in with findings and a pass/fail once done._
 
 ## Cross-references
 
-- [../08_ACCEPTANCE.md](../08_ACCEPTANCE.md) §2 (AC18)
-- [../07_TESTING.md](../07_TESTING.md) §3
-- [../CURRENT_STATE.md](../CURRENT_STATE.md)
-- [../../../history/Phase-01/POST_IMPLEMENTATION_REVIEW.md](../../../history/Phase-01/POST_IMPLEMENTATION_REVIEW.md) — "Unexpected Problems" (same tool limitation, documented independently a month earlier)
+- [../../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md](../../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md) §2 (AC18)
+- [../../../implementation/Phase-05-Model-Playground/07_TESTING.md](../../../implementation/Phase-05-Model-Playground/07_TESTING.md) §3
+- [../../../implementation/Phase-05-Model-Playground/CURRENT_STATE.md](../../../implementation/Phase-05-Model-Playground/CURRENT_STATE.md)
+- [../Phase-01/POST_IMPLEMENTATION_REVIEW.md](../Phase-01/POST_IMPLEMENTATION_REVIEW.md) — "Unexpected Problems" (same tool limitation, documented independently a month earlier)

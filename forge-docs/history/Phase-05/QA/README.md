@@ -2,7 +2,7 @@
 
 > **Purpose:** Tracks QA work that is deliberately separate from implementation — a criterion that needs a real keyboard/hardware session rather than an automated one, so it doesn't block Phase 05 sign-off while remaining genuinely open.
 > **Scope:** This phase only.
-> **Depends on:** [`../08_ACCEPTANCE.md`](../08_ACCEPTANCE.md) §2, [`../CURRENT_STATE.md`](../CURRENT_STATE.md)
+> **Depends on:** [`../../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md`](../../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md) §2, [`../../../implementation/Phase-05-Model-Playground/CURRENT_STATE.md`](../../../implementation/Phase-05-Model-Playground/CURRENT_STATE.md)
 
 ---
 

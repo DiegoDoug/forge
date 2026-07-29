@@ -2,9 +2,9 @@
 
 > **Purpose:** A retrospective on how Phase 05 actually went — not a restatement of what was built (see `CURRENT_STATE.md`/`08_ACCEPTANCE.md` for that), but what the process revealed.
 > **Scope:** This phase's full arc: specification, the two blocking ADRs, T1–T19 implementation, and the RC audit.
-> **Status:** Final — Phase 05 at Release Candidate, owner sign-off recorded, pending PR merge.
+> **Status:** Final — Phase 05 Released & Frozen as `v0.5.0-model-playground` (PR #21, squash commit `c950eb0`).
 > **Last Updated:** 2026-07-29
-> **Depends On:** [CURRENT_STATE.md](CURRENT_STATE.md), [08_ACCEPTANCE.md](08_ACCEPTANCE.md), [QA/README.md](QA/README.md)
+> **Depends On:** [../../implementation/Phase-05-Model-Playground/CURRENT_STATE.md](../../implementation/Phase-05-Model-Playground/CURRENT_STATE.md), [../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md](../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md), [QA/README.md](QA/README.md)
 
 ---
 
@@ -64,9 +64,9 @@ None beyond what the accepted ADRs called for. Specifically confirmed:
 
 ## Cross-references
 
-- [CURRENT_STATE.md](CURRENT_STATE.md)
-- [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
+- [../../implementation/Phase-05-Model-Playground/CURRENT_STATE.md](../../implementation/Phase-05-Model-Playground/CURRENT_STATE.md)
+- [../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md](../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md)
 - [QA/README.md](QA/README.md)
-- [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
+- [../../implementation/Phase-05-Model-Playground/09_IMPLEMENTATION_TASKS.md](../../implementation/Phase-05-Model-Playground/09_IMPLEMENTATION_TASKS.md)
 - [10_RELEASE_NOTES.md](10_RELEASE_NOTES.md)
-- [../../history/Phase-01/POST_IMPLEMENTATION_REVIEW.md](../../history/Phase-01/POST_IMPLEMENTATION_REVIEW.md)
+- [../Phase-01/POST_IMPLEMENTATION_REVIEW.md](../Phase-01/POST_IMPLEMENTATION_REVIEW.md)

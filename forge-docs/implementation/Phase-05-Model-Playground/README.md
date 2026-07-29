@@ -3,8 +3,8 @@
 > **Purpose:** Entry point for the Model Playground phase — objective, scope, deliverables, and completion criteria.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** Release Candidate — Owner Sign-off recorded (APPROVED) 2026-07-29; PR pending. Not yet Released/Frozen — see [`../../13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md).
-> **Last Updated:** 2026-07-29
+> **Status:** ✓ Complete — 🔒 Released & Frozen as `v0.5.0-model-playground`, merged via [PR #21](https://github.com/DiegoDoug/forge/pull/21) (squash commit `c950eb0`). Bug fixes only from here — see [`../../13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md).
+> **Last Updated:** 2026-07-30
 
 ---
 
@@ -69,12 +69,12 @@ Outbound network calls and provider API-key storage are resolved: [ADR-0011](../
 ## Definition of Complete
 
 - [x] All deliverables above are shipped and meet [`../../08_DEFINITION_OF_DONE.md`](../../08_DEFINITION_OF_DONE.md).
-- [x] [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) criteria are checked off (one item, AC18, is honestly flagged as a QA ticket rather than falsely marked done — see [`QA/QA-0001-keyboard-activation-audit.md`](QA/QA-0001-keyboard-activation-audit.md)).
+- [x] [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) criteria are checked off (one item, AC18, is honestly flagged as a QA ticket rather than falsely marked done — see [`QA-0001`](../../history/Phase-05/QA/QA-0001-keyboard-activation-audit.md), archived at freeze).
 - [x] [`CURRENT_STATE.md`](CURRENT_STATE.md) reflects reality with no stale "In Progress" items.
 - [x] A final checkpoint has been produced per [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md).
-- [x] Release Candidate audit complete, zero BLOCKERs (per [`../../12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md)) — see [`POST_IMPLEMENTATION_REVIEW.md`](POST_IMPLEMENTATION_REVIEW.md).
+- [x] Release Candidate audit complete, zero BLOCKERs (per [`../../12_BUG_CLASSIFICATION.md`](../../12_BUG_CLASSIFICATION.md)) — see [`../../history/Phase-05/POST_IMPLEMENTATION_REVIEW.md`](../../history/Phase-05/POST_IMPLEMENTATION_REVIEW.md).
 - [x] Owner sign-off recorded — see [`CURRENT_STATE.md`](CURRENT_STATE.md).
-- [ ] PR opened, reviewed, and merged to `master`; release tagged; implementation directory frozen — the remaining steps in [`../../13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md), not part of this checkpoint.
+- [x] PR opened, reviewed, and merged to `master` ([PR #21](https://github.com/DiegoDoug/forge/pull/21), squash commit `c950eb0`); release tagged `v0.5.0-model-playground`; implementation directory frozen; end-of-phase artifacts archived to [`../../history/Phase-05/`](../../history/Phase-05/).
 
 ## Cross-references
 

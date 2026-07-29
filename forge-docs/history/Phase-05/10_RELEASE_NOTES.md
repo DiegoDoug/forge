@@ -2,10 +2,10 @@
 
 > **Purpose:** The release-facing summary of this phase — what shipped, what broke on purpose, what to do before upgrading. Written at RC, updated through sign-off; not a duplicate of `CURRENT_STATE.md` (the day-to-day working log) or `POST_IMPLEMENTATION_REVIEW.md` (the retrospective) — this is the document a user or another engineer reads to understand what changed, not how it was built.
 > **Scope:** This phase only.
-> **Status:** Release Candidate — owner sign-off recorded, pending PR merge/tag/freeze.
-> **Version:** `v0.5.0-model-playground` (proposed, per the existing `vX.Y.Z-phase-name` tagging convention)
+> **Status:** Finalized — Released & Frozen. Tagged `v0.5.0-model-playground`, merged to `master` via [PR #21](https://github.com/DiegoDoug/forge/pull/21) (squash commit `c950eb0`).
+> **Version:** `v0.5.0-model-playground`
 > **Last Updated:** 2026-07-29
-> **Depends On:** [CURRENT_STATE.md](CURRENT_STATE.md), [08_ACCEPTANCE.md](08_ACCEPTANCE.md), [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
+> **Depends On:** [../../implementation/Phase-05-Model-Playground/CURRENT_STATE.md](../../implementation/Phase-05-Model-Playground/CURRENT_STATE.md), [../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md](../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md), [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
 
 ---
 
@@ -43,14 +43,14 @@ A normal `docker compose up --build` picks up the change: the new migration appl
 ## Deferred Work
 
 - **A generic "Custom / OpenAI-compatible" pseudo-provider** (base-URL override, for self-hosted models or OpenRouter-style endpoints) — evaluated and explicitly deferred in [ADR-0012](../../decisions/0012-model-playground-provider-sdk-selection.md) §2.3, to keep v1's credential form and provider list simple. The adapter-interface design means adding it later is additive, not a rework, if real demand shows up.
-- **Streaming (SSE) responses** — v1 waits for each provider's complete response; see [`01_SPEC.md`](01_SPEC.md) §5. Revisit once non-streaming is proven stable.
-- **Multi-turn chat / conversation history within a run, cost estimation beyond echoing provider-reported token usage, revealing a stored credential's raw key** — all explicitly out of scope for v1, per [`01_SPEC.md`](01_SPEC.md) §5.
+- **Streaming (SSE) responses** — v1 waits for each provider's complete response; see [`01_SPEC.md`](../../implementation/Phase-05-Model-Playground/01_SPEC.md) §5. Revisit once non-streaming is proven stable.
+- **Multi-turn chat / conversation history within a run, cost estimation beyond echoing provider-reported token usage, revealing a stored credential's raw key** — all explicitly out of scope for v1, per [`01_SPEC.md`](../../implementation/Phase-05-Model-Playground/01_SPEC.md) §5.
 
 ## Cross-references
 
-- [CURRENT_STATE.md](CURRENT_STATE.md)
-- [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
-- [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
+- [../../implementation/Phase-05-Model-Playground/CURRENT_STATE.md](../../implementation/Phase-05-Model-Playground/CURRENT_STATE.md)
+- [../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md](../../implementation/Phase-05-Model-Playground/08_ACCEPTANCE.md)
+- [../../implementation/Phase-05-Model-Playground/09_IMPLEMENTATION_TASKS.md](../../implementation/Phase-05-Model-Playground/09_IMPLEMENTATION_TASKS.md)
 - [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
 - [QA/README.md](QA/README.md)
 - [../../decisions/0011-model-playground-provider-credential-security.md](../../decisions/0011-model-playground-provider-credential-security.md)
