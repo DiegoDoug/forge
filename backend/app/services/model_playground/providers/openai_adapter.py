@@ -4,7 +4,9 @@ from .base import AdapterResult
 
 
 class OpenAIAdapter:
-    async def complete(self, *, api_key: str, model: str, prompt: str) -> AdapterResult:
+    async def complete(
+        self, *, api_key: str, model: str, prompt: str, base_url: str | None = None
+    ) -> AdapterResult:
         from openai import AsyncOpenAI
 
         client = AsyncOpenAI(api_key=api_key)

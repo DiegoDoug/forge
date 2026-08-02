@@ -25,6 +25,8 @@ async def list_provider_availability(session: AsyncSession) -> list[dict]:
             "display_name": spec.display_name,
             "configured": spec.key in configured,
             "models": list(spec.models),
+            "requires_base_url": spec.requires_base_url,
+            "allows_custom_model": spec.allows_custom_model,
         }
         for spec in PROVIDER_REGISTRY.values()
     ]
@@ -36,7 +38,7 @@ async def _get_credential(session: AsyncSession, provider: str) -> ProviderCrede
 
 
 async def create_or_replace_credential(
-    session: AsyncSession, *, provider: str, label: str | None, api_key: str
+    session: AsyncSession, *, provider: str, label: str | None, api_key: str, base_url: str | None = None
 ) -> ProviderCredential:
     crypto = get_vault_crypto()
     encrypted = crypto.encrypt_str(api_key)
@@ -47,6 +49,7 @@ async def create_or_replace_credential(
     if existing is not None:
         existing.label = resolved_label
         existing.encrypted_api_key = encrypted
+        existing.base_url = base_url
         existing.updated_at = utcnow()
         session.add(existing)
         activity.record(session, ActivityAction.updated, "provider_credential", existing.id, f'Replaced key for "{display_name}"')
@@ -54,7 +57,9 @@ async def create_or_replace_credential(
         await session.refresh(existing)
         return existing
 
-    credential = ProviderCredential(provider=provider, label=resolved_label, encrypted_api_key=encrypted)
+    credential = ProviderCredential(
+        provider=provider, label=resolved_label, encrypted_api_key=encrypted, base_url=base_url
+    )
     session.add(credential)
     await session.flush()
     activity.record(session, ActivityAction.created, "provider_credential", credential.id, f'Configured "{display_name}"')

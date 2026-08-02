@@ -14,6 +14,7 @@ from app.models.activity import ActivityAction
 from app.models.model_playground import PlaygroundResult, PlaygroundRun, ProviderCredential
 from app.services import activity
 from app.services.model_playground.credentials import decrypt_api_key
+from app.services.model_playground.errors import to_user_message
 from app.services.model_playground.providers import PROVIDER_REGISTRY
 
 logger = logging.getLogger("forge.model_playground")
@@ -39,28 +40,12 @@ async def _get_run_or_404(session: AsyncSession, run_id: str) -> PlaygroundRun:
     return run
 
 
-def _error_message(exc: Exception) -> str:
-    """Map an SDK exception to a short, user-legible message - never the raw
-    exception text or a stack trace (docs/Security.md "Input handling")."""
-    name = type(exc).__name__
-    mapping = {
-        "AuthenticationError": "Authentication failed - check the configured API key.",
-        "PermissionDeniedError": "The API key does not have permission for this model.",
-        "RateLimitError": "Rate limited by the provider - try again shortly.",
-        "NotFoundError": "The requested model was not found by the provider.",
-        "APIConnectionError": "Could not reach the provider - check network connectivity.",
-        "APIStatusError": "The provider returned an error response.",
-        "BadRequestError": "The provider rejected the request.",
-    }
-    return mapping.get(name, "Request failed.")
-
-
-async def _call_target(*, api_key: str, prompt: str, target: RunTarget) -> PlaygroundResult:
+async def _call_target(*, api_key: str, base_url: str | None, prompt: str, target: RunTarget) -> PlaygroundResult:
     spec = PROVIDER_REGISTRY[target.provider]
     started = time.monotonic()
     try:
         outcome = await asyncio.wait_for(
-            spec.adapter.complete(api_key=api_key, model=target.model, prompt=prompt),
+            spec.adapter.complete(api_key=api_key, model=target.model, prompt=prompt, base_url=base_url),
             timeout=TIMEOUT_SECONDS,
         )
         latency_ms = int((time.monotonic() - started) * 1000)
@@ -90,7 +75,7 @@ async def _call_target(*, api_key: str, prompt: str, target: RunTarget) -> Playg
             provider=target.provider,
             model=target.model,
             status="error",
-            error_message=_error_message(exc),
+            error_message=to_user_message(exc),
             latency_ms=int((time.monotonic() - started) * 1000),
         )
 
@@ -110,11 +95,16 @@ async def create_run(session: AsyncSession, *, prompt: str, targets: list[RunTar
         )
 
     api_keys: dict[str, str] = {}
+    base_urls: dict[str, str | None] = {}
     for provider, credential in found.items():
         api_keys[provider] = await decrypt_api_key(credential)
+        base_urls[provider] = credential.base_url
 
     results = await asyncio.gather(
-        *(_call_target(api_key=api_keys[t.provider], prompt=prompt, target=t) for t in targets)
+        *(
+            _call_target(api_key=api_keys[t.provider], base_url=base_urls[t.provider], prompt=prompt, target=t)
+            for t in targets
+        )
     )
 
     run = PlaygroundRun(prompt=prompt)

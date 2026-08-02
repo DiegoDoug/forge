@@ -59,15 +59,20 @@ export function ProviderList() {
           const credential = credentialsByProvider.get(provider.provider);
           return (
             <div key={provider.provider} className="flex items-center justify-between gap-3 px-4 py-3">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">{provider.display_name}</span>
-                {provider.configured ? (
-                  <Badge variant="secondary">Configured</Badge>
-                ) : (
-                  <Badge variant="outline" className="text-muted-foreground">
-                    Not configured
-                  </Badge>
-                )}
+              <div className="flex flex-col gap-0.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">{provider.display_name}</span>
+                  {provider.configured ? (
+                    <Badge variant="secondary">Configured</Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-muted-foreground">
+                      Not configured
+                    </Badge>
+                  )}
+                </div>
+                {provider.configured && credential?.base_url ? (
+                  <span className="text-xs text-muted-foreground">{credential.base_url}</span>
+                ) : null}
               </div>
               <div className="flex items-center gap-1">
                 <Button
@@ -113,9 +118,7 @@ export function ProviderList() {
         <CredentialFormDialog
           open={Boolean(configuringProvider)}
           onOpenChange={(open) => setConfiguringProvider(open ? configuringProvider : null)}
-          provider={configuring.provider}
-          displayName={configuring.display_name}
-          configured={configuring.configured}
+          provider={configuring}
         />
       ) : null}
     </Card>

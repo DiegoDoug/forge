@@ -38,8 +38,10 @@ class _FakeAdapter:
         self.completion_tokens = completion_tokens
         self.calls: list[dict] = []
 
-    async def complete(self, *, api_key: str, model: str, prompt: str) -> AdapterResult:
-        self.calls.append({"api_key": api_key, "model": model, "prompt": prompt})
+    async def complete(
+        self, *, api_key: str, model: str, prompt: str, base_url: str | None = None
+    ) -> AdapterResult:
+        self.calls.append({"api_key": api_key, "model": model, "prompt": prompt, "base_url": base_url})
         if self.delay:
             await asyncio.sleep(self.delay)
         if self.error is not None:
@@ -249,3 +251,168 @@ async def test_list_runs_orders_most_recent_first(db_session):
     runs = await runs_service.list_runs(db_session)
 
     assert [r.id for r in runs] == [second.id, first.id]
+
+
+# --- Provider registry (ADR-0013) -------------------------------------------
+
+
+def test_provider_registry_includes_v1_and_extended_providers():
+    assert set(PROVIDER_REGISTRY) == {"openai", "anthropic", "deepseek", "kimi", "glm", "gemini", "custom"}
+
+
+def test_only_custom_provider_requires_base_url_or_allows_custom_model():
+    for key, spec in PROVIDER_REGISTRY.items():
+        if key == "custom":
+            assert spec.requires_base_url is True
+            assert spec.allows_custom_model is True
+            assert spec.models == ()
+        else:
+            assert spec.requires_base_url is False
+            assert spec.allows_custom_model is False
+            assert len(spec.models) > 0
+
+
+def test_unknown_provider_key_is_not_in_registry():
+    assert "made-up" not in PROVIDER_REGISTRY
+
+
+# --- base_url on ProviderCredential (ADR-0013) ------------------------------
+
+
+async def test_create_credential_for_custom_provider_stores_base_url(db_session):
+    credential = await credentials_service.create_or_replace_credential(
+        db_session, provider="custom", label="My Endpoint", api_key="sk-custom", base_url="https://example.com/v1"
+    )
+
+    assert credential.base_url == "https://example.com/v1"
+    assert await credentials_service.decrypt_api_key(credential) == "sk-custom"
+
+
+async def test_create_credential_for_named_provider_has_no_base_url_by_default(db_session):
+    credential = await credentials_service.create_or_replace_credential(
+        db_session, provider="deepseek", label=None, api_key="sk-deepseek"
+    )
+
+    assert credential.base_url is None
+
+
+async def test_provider_availability_reflects_new_provider_flags(db_session):
+    availability = await credentials_service.list_provider_availability(db_session)
+    by_provider = {a["provider"]: a for a in availability}
+
+    assert by_provider["custom"]["requires_base_url"] is True
+    assert by_provider["custom"]["allows_custom_model"] is True
+    assert by_provider["custom"]["models"] == []
+    assert by_provider["deepseek"]["requires_base_url"] is False
+    assert by_provider["deepseek"]["models"] == list(PROVIDER_REGISTRY["deepseek"].models)
+
+
+# --- Adapter routing (ADR-0013) ---------------------------------------------
+
+
+async def test_deepseek_kimi_glm_gemini_route_through_openai_compatible_adapter_with_fixed_base_url():
+    from app.services.model_playground.providers.openai_compatible_adapter import OpenAICompatibleAdapter
+
+    expected = {
+        "deepseek": "https://api.deepseek.com/v1",
+        "kimi": "https://api.moonshot.cn/v1",
+        "glm": "https://open.bigmodel.cn/api/paas/v4",
+        "gemini": "https://generativelanguage.googleapis.com/v1beta/openai/",
+    }
+    for key, base_url in expected.items():
+        adapter = PROVIDER_REGISTRY[key].adapter
+        assert isinstance(adapter, OpenAICompatibleAdapter)
+        assert adapter.default_base_url == base_url
+
+
+async def test_custom_provider_adapter_has_no_fixed_default_base_url():
+    from app.services.model_playground.providers.openai_compatible_adapter import OpenAICompatibleAdapter
+
+    adapter = PROVIDER_REGISTRY["custom"].adapter
+    assert isinstance(adapter, OpenAICompatibleAdapter)
+    assert adapter.default_base_url is None
+
+
+async def test_openai_compatible_adapter_calls_openai_sdk_with_resolved_base_url(monkeypatch):
+    from app.services.model_playground.providers.openai_compatible_adapter import OpenAICompatibleAdapter
+
+    captured: dict = {}
+
+    class _FakeMessage:
+        content = "hello from fake"
+
+    class _FakeChoice:
+        message = _FakeMessage()
+
+    class _FakeUsage:
+        prompt_tokens = 4
+        completion_tokens = 6
+
+    class _FakeResponse:
+        choices = [_FakeChoice()]
+        usage = _FakeUsage()
+
+    class _FakeCompletions:
+        async def create(self, **kwargs):
+            captured["create_kwargs"] = kwargs
+            return _FakeResponse()
+
+    class _FakeChat:
+        def __init__(self):
+            self.completions = _FakeCompletions()
+
+    class _FakeAsyncOpenAI:
+        def __init__(self, *, api_key, base_url=None):
+            captured["api_key"] = api_key
+            captured["base_url"] = base_url
+            self.chat = _FakeChat()
+
+    monkeypatch.setattr("openai.AsyncOpenAI", _FakeAsyncOpenAI)
+
+    adapter = OpenAICompatibleAdapter(default_base_url="https://default.example.com/v1")
+    result = await adapter.complete(api_key="sk-test", model="test-model", prompt="hi")
+
+    assert captured["api_key"] == "sk-test"
+    assert captured["base_url"] == "https://default.example.com/v1"
+    assert captured["create_kwargs"]["model"] == "test-model"
+    assert result.response_text == "hello from fake"
+    assert result.prompt_tokens == 4
+    assert result.completion_tokens == 6
+
+    # A call-time base_url (the Custom provider's stored credential) wins
+    # over the adapter's own default.
+    await adapter.complete(api_key="sk-test", model="test-model", prompt="hi", base_url="https://override.example.com/v1")
+    assert captured["base_url"] == "https://override.example.com/v1"
+
+
+# --- Runs with the new providers (ADR-0013) ---------------------------------
+
+
+async def test_create_run_passes_stored_base_url_to_adapter_for_custom_provider(db_session):
+    await credentials_service.create_or_replace_credential(
+        db_session, provider="custom", label="My Endpoint", api_key="sk-custom", base_url="https://example.com/v1"
+    )
+    fake = _FakeAdapter(text="custom says hi")
+    _install_fake_adapter("custom", fake)
+
+    run = await runs_service.create_run(
+        db_session, prompt="hi", targets=[RunTarget(provider="custom", model="my-self-hosted-model")]
+    )
+
+    assert run.results[0].status == "success"
+    assert run.results[0].response_text == "custom says hi"
+    assert fake.calls[0]["base_url"] == "https://example.com/v1"
+    assert fake.calls[0]["model"] == "my-self-hosted-model"
+
+
+async def test_create_run_deepseek_target_succeeds_via_fake_adapter(db_session):
+    await credentials_service.create_or_replace_credential(db_session, provider="deepseek", label=None, api_key="sk-ds")
+    _install_fake_adapter("deepseek", _FakeAdapter(text="deepseek says hi"))
+
+    run = await runs_service.create_run(
+        db_session, prompt="hi", targets=[RunTarget(provider="deepseek", model="deepseek-chat")]
+    )
+
+    assert run.results[0].status == "success"
+    assert run.results[0].provider == "deepseek"
+    assert run.results[0].response_text == "deepseek says hi"

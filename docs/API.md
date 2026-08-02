@@ -39,6 +39,7 @@ full reference.
 | `/api/search` | Combined secrets + notes + documents search for the command palette |
 | `/api/workbench` | Home-page Workbench: layout (panels + pinned tools), storage/recent-activity/recent-notes aggregation, layout update/reset |
 | `/api/settings` | Theme, backup export/import, about |
+| `/api/model-playground` | Provider listing, per-provider API-key credentials (OpenAI, Anthropic, DeepSeek, Kimi, GLM, Gemini, Custom OpenAI-compatible), a stateless provider connection test, and prompt-comparison runs/history — see [Security.md](Security.md) "Outbound network calls" |
 
 ## Example
 

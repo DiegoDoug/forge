@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Send } from "lucide-react";
+import { Plus, Send } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,6 +26,7 @@ export function PromptComposer({
   const providersQuery = useProviders();
   const [prompt, setPrompt] = useState("");
   const [selected, setSelected] = useState<RunTarget[]>([]);
+  const [customModelInput, setCustomModelInput] = useState<Record<string, string>>({});
 
   const configuredProviders = (providersQuery.data ?? []).filter((p) => p.configured);
   const atCap = selected.length >= MAX_TARGETS_PER_RUN;
@@ -38,6 +40,15 @@ export function PromptComposer({
       }
       return prev.filter((t) => targetKey(t) !== targetKey(target));
     });
+  }
+
+  function addCustomModel(provider: string) {
+    const model = (customModelInput[provider] ?? "").trim();
+    if (!model || atCap) return;
+    const target = { provider, model };
+    if (selected.some((t) => targetKey(t) === targetKey(target))) return;
+    setSelected((prev) => [...prev, target]);
+    setCustomModelInput((prev) => ({ ...prev, [provider]: "" }));
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -97,6 +108,57 @@ export function PromptComposer({
                       );
                     })}
                   </div>
+
+                  {provider.allows_custom_model ? (
+                    <>
+                      <div className="flex flex-wrap gap-1.5">
+                        {selected
+                          .filter((t) => t.provider === provider.provider)
+                          .map((t) => (
+                            <div
+                              key={targetKey(t)}
+                              className="flex items-center gap-1 rounded-md border border-border px-2 py-0.5 text-sm"
+                            >
+                              <span>{t.model}</span>
+                              <button
+                                type="button"
+                                className="text-muted-foreground hover:text-foreground"
+                                onClick={() => toggle(t, false)}
+                                aria-label={`Remove ${t.model}`}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ))}
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Input
+                          placeholder="Model name (e.g. deepseek-chat)"
+                          className="h-8 max-w-64"
+                          value={customModelInput[provider.provider] ?? ""}
+                          onChange={(e) =>
+                            setCustomModelInput((prev) => ({ ...prev, [provider.provider]: e.target.value }))
+                          }
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              addCustomModel(provider.provider);
+                            }
+                          }}
+                          disabled={atCap}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon-sm"
+                          disabled={atCap || !(customModelInput[provider.provider] ?? "").trim()}
+                          onClick={() => addCustomModel(provider.provider)}
+                        >
+                          <Plus className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </>
+                  ) : null}
                 </div>
               ))}
             </div>

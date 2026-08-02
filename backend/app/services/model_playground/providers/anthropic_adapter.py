@@ -6,7 +6,9 @@ _DEFAULT_MAX_TOKENS = 4096
 
 
 class AnthropicAdapter:
-    async def complete(self, *, api_key: str, model: str, prompt: str) -> AdapterResult:
+    async def complete(
+        self, *, api_key: str, model: str, prompt: str, base_url: str | None = None
+    ) -> AdapterResult:
         from anthropic import AsyncAnthropic
 
         client = AsyncAnthropic(api_key=api_key)

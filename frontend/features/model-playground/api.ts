@@ -7,12 +7,15 @@ export interface ProviderAvailability {
   display_name: string;
   configured: boolean;
   models: string[];
+  requires_base_url: boolean;
+  allows_custom_model: boolean;
 }
 
 export interface ProviderCredential {
   id: string;
   provider: string;
   label: string;
+  base_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -21,6 +24,19 @@ export interface ProviderCredentialInput {
   provider: string;
   label?: string | null;
   api_key: string;
+  base_url?: string | null;
+}
+
+export interface ProviderConnectionTestInput {
+  provider: string;
+  api_key: string;
+  base_url?: string | null;
+  model: string;
+}
+
+export interface ProviderConnectionTestResult {
+  success: boolean;
+  message: string;
 }
 
 export interface RunTarget {
@@ -73,6 +89,8 @@ export const modelPlaygroundApi = {
   createCredential: (input: ProviderCredentialInput) =>
     api.post<ProviderCredential>("/api/model-playground/credentials", input),
   deleteCredential: (id: string) => api.delete<void>(`/api/model-playground/credentials/${id}`),
+  testConnection: (input: ProviderConnectionTestInput) =>
+    api.post<ProviderConnectionTestResult>("/api/model-playground/providers/test-connection", input),
   createRun: (input: { prompt: string; targets: RunTarget[] }) =>
     api.post<PlaygroundRun>("/api/model-playground/runs", input),
   listRuns: (limit?: number, offset?: number) =>
@@ -106,6 +124,10 @@ export function useCredentialMutations() {
     create: useMutation({ mutationFn: modelPlaygroundApi.createCredential, onSuccess: invalidate }),
     remove: useMutation({ mutationFn: modelPlaygroundApi.deleteCredential, onSuccess: invalidate }),
   };
+}
+
+export function useTestConnection() {
+  return useMutation({ mutationFn: modelPlaygroundApi.testConnection });
 }
 
 export function useRuns(limit?: number, offset?: number) {

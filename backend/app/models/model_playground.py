@@ -19,6 +19,11 @@ class ProviderCredential(SQLModel, table=True):
     provider: str = Field(index=True, unique=True, max_length=50)
     label: str = Field(max_length=200)
     encrypted_api_key: bytes
+    # Only set (and only accepted) for providers with
+    # ProviderSpec.requires_base_url=True (currently just "custom") - see
+    # ADR-0013 SS2.4. Not a secret: it's an endpoint URL, not a credential,
+    # so unlike encrypted_api_key it's safe to read back in API responses.
+    base_url: str | None = Field(default=None, max_length=500)
     created_at: datetime = Field(default_factory=utcnow)
     updated_at: datetime = Field(default_factory=utcnow)
 

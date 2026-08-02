@@ -10,10 +10,13 @@ from app.schemas.model_playground import (
     PlaygroundRunListOut,
     PlaygroundRunOut,
     ProviderAvailability,
+    ProviderConnectionTestIn,
+    ProviderConnectionTestOut,
     ProviderCredentialIn,
     ProviderCredentialListOut,
     ProviderCredentialOut,
 )
+from app.services.model_playground import connection_test as connection_test_service
 from app.services.model_playground import credentials as credentials_service
 from app.services.model_playground import runs as runs_service
 from app.services.model_playground.runs import RunTarget
@@ -26,6 +29,7 @@ def _to_credential_out(credential: ProviderCredential) -> ProviderCredentialOut:
         id=credential.id,
         provider=credential.provider,
         label=credential.label,
+        base_url=credential.base_url,
         created_at=credential.created_at,
         updated_at=credential.updated_at,
     )
@@ -80,6 +84,14 @@ async def list_providers(session: SessionDep) -> list[ProviderAvailability]:
     return [ProviderAvailability(**a) for a in availability]
 
 
+@router.post("/providers/test-connection", response_model=ProviderConnectionTestOut)
+async def test_provider_connection(body: ProviderConnectionTestIn) -> ProviderConnectionTestOut:
+    success, message = await connection_test_service.test_connection(
+        provider=body.provider, api_key=body.api_key, base_url=body.base_url, model=body.model
+    )
+    return ProviderConnectionTestOut(success=success, message=message)
+
+
 @router.get("/credentials", response_model=ProviderCredentialListOut)
 async def list_credentials(session: SessionDep) -> ProviderCredentialListOut:
     creds = await credentials_service.list_credentials(session)
@@ -89,7 +101,7 @@ async def list_credentials(session: SessionDep) -> ProviderCredentialListOut:
 @router.post("/credentials", response_model=ProviderCredentialOut, status_code=201)
 async def create_credential(body: ProviderCredentialIn, session: SessionDep) -> ProviderCredentialOut:
     credential = await credentials_service.create_or_replace_credential(
-        session, provider=body.provider, label=body.label, api_key=body.api_key
+        session, provider=body.provider, label=body.label, api_key=body.api_key, base_url=body.base_url
     )
     return _to_credential_out(credential)
 
