@@ -3,8 +3,8 @@
 > **Purpose:** Sequence the vision in [00_VISION.md](00_VISION.md) into ordered, buildable phases.
 > **Scope:** Cross-phase sequencing and dependency ordering. Per-phase detail lives in `implementation/Phase-XX-*/`.
 > **Ownership:** TODO — assign a roadmap owner.
-> **Status:** Phase 01–06 complete; Phase 06 (Projects) implemented and tested, pending commit/release tag; Phase 07+ not started
-> **Version:** 0.8.0
+> **Status:** Phase 01–06 complete and released; Phase 07+ not started
+> **Version:** 0.9.0
 > **Last Updated:** 2026-08-03
 > **Depends On:** [00_VISION.md](00_VISION.md)
 > **Supersedes:** —
@@ -38,7 +38,7 @@ The following already exist in the application and are **not** re-specified here
 | 03 | [Prompt Studio](implementation/Phase-03-Prompt-Studio/README.md) | New — authoring/versioning workspace for LLM prompts, no live LLM execution (resolved 2026-07-22, see phase spec §4–§5) | ✓ Complete — 🔒 released & frozen as `v0.3.0-prompt-studio` |
 | 04 | [Universal Converter](implementation/Phase-04-Universal-Converter/README.md) | Unifies Converters + Ingest into one format-conversion surface | ✓ Complete — 🔒 released & frozen as `v0.4.0-universal-converter` |
 | 05 | [Model Playground](implementation/Phase-05-Model-Playground/README.md) | New — test/compare LLM providers and models (see [ADR-0011](decisions/0011-model-playground-provider-credential-security.md)/[ADR-0012](decisions/0012-model-playground-provider-sdk-selection.md)) | ✓ Complete — 🔒 released & frozen as `v0.5.0-model-playground` |
-| 06 | [Projects](implementation/Phase-06-Projects/README.md) | New — cross-feature project/workspace grouping (see [ADR-0014](decisions/0014-project-data-model-shape.md)) | ✓ Complete — implemented, tested, QA'd; pending commit/tag |
+| 06 | [Projects](implementation/Phase-06-Projects/README.md) | New — cross-feature project/workspace grouping (see [ADR-0014](decisions/0014-project-data-model-shape.md)) | ✓ Complete — 🔒 released & frozen as `v0.6.0-projects` |
 | 07 | [Knowledge Hub](implementation/Phase-07-Knowledge-Hub/README.md) | Unifies Notes + Documents + Ingest output into a searchable knowledge base | Not started |
 | 08 | [Developer Toolkit](implementation/Phase-08-Developer-Toolkit/README.md) | Consolidates Generators + Crypto + Utilities under one umbrella | Not started |
 
@@ -50,7 +50,7 @@ The following already exist in the application and are **not** re-specified here
 - Phases 03 and 05 (Prompt Studio, Model Playground) were flagged here as sharing LLM-provider plumbing — **resolved for Phase 03** during its specification session (2026-07-22): Prompt Studio ships with zero outbound network calls and zero provider/API-key concepts; there is no shared plumbing to sequence. See [`implementation/Phase-03-Prompt-Studio/01_SPEC.md`](implementation/Phase-03-Prompt-Studio/01_SPEC.md) §4–§5. Phase 05 remains the sole owner of actual provider integration whenever it is specified.
 - Phases 04, 07, 08 are consolidations of existing features and carry lower architectural risk — candidates to interleave with the higher-risk new phases (01, 02, 03, 05, 06) for momentum.
 
-This ordering was validated by Phases 01–05 shipping in sequence without architectural conflicts. Phase 06 onwards should follow this sequencing, with periodic reviews after each checkpoint.
+This ordering was validated by Phases 01–06 shipping in sequence without architectural conflicts. Phase 07 onwards should follow this sequencing, with periodic reviews after each checkpoint.
 
 - [x] [ADR-0005](decisions/0005-projects-primary-organizational-unit.md)'s "revisit Phase 06's position" TODO is resolved: Phase 06 has now landed (see [ADR-0014](decisions/0014-project-data-model-shape.md)), so the question of moving it earlier is moot.
 

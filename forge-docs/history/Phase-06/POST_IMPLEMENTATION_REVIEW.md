@@ -2,9 +2,9 @@
 
 > **Purpose:** A retrospective on how Phase 06 actually went — not a restatement of what was built (see `CURRENT_STATE.md`/`08_ACCEPTANCE.md` for that), but what the process revealed.
 > **Scope:** This phase's full arc: baseline inspection, specification, ADR-0014, implementation, testing, manual QA, and release.
-> **Status:** Final — Phase 06 Released & Frozen as `v0.6.0-projects`.
+> **Status:** Final — Phase 06 Released & Frozen as `v0.6.0-projects` (commit `ddc8972`).
 > **Last Updated:** 2026-08-03
-> **Depends On:** [../../implementation/Phase-06-Projects/CURRENT_STATE.md](CURRENT_STATE.md), [../../implementation/Phase-06-Projects/08_ACCEPTANCE.md](08_ACCEPTANCE.md)
+> **Depends On:** [CURRENT_STATE.md](../../implementation/Phase-06-Projects/CURRENT_STATE.md), [08_ACCEPTANCE.md](../../implementation/Phase-06-Projects/08_ACCEPTANCE.md)
 
 ---
 
@@ -64,9 +64,9 @@ None beyond what ADR-0014 called for. Specifically confirmed:
 
 ## Cross-references
 
-- [../../implementation/Phase-06-Projects/CURRENT_STATE.md](CURRENT_STATE.md)
-- [../../implementation/Phase-06-Projects/08_ACCEPTANCE.md](08_ACCEPTANCE.md)
-- [../../implementation/Phase-06-Projects/09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
+- [CURRENT_STATE.md](../../implementation/Phase-06-Projects/CURRENT_STATE.md)
+- [08_ACCEPTANCE.md](../../implementation/Phase-06-Projects/08_ACCEPTANCE.md)
+- [09_IMPLEMENTATION_TASKS.md](../../implementation/Phase-06-Projects/09_IMPLEMENTATION_TASKS.md)
 - [10_RELEASE_NOTES.md](10_RELEASE_NOTES.md)
 - [../../decisions/0014-project-data-model-shape.md](../../decisions/0014-project-data-model-shape.md)
-- [../Phase-05-Model-Playground/](../../history/Phase-05/POST_IMPLEMENTATION_REVIEW.md)
+- [Phase-05/POST_IMPLEMENTATION_REVIEW.md](../Phase-05/POST_IMPLEMENTATION_REVIEW.md)

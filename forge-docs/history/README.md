@@ -28,6 +28,7 @@ At every checkpoint (per [`../10_CHECKPOINT_PROTOCOL.md`](../10_CHECKPOINT_PROTO
 | 2026-07-21 | Phase-01-Workbench | Milestone completion (Milestone 3 — Frontend, T9–T12) | [2026-07-21-phase-01-milestone-3-frontend.md](2026-07-21-phase-01-milestone-3-frontend.md) |
 | 2026-07-22 | Phase-02-Project-Initialization-Engine | Milestone completion (Milestone 1 — Backend engine, T1–T9) | [2026-07-22-phase-02-milestone-1-backend-engine.md](2026-07-22-phase-02-milestone-1-backend-engine.md) |
 | 2026-07-22 | Phase-02-Project-Initialization-Engine | Milestone completion (Milestones 2–3 — Frontend UI & Validation, T10–T14; Implementation-stage DoD reached) | [2026-07-22-phase-02-final-checkpoint.md](2026-07-22-phase-02-final-checkpoint.md) |
+| 2026-08-03 | Phase-06-Projects | Final (commit `ddc8972` pushed to `master`, Released & Frozen as `v0.6.0-projects`) | [2026-08-03-phase-06-final-checkpoint.md](2026-08-03-phase-06-final-checkpoint.md) |
 
 ## 2.1 Frozen-phase archives
 
@@ -36,6 +37,7 @@ Per [`../13_PHASE_LIFECYCLE.md`](../13_PHASE_LIFECYCLE.md) §5, once a phase rea
 | Phase | Folder | Released as |
 |---|---|---|
 | 01 — Workbench | [Phase-01/](Phase-01/) | `v0.1.0-workbench` |
+| 06 — Projects | [Phase-06/](Phase-06/) | `v0.6.0-projects` |
 
 ## 3. TODO
 

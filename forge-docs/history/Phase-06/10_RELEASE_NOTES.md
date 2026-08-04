@@ -2,10 +2,10 @@
 
 > **Purpose:** The release-facing summary of this phase — what shipped, what broke on purpose, what to do before upgrading. Not a duplicate of `CURRENT_STATE.md` (the day-to-day working log) or `POST_IMPLEMENTATION_REVIEW.md` (the retrospective) — this is the document a user or another engineer reads to understand what changed, not how it was built.
 > **Scope:** This phase only.
-> **Status:** Finalized — Released & Frozen. Tagged `v0.6.0-projects`, committed directly to `master`.
+> **Status:** Finalized — Released & Frozen. Tagged `v0.6.0-projects`, committed directly to `master` (commit `ddc8972`) — no feature branch/PR for this release, per explicit user direction (see `POST_IMPLEMENTATION_REVIEW.md` "What Didn't").
 > **Version:** `v0.6.0-projects`
 > **Last Updated:** 2026-08-03
-> **Depends On:** [../../implementation/Phase-06-Projects/CURRENT_STATE.md](CURRENT_STATE.md), [../../implementation/Phase-06-Projects/08_ACCEPTANCE.md](08_ACCEPTANCE.md), [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
+> **Depends On:** [CURRENT_STATE.md](../../implementation/Phase-06-Projects/CURRENT_STATE.md), [08_ACCEPTANCE.md](../../implementation/Phase-06-Projects/08_ACCEPTANCE.md), [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
 
 ---
 
@@ -53,9 +53,9 @@ A normal restart picks up the change: the new migration applies automatically on
 
 ## Cross-references
 
-- [../../implementation/Phase-06-Projects/CURRENT_STATE.md](CURRENT_STATE.md)
-- [../../implementation/Phase-06-Projects/08_ACCEPTANCE.md](08_ACCEPTANCE.md)
-- [../../implementation/Phase-06-Projects/09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
+- [CURRENT_STATE.md](../../implementation/Phase-06-Projects/CURRENT_STATE.md)
+- [08_ACCEPTANCE.md](../../implementation/Phase-06-Projects/08_ACCEPTANCE.md)
+- [09_IMPLEMENTATION_TASKS.md](../../implementation/Phase-06-Projects/09_IMPLEMENTATION_TASKS.md)
 - [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
 - [../../decisions/0005-projects-primary-organizational-unit.md](../../decisions/0005-projects-primary-organizational-unit.md)
 - [../../decisions/0014-project-data-model-shape.md](../../decisions/0014-project-data-model-shape.md)

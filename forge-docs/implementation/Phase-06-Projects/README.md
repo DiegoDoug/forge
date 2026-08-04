@@ -3,7 +3,7 @@
 > **Purpose:** Entry point for the Projects phase — objective, scope, deliverables, and completion criteria.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
 > **Ownership:** Project owner (confirmed 2026-08-02)
-> **Status:** COMPLETE / READY FOR RELEASE
+> **Status:** 🔒 RELEASED & FROZEN — tagged `v0.6.0-projects`, committed directly to `master` (commit `ddc8972`)
 > **Last Updated:** 2026-08-03
 
 ---
@@ -73,12 +73,15 @@ Lands after Phase 05 (Model Playground, released as `v0.5.1-ai-providers`), whic
 - [x] All deliverables above are shipped and meet [`../../08_DEFINITION_OF_DONE.md`](../../08_DEFINITION_OF_DONE.md).
 - [x] [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) criteria are fully checked off.
 - [x] [`CURRENT_STATE.md`](CURRENT_STATE.md) reflects reality with no stale "In Progress" items.
-- [x] A final checkpoint has been produced per [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md).
+- [x] A final checkpoint has been produced per [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md) — see [`../../history/2026-08-03-phase-06-final-checkpoint.md`](../../history/2026-08-03-phase-06-final-checkpoint.md).
+- [x] Committed directly to `master` (commit `ddc8972`, no feature branch/PR for this release — see [`../../history/Phase-06/POST_IMPLEMENTATION_REVIEW.md`](../../history/Phase-06/POST_IMPLEMENTATION_REVIEW.md) "What Didn't"); release tagged `v0.6.0-projects`; implementation directory frozen; end-of-phase artifacts archived to [`../../history/Phase-06/`](../../history/Phase-06/).
 
 ## Cross-references
 
 - [CURRENT_STATE.md](CURRENT_STATE.md)
 - [01_SPEC.md](01_SPEC.md)
 - [IMPLEMENT.md](IMPLEMENT.md)
+- [../../history/Phase-06/10_RELEASE_NOTES.md](../../history/Phase-06/10_RELEASE_NOTES.md)
+- [../../history/Phase-06/POST_IMPLEMENTATION_REVIEW.md](../../history/Phase-06/POST_IMPLEMENTATION_REVIEW.md)
 - [../../02_ROADMAP.md](../../02_ROADMAP.md)
 - [../../09_CLAUDE_CODE_RULES.md](../../09_CLAUDE_CODE_RULES.md)

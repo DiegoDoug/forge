@@ -3,7 +3,7 @@
 > **Purpose:** Live snapshot of where this phase actually stands, updated at every checkpoint.
 > **Scope:** This phase only — updated continuously, never left stale.
 > **Ownership:** Project owner (confirmed 2026-08-02)
-> **Status:** COMPLETE / READY FOR RELEASE
+> **Status:** 🔒 RELEASED & FROZEN — tagged `v0.6.0-projects` (commit `ddc8972`)
 > **Last Updated:** 2026-08-03
 
 ---
@@ -11,7 +11,7 @@
 
 ## Current Status
 
-Phase 06 is complete. All backend and frontend work is implemented, tested, manually QA'd in a real browser, security-reviewed, and documented. Full regression suite (backend + frontend) passes with zero failures. No known blocking issues remain.
+Phase 06 is released and frozen. Committed directly to `master` (commit `ddc8972`, no feature branch/PR for this release — an explicit deviation for this release, see [`../../history/Phase-06/POST_IMPLEMENTATION_REVIEW.md`](../../history/Phase-06/POST_IMPLEMENTATION_REVIEW.md) "What Didn't"), tagged `v0.6.0-projects`, pushed to `origin/master`. End-of-phase artifacts (`10_RELEASE_NOTES.md`, `POST_IMPLEMENTATION_REVIEW.md`) archived to [`../../history/Phase-06/`](../../history/Phase-06/) per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §5. This active implementation folder now accepts bug fixes only.
 
 ## Completed
 
@@ -26,6 +26,7 @@ Phase 06 is complete. All backend and frontend work is implemented, tested, manu
 - [x] Two real bugs found and fixed during QA (see Known Issues below for detail — both resolved, not deferred).
 - [x] Security review completed (see Known Issues — no findings).
 - [x] Documentation: `docs/API.md`, `docs/Database.md`, `docs/Security.md` updated; `02_ROADMAP.md` status row updated; this phase's own docs finalized.
+- [x] Released: committed to `master` (commit `ddc8972`), tagged `v0.6.0-projects`, pushed. Frozen: end-of-phase artifacts archived to `history/Phase-06/`, final checkpoint logged.
 
 ## In Progress
 
@@ -77,10 +78,13 @@ Phase 06 Projects is complete. No further work is queued for this phase.
 - 2026-07-20 — Phase scaffold created by the Lead Architect FDK setup. No implementation work has occurred.
 - 2026-08-02 — Baseline inspection found every Phase 06 doc was an unfilled template; per `09_CLAUDE_CODE_RULES.md` §1–§2 this blocked implementation. Flagged to the user; user confirmed scope (grouping + per-project default AI provider/model referencing Phase 05) and approved the documentation-first path. Spec, acceptance criteria, and all supporting docs written; ADR-0014 resolved the data-model question. User gave explicit go-ahead to implement.
 - 2026-08-03 — Backend and frontend implemented, tested, and manually QA'd in a real browser. Two real bugs found during QA (Select label rendering, missing default Workbench panel entry) and fixed. Security review completed, no findings. Full regression suite green (backend + frontend). Documentation finalized. Phase marked complete.
+- 2026-08-03 — Released per explicit user instruction: committed directly to `master` (commit `ddc8972`, no feature branch/PR for this release), tagged `v0.6.0-projects`, pushed commit and tag to `origin`. Post-release integrity checks confirmed the commit contains exactly the Phase 06 changes, Phase 05 remains byte-for-byte untouched (only the additive `project_id` column on `PlaygroundRun`), the tag points to the release commit, `master` is synchronized with `origin/master`, and the working tree is clean. Froze the phase per `13_PHASE_LIFECYCLE.md` §5: archived `10_RELEASE_NOTES.md`/`POST_IMPLEMENTATION_REVIEW.md` to `history/Phase-06/`, logged a final checkpoint, updated `02_ROADMAP.md`.
 
 ## Cross-references
 
 - [README.md](README.md)
 - [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
+- [../../history/Phase-06/10_RELEASE_NOTES.md](../../history/Phase-06/10_RELEASE_NOTES.md)
+- [../../history/Phase-06/POST_IMPLEMENTATION_REVIEW.md](../../history/Phase-06/POST_IMPLEMENTATION_REVIEW.md)
 - [../../10_CHECKPOINT_PROTOCOL.md](../../10_CHECKPOINT_PROTOCOL.md)
 - [../../history/README.md](../../history/README.md)
