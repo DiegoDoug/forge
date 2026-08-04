@@ -2,9 +2,9 @@
 
 > **Purpose:** The execution contract for this phase — a Claude Code session must read this in full before writing any code for this phase.
 > **Scope:** This phase only. Inherits from, and never overrides, the repo-wide rules in ../../09_CLAUDE_CODE_RULES.md.
-> **Ownership:** TODO — assign a phase owner.
-> **Status:** Not authorized — 01_SPEC.md and 08_ACCEPTANCE.md are still template placeholders
-> **Last Updated:** 2026-07-20
+> **Ownership:** Project owner (scope decisions confirmed 2026-08-04; §7's four open questions resolved 2026-08-04)
+> **Status:** Not authorized — the specification is complete and `01_SPEC.md` §7's four open questions are resolved ([ADR-0015](../../decisions/0015-knowledge-hub-reuses-fts5.md) accepted; pagination, result cap, and tag semantics all ratified), but owner sign-off per `08_ACCEPTANCE.md` §5 is still outstanding — the sole remaining blocker
+> **Last Updated:** 2026-08-04
 
 ---
 
@@ -17,11 +17,14 @@ You are implementing the **Knowledge Hub** phase of the Forge Development Kit, a
 
 Unify Notes, Documents, and Ingest output into a single searchable knowledge base with consistent tagging, linking, and full-text search.
 
-Consolidates the existing **Notes** (FTS5-indexed), **Documents**, and **Ingest** output, plus the existing **Search** feature.
+**Unifies access to** the existing **Notes** and **Documents** (both FTS5-indexed, via `notes_fts` / `documents_fts`) and **Ingest** output — it does not rewrite them. "Consolidates" in the roadmap means one place to browse, search, tag, and link, not one merged data model. See [`01_SPEC.md`](01_SPEC.md) §6.1.
+
+The existing **Search** feature (`/search`, `GET /api/search`, ⌘K) is **not** part of this phase's scope and must be left byte-for-byte unchanged, per [ADR-0007](../../decisions/0007-search-dedicated-page.md) and [`01_SPEC.md`](01_SPEC.md) FR21.
 
 ## Execution Rules
 
-- [ ] Do not begin any task in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) until [`01_SPEC.md`](01_SPEC.md) and [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) are filled in and confirmed (currently template placeholders — this phase is **not yet authorized**).
+- [ ] Do not begin any task in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) until the remaining blocker in its §3 (owner sign-off per [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) §5) is cleared. The specification is complete and all four §7 questions are resolved; authorization is not. This phase is **not yet authorized**.
+- [ ] The four decisions in [`01_SPEC.md`](01_SPEC.md) §6.6–§6.8 (result cap = 100 fixed, no pagination, AND-only tag filter) and §6.4/[ADR-0015](../../decisions/0015-knowledge-hub-reuses-fts5.md) (extend FTS5) are **final, not implementation-time choices.** Do not reopen them, add an OR mode, add pagination, or make the cap configurable without a new decision record.
 - [ ] Follow [`../../07_CODING_STANDARDS.md`](../../07_CODING_STANDARDS.md) exactly — thin routers, `api.ts` as the only endpoint-shape-aware file, no cross-feature imports.
 - [ ] Update [`CURRENT_STATE.md`](CURRENT_STATE.md) as work progresses, not only at checkpoints.
 
@@ -29,7 +32,13 @@ Consolidates the existing **Notes** (FTS5-indexed), **Documents**, and **Ingest*
 
 Inherits [`../../09_CLAUDE_CODE_RULES.md`](../../09_CLAUDE_CODE_RULES.md) §3 in full. Phase-specific additions:
 
-- [ ] TODO: note anything this phase needs to ask about beyond the repo-wide defaults (e.g. Phase 05 Model Playground and Phase 03 Prompt Studio must always ask before enabling a new outbound LLM provider integration by default).
+- [ ] **Ask before touching `/search`, `GET /api/search`, `services/search/`, or the command palette.** They are out of scope and protected by ADR-0007; any change is a new decision, not an implementation detail.
+- [ ] **Ask before modifying `secret_tag_links` or any Secrets code.** This phase shares the `tags` table but must not alter Secrets' side of it ([`01_SPEC.md`](01_SPEC.md) FR13, §6.3).
+- [ ] **Ask before adding any external dependency** — this phase is specified to need none (`05_COMPONENTS.md` §2, `03_BACKEND.md` §4). A dependency requirement means the design was wrong, which is a checkpoint, not a quiet `npm install`.
+- [ ] **Ask before introducing a frontend test framework.** Its absence is a known, documented condition ([`07_TESTING.md`](07_TESTING.md) §0), and adopting one is cross-cutting infrastructure work outside this phase.
+- [ ] **Never modify `tools/fdk_verification/`, `tools/tests/`, or any frozen phase folder** (Phase 01–06). This phase has no reason to touch them; `08_ACCEPTANCE.md` AC35–AC36 verify it did not.
+- [ ] **Ask before adding pagination, a configurable `limit`, or an OR tag-filter mode.** All three were explicitly considered and rejected (`01_SPEC.md` §6.6–§6.8). "It would be a nicer UX" is not sufficient grounds to reopen a ratified decision mid-implementation.
+- [ ] This phase makes **zero outbound network calls** and stores no credential material. Anything that would change that is a stop-and-ask.
 
 ## Quality Gates
 

@@ -4,8 +4,8 @@
 > **Scope:** High-level system architecture and integration points for new phases. Full current-state detail lives in [`../docs/Architecture.md`](../docs/Architecture.md); this document is the FDK-level entry point that stays stable while that one describes the living implementation.
 > **Ownership:** TODO — assign a technical architecture owner.
 > **Status:** Draft (reflects shipped system; forward-looking sections are proposals)
-> **Version:** 0.2.0
-> **Last Updated:** 2026-07-20
+> **Version:** 0.2.1
+> **Last Updated:** 2026-08-04
 > **Depends On:** [01_PRODUCT_PRINCIPLES.md](01_PRODUCT_PRINCIPLES.md)
 > **Supersedes:** —
 
@@ -79,7 +79,7 @@ Every phase under [`implementation/`](implementation/) must state, in its own `0
 - [ ] TODO: **Capability Registry** — [ADR-0008](decisions/0008-capability-registry-direction.md) (Proposed, not Accepted) sketches generalizing Phase 01's Panel Registry into a unified registry for panels, pages, commands, workflow nodes, and more — see [`architecture/CAPABILITY_REGISTRY.md`](architecture/CAPABILITY_REGISTRY.md). Deliberately deferred until a second real registry-shaped need exists; do not build against it yet.
 - [x] Where "Project" (Phase 06) lives in the data model is resolved: see [ADR-0014](decisions/0014-project-data-model-shape.md) — a new top-level `projects` table; Secrets/Notes/Documents/Model Playground runs gain an additive, nullable `project_id` foreign key (unscope-on-delete, never cascade-delete).
 - [x] Model Playground's outbound-network-calls and provider-credential design is resolved: see [ADR-0011](decisions/0011-model-playground-provider-credential-security.md) (credential storage & security posture) and [ADR-0012](decisions/0012-model-playground-provider-sdk-selection.md) (provider/SDK selection — OpenAI + Anthropic, no "Custom" pseudo-provider in v1), both Accepted 2026-07-29. The "outbound network calls" section required by this TODO now lives in [`../docs/Security.md`](../docs/Security.md). **Prompt Studio (Phase 03) does not carry this requirement** — its specification session (2026-07-22) resolved the phase to zero outbound calls; see [`implementation/Phase-03-Prompt-Studio/01_SPEC.md`](implementation/Phase-03-Prompt-Studio/01_SPEC.md) §4–§5.
-- [ ] TODO: Does Knowledge Hub introduce a new search index, or extend the existing FTS5 setup used by Notes?
+- [x] Does Knowledge Hub introduce a new search index, or extend the existing FTS5 setup used by Notes? Resolved: extends. See [ADR-0015](decisions/0015-knowledge-hub-reuses-fts5.md) — Knowledge Hub composes the existing `notes_fts`/`documents_fts` indexes via `notes_service.search_notes()`/`documents_service.search_documents()`, introduces no new index, and leaves `/search`, `GET /api/search`, and the command palette unchanged.
 
 ## 5. TODO
 

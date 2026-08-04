@@ -4,6 +4,7 @@ from fastapi import APIRouter
 
 from app.api.deps import AuthDep, SessionDep
 from app.schemas.notes import NoteCreateIn, NoteOut, NoteUpdateIn
+from app.services.knowledge import service as knowledge_service
 from app.services.notes import service
 
 router = APIRouter(prefix="/notes", tags=["notes"], dependencies=[AuthDep])
@@ -31,4 +32,10 @@ async def update_note(note_id: str, body: NoteUpdateIn, session: SessionDep) -> 
 
 @router.delete("/{note_id}", status_code=204)
 async def delete_note(note_id: str, session: SessionDep) -> None:
+    # Delete-hook direction (03_BACKEND.md SS2.2, decided at T6): the route
+    # layer purges knowledge_links before deleting, rather than
+    # services/notes/service.py importing services/knowledge/service.py -
+    # that would be a circular import, since knowledge/service.py already
+    # imports notes/service.py at module level to delegate FTS search.
+    await knowledge_service.purge_links_for(session, "note", note_id)
     await service.delete_note(session, note_id)

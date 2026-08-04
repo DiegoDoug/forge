@@ -2,14 +2,18 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { FileText, Pin, PinOff, Trash2 } from "lucide-react";
+import { FileText, Pin, PinOff, Tags, Trash2 } from "lucide-react";
 
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useDocument, useDocumentMutations, useDocumentSearch, useDocuments } from "@/features/documents/api";
 import { DocumentSidebar } from "@/features/documents/document-sidebar";
 import { DownloadMenu } from "@/features/documents/download-menu";
+import { useKnowledgeList } from "@/features/knowledge/api";
+import { KnowledgeLinkPanel } from "@/features/knowledge/knowledge-link-panel";
+import { KnowledgeTagPicker } from "@/features/knowledge/knowledge-tag-picker";
 import { RichTextEditor } from "@/features/documents/rich-text-editor";
 import { ProjectPicker } from "@/features/projects/project-picker";
 
@@ -29,6 +33,11 @@ export default function DocumentsPage() {
   const searchQuery = useDocumentSearch(query);
   const documentQuery = useDocument(selectedId);
   const { create, update, remove } = useDocumentMutations();
+  // Document/DocumentOut carries no `tags` field (untouched by this phase,
+  // per 03_ARCHITECTURE.md SS2's "no cross-feature import" boundary) - the
+  // selected document's current tags are read from the Hub's own list
+  // instead, capped to its first 100 most-recently-updated documents.
+  const hubDocumentsQuery = useKnowledgeList({ type: "document" });
 
   const documents = query.trim() ? (searchQuery.data ?? []) : (listQuery.data ?? []);
   const doc = documentQuery.data;
@@ -116,6 +125,27 @@ export default function DocumentsPage() {
               <Button variant="ghost" size="icon-sm" title={doc.pinned ? "Unpin" : "Pin"} onClick={handleTogglePin}>
                 {doc.pinned ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
               </Button>
+              <Popover>
+                <PopoverTrigger render={<Button variant="ghost" size="icon-sm" title="Tags & linked items" />}>
+                  <Tags className="h-4 w-4" />
+                </PopoverTrigger>
+                <PopoverContent className="w-64 space-y-3 p-3">
+                  <div>
+                    <p className="mb-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">Tags</p>
+                    <KnowledgeTagPicker
+                      itemType="document"
+                      itemId={selectedId}
+                      tags={hubDocumentsQuery.data?.items.find((i) => i.id === selectedId)?.tags ?? []}
+                    />
+                  </div>
+                  <div>
+                    <p className="mb-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
+                      Linked items
+                    </p>
+                    <KnowledgeLinkPanel itemType="document" itemId={selectedId} />
+                  </div>
+                </PopoverContent>
+              </Popover>
               <DownloadMenu documentId={selectedId} title={title} />
               <Button variant="ghost" size="icon-sm" title="Delete" onClick={() => handleDelete(selectedId)}>
                 <Trash2 className="h-4 w-4" />

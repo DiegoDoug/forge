@@ -7,6 +7,7 @@ from app.core.errors import AppError
 from app.schemas.documents import DocumentCreateIn, DocumentOut, DocumentSummaryOut, DocumentUpdateIn
 from app.services.documents import service
 from app.services.documents.export import SUPPORTED_FORMATS, export_document
+from app.services.knowledge import service as knowledge_service
 
 router = APIRouter(prefix="/documents", tags=["documents"], dependencies=[AuthDep])
 
@@ -38,6 +39,8 @@ async def update_document(document_id: str, body: DocumentUpdateIn, session: Ses
 
 @router.delete("/{document_id}", status_code=204)
 async def delete_document(document_id: str, session: SessionDep) -> None:
+    # See notes.py::delete_note for the delete-hook direction rationale.
+    await knowledge_service.purge_links_for(session, "document", document_id)
     await service.delete_document(session, document_id)
 
 
