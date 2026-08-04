@@ -1,11 +1,11 @@
 # Knowledge Hub — Release Notes
 
-> **Purpose:** The release-facing summary of this phase — what shipped, what broke on purpose, what to do before upgrading. Not a duplicate of `CURRENT_STATE.md` (the day-to-day working log) — this is the document a user or another engineer reads to understand what changed, not how it was built.
+> **Purpose:** The release-facing summary of this phase — what shipped, what broke on purpose, what to do before upgrading. Not a duplicate of `CURRENT_STATE.md` (the day-to-day working log) or `POST_IMPLEMENTATION_REVIEW.md` (the retrospective) — this is the document a user or another engineer reads to understand what changed, not how it was built.
 > **Scope:** This phase only.
-> **Status:** Draft — RC-passed (third run, 2026-08-05) and owner-signed-off (`08_ACCEPTANCE.md` §5, 2026-08-05), but **not released, tagged, or frozen**. This document is written per `10_CHECKPOINT_PROTOCOL.md`/contract §7's "authored at RC, finalized at sign-off" convention, ahead of the actual release decision. No tag exists yet; do not read this as confirmation of release.
-> **Version:** Untagged — no release version has been assigned.
+> **Status:** Finalized — Released & Frozen. Tagged `v0.7.0-knowledge-hub`, committed directly to `master` (commit `b445b09`) — no feature branch/PR for this release, continuing Phase 06's precedent.
+> **Version:** `v0.7.0-knowledge-hub`
 > **Last Updated:** 2026-08-05
-> **Depends On:** [CURRENT_STATE.md](CURRENT_STATE.md), [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
+> **Depends On:** [CURRENT_STATE.md](../../implementation/Phase-07-Knowledge-Hub/CURRENT_STATE.md), [08_ACCEPTANCE.md](../../implementation/Phase-07-Knowledge-Hub/08_ACCEPTANCE.md), [POST_IMPLEMENTATION_REVIEW.md](POST_IMPLEMENTATION_REVIEW.md)
 
 ---
 
