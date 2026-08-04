@@ -3,9 +3,9 @@
 > **Purpose:** Durable, append-only log of every checkpoint produced under [10_CHECKPOINT_PROTOCOL.md](../10_CHECKPOINT_PROTOCOL.md), so state survives even after a phase's `CURRENT_STATE.md` is overwritten by its next update. Also holds each frozen phase's archived end-of-phase artifacts (`Phase-NN/`) — see §2.1.
 > **Scope:** Checkpoint records and frozen-phase archives. Architectural decisions belong in [`../decisions/`](../decisions/README.md), not here.
 > **Ownership:** TODO — assign an owner.
-> **Status:** 5 checkpoints logged (Phase 01, Milestones 1–3; Phase 02, Milestone 1 and Final); Phase 01's post-freeze archive (`Phase-01/`) added
-> **Version:** 0.5.0
-> **Last Updated:** 2026-07-22
+> **Status:** 7 checkpoints logged (Phase 01, Milestones 1–3; Phase 02, Milestone 1 and Final; Phase 06 Final; Phase 07 implementation); post-freeze archives added for `Phase-01/`, `Phase-06/`, `Phase-07/`
+> **Version:** 0.7.0
+> **Last Updated:** 2026-08-05
 > **Depends On:** [../10_CHECKPOINT_PROTOCOL.md](../10_CHECKPOINT_PROTOCOL.md), [../13_PHASE_LIFECYCLE.md](../13_PHASE_LIFECYCLE.md)
 > **Supersedes:** —
 
@@ -29,6 +29,7 @@ At every checkpoint (per [`../10_CHECKPOINT_PROTOCOL.md`](../10_CHECKPOINT_PROTO
 | 2026-07-22 | Phase-02-Project-Initialization-Engine | Milestone completion (Milestone 1 — Backend engine, T1–T9) | [2026-07-22-phase-02-milestone-1-backend-engine.md](2026-07-22-phase-02-milestone-1-backend-engine.md) |
 | 2026-07-22 | Phase-02-Project-Initialization-Engine | Milestone completion (Milestones 2–3 — Frontend UI & Validation, T10–T14; Implementation-stage DoD reached) | [2026-07-22-phase-02-final-checkpoint.md](2026-07-22-phase-02-final-checkpoint.md) |
 | 2026-08-03 | Phase-06-Projects | Final (commit `ddc8972` pushed to `master`, Released & Frozen as `v0.6.0-projects`) | [2026-08-03-phase-06-final-checkpoint.md](2026-08-03-phase-06-final-checkpoint.md) |
+| 2026-08-04 | Phase-07-Knowledge-Hub | Task volume (T1–T16, crossing the 10–12 task trigger) — authored retroactively during post-RC evidence reconciliation, not contemporaneously; see the entry's own "Known Risks" | [2026-08-04-phase-07-implementation-checkpoint.md](2026-08-04-phase-07-implementation-checkpoint.md) |
 
 ## 2.1 Frozen-phase archives
 
@@ -38,6 +39,7 @@ Per [`../13_PHASE_LIFECYCLE.md`](../13_PHASE_LIFECYCLE.md) §5, once a phase rea
 |---|---|---|
 | 01 — Workbench | [Phase-01/](Phase-01/) | `v0.1.0-workbench` |
 | 06 — Projects | [Phase-06/](Phase-06/) | `v0.6.0-projects` |
+| 07 — Knowledge Hub | [Phase-07/](Phase-07/) | `v0.7.0-knowledge-hub` |
 
 ## 3. TODO
 

@@ -3,7 +3,7 @@
 > **Purpose:** Entry point for the Knowledge Hub phase — objective, scope, deliverables, and completion criteria.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
 > **Ownership:** Project owner (scope decisions confirmed 2026-08-04; §7's four open questions resolved 2026-08-04)
-> **Status:** RC-passed and owner-signed-off (2026-08-05) — all deliverables below are built and verified, third Release Candidate run PASSED, `08_ACCEPTANCE.md` §5 sign-off recorded. Not yet released, tagged, or frozen; see [`CURRENT_STATE.md`](CURRENT_STATE.md) for the full history.
+> **Status:** 🔒 Released & frozen — `v0.7.0-knowledge-hub` (commit `b445b09`), bug fixes only from here. See [`CURRENT_STATE.md`](CURRENT_STATE.md) for the full history and [`../../history/Phase-07/`](../../history/Phase-07/) for the archived release notes and post-implementation review.
 > **Last Updated:** 2026-08-05
 
 ---

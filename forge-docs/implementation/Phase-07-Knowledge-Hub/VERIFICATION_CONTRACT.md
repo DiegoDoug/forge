@@ -193,7 +193,7 @@ Forty-one criteria from [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) — AC1–AC40 pl
 - [01_SPEC.md](01_SPEC.md)
 - [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
 - [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
-- [10_RELEASE_NOTES.md](10_RELEASE_NOTES.md)
+- [10_RELEASE_NOTES.md](../../history/Phase-07/10_RELEASE_NOTES.md) (moved to `history/Phase-07/` at freeze)
 - [CURRENT_STATE.md](CURRENT_STATE.md)
 - [../../decisions/0007-search-dedicated-page.md](../../decisions/0007-search-dedicated-page.md)
 - [../../decisions/0015-knowledge-hub-reuses-fts5.md](../../decisions/0015-knowledge-hub-reuses-fts5.md)
