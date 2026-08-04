@@ -6,17 +6,26 @@ warnings, never a FAIL — per §4.6: "may recommend improvements but should
 fail only when quality issues violate project standards." This generic
 verifier has no project-specific standards definition to fail against, so
 it never manufactures a BLOCKER-level failure for a stylistic finding.
+
+TODO/FIXME detection requires the conventional marker form — `TODO:`,
+`TODO(name):`, `FIXME:`, `FIXME(name):` — rather than a bare substring
+match, so prose that merely contains the word ("a section titled TODO",
+ADR template boilerplate, this module's own docstring) isn't flagged.
+This is still a heuristic, not a comment-syntax-aware parser: a marker
+inside a string literal that happens to use this exact form would still
+be (correctly, if noisily) flagged, same as any real TODO scanner.
 """
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 from ..contract import VerificationContract
 from ..report import VerifierResult, VerifierStatus
 from ._git import changed_files
 
-_MARKERS = ("TODO", "FIXME")
+_MARKER_RE = re.compile(r"\b(TODO|FIXME)\b(\([^)]*\))?\s*:")
 _DEBUG_PATTERNS = ("console.log(", "debugger;", "print(")
 
 
@@ -34,7 +43,7 @@ class CodeQualityVerifier:
             except OSError:
                 continue
             for lineno, line in enumerate(text.splitlines(), start=1):
-                if any(marker in line for marker in _MARKERS):
+                if _MARKER_RE.search(line):
                     warnings.append(f"{rel_path}:{lineno}: stray TODO/FIXME marker")
                 if any(pattern in line for pattern in _DEBUG_PATTERNS):
                     warnings.append(f"{rel_path}:{lineno}: possible debug statement")

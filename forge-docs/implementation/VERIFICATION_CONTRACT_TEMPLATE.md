@@ -46,6 +46,13 @@
 
 - [ ] TODO: which docs this phase must update as part of being complete (e.g. `CURRENT_STATE.md`, `10_RELEASE_NOTES.md`, `../../docs/*.md` for shipped-app docs, root FDK docs if this phase changes process).
 
+> **No unresolved conditionals at RC time.** The Documentation Verifier checks only whether a *checked* item's file appears among this run's changed files — it does not, and will not, interpret conditional prose ("if X changes", "when applicable", "unless..."). Every item here must be resolved to an unconditional state before the RC run:
+> - If the condition is **true**, rewrite the item as a concrete, unconditional requirement (drop the "if") and satisfy it before RC.
+> - If the condition is **false**, leave the item **unchecked** and record the reason inline (e.g. "not required — no documented boundary changed this phase").
+> Do not leave a checked item with conditional language still attached — checked means "required and satisfied," not "required if some condition I haven't evaluated holds."
+>
+> **`02_ROADMAP.md` and `implementation/README.md` are Release-stage items, not RC-stage items** — per [`../13_PHASE_LIFECYCLE.md`](../13_PHASE_LIFECYCLE.md) and [`../15_VERIFICATION_FRAMEWORK.md`](../15_VERIFICATION_FRAMEWORK.md) §4.7, a phase's roadmap/README status can't correctly describe a stage (Released/Frozen) it hasn't reached yet. Leave these **unchecked** here at RC time (with that reason recorded inline) and update them as part of the Released/Frozen-stage process instead — do not check them at RC to reflect an implementation-complete-but-unreleased candidate.
+
 ## 8. Regression Targets
 
 - [ ] TODO: existing, previously-shipped functionality this phase must not break — name the specific features/flows (e.g. routing, navigation, an existing converter, shared components, activity logging, an existing API), not just "everything."
