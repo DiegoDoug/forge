@@ -20,6 +20,7 @@ class Document(SQLModel, table=True):
     content: str = Field(default="")  # editor HTML
 
     pinned: bool = Field(default=False, index=True)
+    project_id: str | None = Field(default=None, foreign_key="projects.id", index=True)
 
     created_at: datetime = Field(default_factory=utcnow)
     updated_at: datetime = Field(default_factory=utcnow, index=True)

@@ -8,3 +8,4 @@ import "./components/recent-activity-panel";
 import "./components/quick-actions-panel";
 import "./components/system-status-panel";
 import "@/features/notes/workbench-panel";
+import "@/features/projects/workbench-panel";

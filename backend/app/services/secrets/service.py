@@ -53,11 +53,18 @@ def _decrypt_metadata(blob: bytes | None) -> SecretMetadata:
 
 
 async def list_secrets(
-    session: AsyncSession, *, folder_id: str | None = None, tag_id: str | None = None, query: str | None = None
+    session: AsyncSession,
+    *,
+    folder_id: str | None = None,
+    tag_id: str | None = None,
+    project_id: str | None = None,
+    query: str | None = None,
 ) -> list[Secret]:
     stmt = _secret_query()
     if folder_id:
         stmt = stmt.where(Secret.folder_id == folder_id)
+    if project_id:
+        stmt = stmt.where(Secret.project_id == project_id)
     if query:
         like = f"%{query}%"
         stmt = stmt.where(or_(Secret.name.ilike(like)))
@@ -87,6 +94,7 @@ async def create_secret(session: AsyncSession, data: SecretCreateIn) -> Secret:
         name=data.name,
         type=data.type,
         folder_id=data.folder_id,
+        project_id=data.project_id,
         encrypted_value=crypto.encrypt_str(data.value),
         encrypted_metadata=_encrypt_metadata(data.metadata),
         favorite=data.favorite,
@@ -110,6 +118,8 @@ async def update_secret(session: AsyncSession, secret_id: str, data: SecretUpdat
         secret.type = data.type
     if "folder_id" in data.model_fields_set:
         secret.folder_id = data.folder_id
+    if "project_id" in data.model_fields_set:
+        secret.project_id = data.project_id
     if data.favorite is not None:
         secret.favorite = data.favorite
     if data.tag_ids is not None:

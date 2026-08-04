@@ -10,6 +10,7 @@ backend/*.egg-info/
 backend/.tmp-*
 backend/.pytest_cache/
 backend/.dev-data/
+backend/.dev-data-verify/
 
 # Tools (FDK verification framework infrastructure)
 tools/__pycache__/

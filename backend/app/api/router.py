@@ -12,6 +12,7 @@ from app.api.routes import (
     model_playground,
     notes,
     project_init,
+    projects,
     prompt_studio,
     search,
     secrets,
@@ -37,3 +38,4 @@ api_router.include_router(workbench.router)
 api_router.include_router(project_init.router)
 api_router.include_router(prompt_studio.router)
 api_router.include_router(model_playground.router)
+api_router.include_router(projects.router)

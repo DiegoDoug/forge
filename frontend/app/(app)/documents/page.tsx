@@ -11,6 +11,7 @@ import { useDocument, useDocumentMutations, useDocumentSearch, useDocuments } fr
 import { DocumentSidebar } from "@/features/documents/document-sidebar";
 import { DownloadMenu } from "@/features/documents/download-menu";
 import { RichTextEditor } from "@/features/documents/rich-text-editor";
+import { ProjectPicker } from "@/features/projects/project-picker";
 
 export default function DocumentsPage() {
   const router = useRouter();
@@ -18,12 +19,13 @@ export default function DocumentsPage() {
   const selectedId = searchParams.get("open");
 
   const [query, setQuery] = useState("");
+  const [projectId, setProjectId] = useState<string | null>(() => searchParams.get("project_id"));
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const loadedFor = useRef<string | null>(null);
 
-  const listQuery = useDocuments();
+  const listQuery = useDocuments(projectId ?? undefined);
   const searchQuery = useDocumentSearch(query);
   const documentQuery = useDocument(selectedId);
   const { create, update, remove } = useDocumentMutations();
@@ -49,7 +51,7 @@ export default function DocumentsPage() {
   }
 
   async function handleNew() {
-    const created = await create.mutateAsync({ title: "", content: "" });
+    const created = await create.mutateAsync({ title: "", content: "", project_id: projectId ?? undefined });
     router.push(`/documents?open=${created.id}`);
   }
 
@@ -88,6 +90,8 @@ export default function DocumentsPage() {
         selectedId={selectedId}
         query={query}
         onQueryChange={setQuery}
+        projectId={projectId}
+        onProjectChange={setProjectId}
         onSelect={selectDocument}
         onNew={handleNew}
         onTogglePin={(d) => update.mutate({ id: d.id, input: { pinned: !d.pinned } })}
@@ -103,6 +107,11 @@ export default function DocumentsPage() {
                 onChange={(e) => handleTitleChange(e.target.value)}
                 placeholder="Untitled document"
                 className="h-8 flex-1 border-none bg-transparent px-1 text-base font-semibold shadow-none focus-visible:ring-0"
+              />
+              <ProjectPicker
+                value={doc.project_id}
+                onChange={(pid) => update.mutate({ id: selectedId, input: { project_id: pid } })}
+                className="h-8 w-40 shrink-0"
               />
               <Button variant="ghost" size="icon-sm" title={doc.pinned ? "Unpin" : "Pin"} onClick={handleTogglePin}>
                 {doc.pinned ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}

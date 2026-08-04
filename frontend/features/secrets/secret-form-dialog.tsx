@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { ProjectPicker } from "@/features/projects/project-picker";
 import type { SecretDetail, SecretType } from "./api";
 import { useSecretsMutations } from "./api";
 import { SECRET_TYPE_LABELS, SECRET_TYPES } from "./secret-types";
@@ -25,10 +26,11 @@ interface SecretFormDialogProps {
   onOpenChange: (open: boolean) => void;
   secret?: SecretDetail | null;
   folderId?: string | null;
+  projectId?: string | null;
   onSaved?: (id: string) => void;
 }
 
-export function SecretFormDialog({ open, onOpenChange, secret, folderId, onSaved }: SecretFormDialogProps) {
+export function SecretFormDialog({ open, onOpenChange, secret, folderId, projectId, onSaved }: SecretFormDialogProps) {
   const { createSecret, updateSecret } = useSecretsMutations();
   const isEdit = Boolean(secret);
 
@@ -38,6 +40,7 @@ export function SecretFormDialog({ open, onOpenChange, secret, folderId, onSaved
   const [username, setUsername] = useState("");
   const [url, setUrl] = useState("");
   const [notes, setNotes] = useState("");
+  const [project, setProject] = useState<string | null>(null);
 
   useEffect(() => {
     if (open) {
@@ -47,8 +50,9 @@ export function SecretFormDialog({ open, onOpenChange, secret, folderId, onSaved
       setUsername(secret?.metadata.username ?? "");
       setUrl(secret?.metadata.url ?? "");
       setNotes(secret?.metadata.notes ?? "");
+      setProject(secret?.project_id ?? projectId ?? null);
     }
-  }, [open, secret]);
+  }, [open, secret, projectId]);
 
   const pending = createSecret.isPending || updateSecret.isPending;
 
@@ -63,7 +67,12 @@ export function SecretFormDialog({ open, onOpenChange, secret, folderId, onSaved
 
     try {
       if (isEdit && secret) {
-        const payload: Parameters<typeof updateSecret.mutateAsync>[0]["input"] = { name, type, metadata };
+        const payload: Parameters<typeof updateSecret.mutateAsync>[0]["input"] = {
+          name,
+          type,
+          metadata,
+          project_id: project,
+        };
         if (value) payload.value = value;
         const updated = await updateSecret.mutateAsync({ id: secret.id, input: payload });
         onSaved?.(updated.id);
@@ -73,6 +82,7 @@ export function SecretFormDialog({ open, onOpenChange, secret, folderId, onSaved
           type,
           value,
           folder_id: folderId ?? null,
+          project_id: project,
           metadata,
         });
         onSaved?.(created.id);
@@ -127,6 +137,11 @@ export function SecretFormDialog({ open, onOpenChange, secret, folderId, onSaved
                 className="font-mono text-xs"
                 rows={3}
               />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <Label>Project</Label>
+              <ProjectPicker value={project} onChange={setProject} className="w-full" />
             </div>
 
             <div className="grid grid-cols-2 gap-3">

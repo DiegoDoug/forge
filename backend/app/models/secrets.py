@@ -55,6 +55,7 @@ class Secret(SQLModel, table=True):
     name: str = Field(index=True, max_length=200)
     type: SecretType = Field(default=SecretType.other, index=True)
     folder_id: str | None = Field(default=None, foreign_key="folders.id", index=True)
+    project_id: str | None = Field(default=None, foreign_key="projects.id", index=True)
 
     encrypted_value: bytes
     encrypted_metadata: bytes | None = Field(default=None)

@@ -96,7 +96,9 @@ async def test_reset_layout_restores_the_default_layout(db_session):
     )
     layout = await workbench_service.reset_layout(db_session)
     assert json.loads(layout.panels) == workbench_service.DEFAULT_LAYOUT_PANELS
-    assert len(json.loads(layout.panels)) == 5
+    # 6, not 5: Phase 06 (Projects) added "recent_projects" to the default
+    # panel set, per ADR-0005.
+    assert len(json.loads(layout.panels)) == 6
     assert json.loads(layout.pinned_tools) == workbench_service.DEFAULT_PINNED_TOOLS
     # 5, not 6: Universal Converter (Phase 04) Milestone 5 retired the dead
     # "ingest" key and the now-redundant "universal_converter" placeholder,

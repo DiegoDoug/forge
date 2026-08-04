@@ -2,9 +2,9 @@
 
 > **Purpose:** The execution contract for this phase — a Claude Code session must read this in full before writing any code for this phase.
 > **Scope:** This phase only. Inherits from, and never overrides, the repo-wide rules in ../../09_CLAUDE_CODE_RULES.md.
-> **Ownership:** TODO — assign a phase owner.
-> **Status:** Not authorized — 01_SPEC.md and 08_ACCEPTANCE.md are still template placeholders
-> **Last Updated:** 2026-07-20
+> **Ownership:** Project owner (confirmed 2026-08-02)
+> **Status:** Complete — implementation finished, tested, QA'd, and documented
+> **Last Updated:** 2026-08-03
 
 ---
 
@@ -15,21 +15,21 @@ You are implementing the **Projects** phase of the Forge Development Kit, acting
 
 ## Mission
 
-Introduce a cross-feature 'Project' grouping concept so Vault secrets, Notes, and Documents can be organized per project or workspace instead of one flat list each.
+Introduce a cross-feature 'Project' grouping concept so Vault secrets, Notes, and Documents can be organized per project or workspace instead of one flat list each, with an optional per-project default AI provider/model built on the Phase 05 abstraction.
 
-New organizational layer. Touches the existing **Vault**, **Notes**, and **Documents** data models — likely an optional foreign key or join table, not a rewrite of any of them.
+New organizational layer. Touches the existing **Secrets**, **Notes**, and **Documents** data models via an additive, nullable `project_id` foreign key on each — resolved by [ADR-0014](../../decisions/0014-project-data-model-shape.md), not a rewrite of any of them.
 
 ## Execution Rules
 
-- [ ] Do not begin any task in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) until [`01_SPEC.md`](01_SPEC.md) and [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) are filled in and confirmed (currently template placeholders — this phase is **not yet authorized**).
-- [ ] Follow [`../../07_CODING_STANDARDS.md`](../../07_CODING_STANDARDS.md) exactly — thin routers, `api.ts` as the only endpoint-shape-aware file, no cross-feature imports.
-- [ ] Update [`CURRENT_STATE.md`](CURRENT_STATE.md) as work progresses, not only at checkpoints.
+- [x] [`01_SPEC.md`](01_SPEC.md) and [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) are filled in and confirmed; the user gave explicit go-ahead and implementation is complete.
+- [x] Followed [`../../07_CODING_STANDARDS.md`](../../07_CODING_STANDARDS.md) — thin routers, `api.ts` as the only endpoint-shape-aware file, no cross-feature imports beyond the explicitly-approved `project-picker.tsx`/`useProviders()` reuse documented in `05_COMPONENTS.md` §1 (precedented by `features/notes/workbench-panel.tsx`).
+- [x] `CURRENT_STATE.md` updated to reflect final completion.
 
 ## Autonomy Rules
 
 Inherits [`../../09_CLAUDE_CODE_RULES.md`](../../09_CLAUDE_CODE_RULES.md) §3 in full. Phase-specific additions:
 
-- [ ] TODO: note anything this phase needs to ask about beyond the repo-wide defaults (e.g. Phase 05 Model Playground and Phase 03 Prompt Studio must always ask before enabling a new outbound LLM provider integration by default).
+- Do not add a new AI provider to `PROVIDER_REGISTRY`, or any new outbound-call code path outside `model_playground.runs.create_run()`, without stopping and asking — this phase's entire AI surface is a thin reference to Phase 05's existing abstraction (per ADR-0014 §2), and any deviation is a blocking architectural decision under `../../09_CLAUDE_CODE_RULES.md` §6.
 
 ## Quality Gates
 

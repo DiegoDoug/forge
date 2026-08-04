@@ -17,6 +17,7 @@ import { SECRET_TYPE_LABELS } from "@/features/secrets/secret-types";
 import { SecretDetailSheet } from "@/features/secrets/secret-detail-sheet";
 import { SecretFormDialog } from "@/features/secrets/secret-form-dialog";
 import { SecretsFilters } from "@/features/secrets/secrets-filters";
+import { ProjectPicker } from "@/features/projects/project-picker";
 
 export default function SecretsPage() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function SecretsPage() {
 
   const [folderId, setFolderId] = useState<string | null>(null);
   const [tagId, setTagId] = useState<string | null>(null);
+  const [projectId, setProjectId] = useState<string | null>(() => searchParams.get("project_id"));
   const [query, setQuery] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [editSecret, setEditSecret] = useState<SecretDetail | null>(null);
@@ -32,6 +34,7 @@ export default function SecretsPage() {
   const secretsQuery = useSecrets({
     folder_id: folderId ?? undefined,
     tag_id: tagId ?? undefined,
+    project_id: projectId ?? undefined,
     q: query || undefined,
   });
 
@@ -97,6 +100,7 @@ export default function SecretsPage() {
                 className="pl-8"
               />
             </div>
+            <ProjectPicker value={projectId} onChange={setProjectId} className="w-48" />
           </div>
 
           {secretsQuery.isLoading ? (
@@ -167,6 +171,7 @@ export default function SecretsPage() {
         }}
         secret={editSecret ? (editQuery.data ?? editSecret) : null}
         folderId={folderId}
+        projectId={projectId}
         onSaved={(id) => router.push(`/secrets?open=${id}`)}
       />
     </div>

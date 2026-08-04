@@ -45,6 +45,7 @@ DEFAULT_LAYOUT_PANELS: list[dict[str, object]] = [
     {"type": "quick_actions", "visible": True},
     {"type": "system_status", "visible": True},
     {"type": "recent_notes", "visible": True},
+    {"type": "recent_projects", "visible": True},
 ]
 
 DEFAULT_PINNED_TOOLS: list[str] = ["converters", "notes", "prompt_studio", "secrets", "search"]

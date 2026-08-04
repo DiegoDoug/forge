@@ -5,6 +5,7 @@ import { FileText, Pin, PinOff, Plus, Search, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { ProjectPicker } from "@/features/projects/project-picker";
 import { formatRelativeTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { DocumentSummary } from "./api";
@@ -14,6 +15,8 @@ export function DocumentSidebar({
   selectedId,
   query,
   onQueryChange,
+  projectId,
+  onProjectChange,
   onSelect,
   onNew,
   onTogglePin,
@@ -23,6 +26,8 @@ export function DocumentSidebar({
   selectedId: string | null;
   query: string;
   onQueryChange: (q: string) => void;
+  projectId: string | null;
+  onProjectChange: (id: string | null) => void;
   onSelect: (id: string) => void;
   onNew: () => void;
   onTogglePin: (doc: DocumentSummary) => void;
@@ -33,19 +38,22 @@ export function DocumentSidebar({
 
   return (
     <aside className="flex w-72 shrink-0 flex-col border-r border-border">
-      <div className="flex items-center gap-2 border-b border-border p-3">
-        <div className="relative flex-1">
-          <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={query}
-            onChange={(e) => onQueryChange(e.target.value)}
-            placeholder="Search documents…"
-            className="h-8 pl-8 text-sm"
-          />
+      <div className="flex flex-col gap-2 border-b border-border p-3">
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={query}
+              onChange={(e) => onQueryChange(e.target.value)}
+              placeholder="Search documents…"
+              className="h-8 pl-8 text-sm"
+            />
+          </div>
+          <Button size="icon-sm" title="New document" onClick={onNew}>
+            <Plus className="h-4 w-4" />
+          </Button>
         </div>
-        <Button size="icon-sm" title="New document" onClick={onNew}>
-          <Plus className="h-4 w-4" />
-        </Button>
+        <ProjectPicker value={projectId} onChange={onProjectChange} className="h-8 w-full" />
       </div>
 
       <ScrollArea className="min-h-0 flex-1">

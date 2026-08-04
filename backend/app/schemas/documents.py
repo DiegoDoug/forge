@@ -9,12 +9,14 @@ class DocumentCreateIn(BaseModel):
     title: str = Field(default="", max_length=200)
     content: str = Field(default="")
     pinned: bool = False
+    project_id: str | None = None
 
 
 class DocumentUpdateIn(BaseModel):
     title: str | None = Field(default=None, max_length=200)
     content: str | None = None
     pinned: bool | None = None
+    project_id: str | None = None
 
 
 class DocumentOut(BaseModel):
@@ -24,6 +26,7 @@ class DocumentOut(BaseModel):
     title: str
     content: str
     pinned: bool
+    project_id: str | None
     created_at: datetime
     updated_at: datetime
 
@@ -38,5 +41,6 @@ class DocumentSummaryOut(BaseModel):
     id: str
     title: str
     pinned: bool
+    project_id: str | None
     created_at: datetime
     updated_at: datetime

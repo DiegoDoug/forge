@@ -21,6 +21,9 @@ migrations run from the FastAPI lifespan on startup).
 | `documents_fts` | FTS5 virtual table over `documents.title`/`documents.content`, kept in sync by triggers |
 | `activity_log` | Lightweight feed for the Workbench's "Recent Activity" panel — never stores secret values or document contents |
 | `workbench_layout` | Single row (`id=1`): JSON-encoded `panels` (display order/visibility) and `pinned_tools` (pin order) for the home Workbench |
+| `projects` | Project workspaces (Phase 06) — name/description/color/archived plus an optional `default_provider`/`default_model` string pair referencing Model Playground's provider registry, never a credential |
+
+`secrets`, `notes`, `documents`, and `playground_runs` each additionally carry a nullable, indexed `project_id` foreign key to `projects.id` (added in `0008_projects.py`, see [ADR-0014](../forge-docs/decisions/0014-project-data-model-shape.md)) — an entity's project assignment is optional and additive; deleting a project clears `project_id` on everything that referenced it rather than deleting those rows.
 
 Every table uses a `TEXT` primary key (a 32-char hex UUID from
 `models/base.py::new_id`), not an auto-increment integer — this makes IDs

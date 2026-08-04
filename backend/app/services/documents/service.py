@@ -19,8 +19,11 @@ async def _get_or_404(session: AsyncSession, document_id: str) -> Document:
     return document
 
 
-async def list_documents(session: AsyncSession) -> list[Document]:
-    result = await session.execute(select(Document).order_by(Document.pinned.desc(), Document.updated_at.desc()))
+async def list_documents(session: AsyncSession, *, project_id: str | None = None) -> list[Document]:
+    stmt = select(Document)
+    if project_id:
+        stmt = stmt.where(Document.project_id == project_id)
+    result = await session.execute(stmt.order_by(Document.pinned.desc(), Document.updated_at.desc()))
     return list(result.scalars().all())
 
 

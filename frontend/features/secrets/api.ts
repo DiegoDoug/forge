@@ -36,6 +36,7 @@ export interface SecretSummary {
   name: string;
   type: SecretType;
   folder_id: string | null;
+  project_id: string | null;
   tags: Tag[];
   favorite: boolean;
   created_at: string;
@@ -57,6 +58,7 @@ export interface SecretCreateInput {
   type: SecretType;
   value: string;
   folder_id?: string | null;
+  project_id?: string | null;
   tag_ids?: string[];
   metadata?: Partial<SecretMetadata>;
   favorite?: boolean;
@@ -67,16 +69,18 @@ export interface SecretUpdateInput {
   type?: SecretType;
   value?: string;
   folder_id?: string | null;
+  project_id?: string | null;
   tag_ids?: string[];
   metadata?: Partial<SecretMetadata>;
   favorite?: boolean;
 }
 
 export const secretsApi = {
-  listSecrets: (params?: { folder_id?: string; tag_id?: string; q?: string }) => {
+  listSecrets: (params?: { folder_id?: string; tag_id?: string; project_id?: string; q?: string }) => {
     const search = new URLSearchParams();
     if (params?.folder_id) search.set("folder_id", params.folder_id);
     if (params?.tag_id) search.set("tag_id", params.tag_id);
+    if (params?.project_id) search.set("project_id", params.project_id);
     if (params?.q) search.set("q", params.q);
     const qs = search.toString();
     return api.get<SecretSummary[]>(`/api/secrets/secrets${qs ? `?${qs}` : ""}`);
@@ -100,7 +104,7 @@ export const secretsApi = {
   deleteTag: (id: string) => api.delete<void>(`/api/secrets/tags/${id}`),
 };
 
-export function useSecrets(params?: { folder_id?: string; tag_id?: string; q?: string }) {
+export function useSecrets(params?: { folder_id?: string; tag_id?: string; project_id?: string; q?: string }) {
   return useQuery({ queryKey: ["secrets", "secrets", params], queryFn: () => secretsApi.listSecrets(params) });
 }
 

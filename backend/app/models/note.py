@@ -14,6 +14,7 @@ class Note(SQLModel, table=True):
     title: str = Field(default="", max_length=200)
     content: str = Field(default="")  # markdown
     color: str = Field(default="#fde68a", max_length=20)
+    project_id: str | None = Field(default=None, foreign_key="projects.id", index=True)
 
     pos_x: float = Field(default=0)
     pos_y: float = Field(default=0)

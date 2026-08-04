@@ -40,6 +40,7 @@ full reference.
 | `/api/workbench` | Home-page Workbench: layout (panels + pinned tools), storage/recent-activity/recent-notes aggregation, layout update/reset |
 | `/api/settings` | Theme, backup export/import, about |
 | `/api/model-playground` | Provider listing, per-provider API-key credentials (OpenAI, Anthropic, DeepSeek, Kimi, GLM, Gemini, Custom OpenAI-compatible), a stateless provider connection test, and prompt-comparison runs/history — see [Security.md](Security.md) "Outbound network calls" |
+| `/api/projects` | Project CRUD (workspaces that Secrets/Notes/Documents optionally scope into via `project_id`), a per-project default AI provider/model, and a project-scoped AI quick-run that delegates to `/api/model-playground`'s run pipeline — no separate credential storage |
 
 ## Example
 

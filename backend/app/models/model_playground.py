@@ -35,6 +35,7 @@ class PlaygroundRun(SQLModel, table=True):
 
     id: str = Field(default_factory=new_id, primary_key=True)
     prompt: str = Field(max_length=20000)
+    project_id: str | None = Field(default=None, foreign_key="projects.id", index=True)
     created_at: datetime = Field(default_factory=utcnow, index=True)
 
     results: list["PlaygroundResult"] = Relationship(

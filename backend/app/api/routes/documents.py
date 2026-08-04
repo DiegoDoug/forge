@@ -12,8 +12,8 @@ router = APIRouter(prefix="/documents", tags=["documents"], dependencies=[AuthDe
 
 
 @router.get("", response_model=list[DocumentSummaryOut])
-async def list_documents(session: SessionDep) -> list[DocumentSummaryOut]:
-    return list(await service.list_documents(session))
+async def list_documents(session: SessionDep, project_id: str | None = None) -> list[DocumentSummaryOut]:
+    return list(await service.list_documents(session, project_id=project_id))
 
 
 @router.get("/search", response_model=list[DocumentSummaryOut])

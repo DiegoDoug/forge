@@ -14,6 +14,7 @@ export interface Note {
   z_index: number;
   pinned: boolean;
   archived: boolean;
+  project_id: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -26,6 +27,7 @@ export interface NoteCreateInput {
   pos_y?: number;
   width?: number;
   height?: number;
+  project_id?: string | null;
 }
 
 export interface NoteUpdateInput {
@@ -39,18 +41,20 @@ export interface NoteUpdateInput {
   z_index?: number;
   pinned?: boolean;
   archived?: boolean;
+  project_id?: string | null;
 }
 
 export const notesApi = {
-  list: (archived = false) => api.get<Note[]>(`/api/notes?archived=${archived}`),
+  list: (archived = false, projectId?: string) =>
+    api.get<Note[]>(`/api/notes?archived=${archived}${projectId ? `&project_id=${projectId}` : ""}`),
   search: (q: string) => api.get<Note[]>(`/api/notes/search?q=${encodeURIComponent(q)}`),
   create: (input: NoteCreateInput) => api.post<Note>("/api/notes", input),
   update: (id: string, input: NoteUpdateInput) => api.patch<Note>(`/api/notes/${id}`, input),
   remove: (id: string) => api.delete<void>(`/api/notes/${id}`),
 };
 
-export function useNotes(archived: boolean) {
-  return useQuery({ queryKey: ["notes", { archived }], queryFn: () => notesApi.list(archived) });
+export function useNotes(archived: boolean, projectId?: string) {
+  return useQuery({ queryKey: ["notes", { archived, projectId }], queryFn: () => notesApi.list(archived, projectId) });
 }
 
 export function useNoteSearch(query: string) {

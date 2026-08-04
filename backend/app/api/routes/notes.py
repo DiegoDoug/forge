@@ -10,8 +10,8 @@ router = APIRouter(prefix="/notes", tags=["notes"], dependencies=[AuthDep])
 
 
 @router.get("", response_model=list[NoteOut])
-async def list_notes(session: SessionDep, archived: bool = False) -> list[NoteOut]:
-    return list(await service.list_notes(session, archived=archived))
+async def list_notes(session: SessionDep, archived: bool = False, project_id: str | None = None) -> list[NoteOut]:
+    return list(await service.list_notes(session, archived=archived, project_id=project_id))
 
 
 @router.get("/search", response_model=list[NoteOut])

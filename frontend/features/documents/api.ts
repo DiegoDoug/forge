@@ -9,6 +9,7 @@ export interface DocumentSummary {
   id: string;
   title: string;
   pinned: boolean;
+  project_id: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -21,16 +22,19 @@ export interface DocumentCreateInput {
   title?: string;
   content?: string;
   pinned?: boolean;
+  project_id?: string | null;
 }
 
 export interface DocumentUpdateInput {
   title?: string;
   content?: string;
   pinned?: boolean;
+  project_id?: string | null;
 }
 
 export const documentsApi = {
-  list: () => api.get<DocumentSummary[]>("/api/documents"),
+  list: (projectId?: string) =>
+    api.get<DocumentSummary[]>(`/api/documents${projectId ? `?project_id=${projectId}` : ""}`),
   search: (q: string) => api.get<DocumentSummary[]>(`/api/documents/search?q=${encodeURIComponent(q)}`),
   get: (id: string) => api.get<Document>(`/api/documents/${id}`),
   create: (input: DocumentCreateInput) => api.post<Document>("/api/documents", input),
@@ -39,8 +43,8 @@ export const documentsApi = {
   exportUrl: (id: string, format: ExportFormat) => `/api/documents/${id}/export?format=${format}`,
 };
 
-export function useDocuments() {
-  return useQuery({ queryKey: ["documents"], queryFn: documentsApi.list });
+export function useDocuments(projectId?: string) {
+  return useQuery({ queryKey: ["documents", "list", { projectId }], queryFn: () => documentsApi.list(projectId) });
 }
 
 export function useDocumentSearch(query: string) {
@@ -61,7 +65,7 @@ export function useDocument(id: string | null) {
 
 export function useDocumentMutations() {
   const qc = useQueryClient();
-  const invalidateList = () => qc.invalidateQueries({ queryKey: ["documents"], exact: true });
+  const invalidateList = () => qc.invalidateQueries({ queryKey: ["documents", "list"] });
 
   return {
     create: useMutation({ mutationFn: documentsApi.create, onSuccess: invalidateList }),

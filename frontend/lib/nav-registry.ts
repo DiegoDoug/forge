@@ -1,6 +1,7 @@
 import {
   FileText,
   FlaskConical,
+  FolderKanban,
   KeyRound,
   LayoutDashboard,
   MessageSquareText,
@@ -27,6 +28,7 @@ export const NAV_ITEMS: NavItem[] = [
   { title: "Secrets", href: "/secrets", icon: KeyRound, description: "Encrypted secrets", shortcut: "V" },
   { title: "Notes", href: "/notes", icon: StickyNote, description: "Sticky note board", shortcut: "N" },
   { title: "Documents", href: "/documents", icon: FileText, description: "Rich text editor, history & export" },
+  { title: "Projects", href: "/projects", icon: FolderKanban, description: "Group secrets, notes & documents by workspace", shortcut: "P" },
   { title: "Generators", href: "/generators", icon: Wand2, description: "Passwords, UUIDs, keys", shortcut: "G" },
   { title: "Crypto", href: "/crypto", icon: ShieldHalf, description: "Encrypt, hash, sign, JWT", shortcut: "C" },
   { title: "Converter", href: "/converters", icon: Repeat, description: "Text, data & document conversion", shortcut: "O" },

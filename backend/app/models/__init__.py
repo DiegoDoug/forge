@@ -6,6 +6,7 @@ from .app_config import AppConfig
 from .document import Document
 from .model_playground import PlaygroundResult, PlaygroundRun, ProviderCredential
 from .note import Note
+from .project import Project
 from .project_init import ProjectInitGeneration
 from .prompt_studio import Prompt, PromptVersion
 from .secrets import Folder, Secret, SecretTagLink, SecretVersion, Tag
@@ -18,6 +19,7 @@ __all__ = [
     "Note",
     "PlaygroundResult",
     "PlaygroundRun",
+    "Project",
     "ProviderCredential",
     "ProjectInitGeneration",
     "Prompt",

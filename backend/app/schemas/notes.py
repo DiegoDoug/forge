@@ -13,6 +13,7 @@ class NoteCreateIn(BaseModel):
     pos_y: float = 0
     width: float = 280
     height: float = 220
+    project_id: str | None = None
 
 
 class NoteUpdateIn(BaseModel):
@@ -26,6 +27,7 @@ class NoteUpdateIn(BaseModel):
     z_index: int | None = None
     pinned: bool | None = None
     archived: bool | None = None
+    project_id: str | None = None
 
 
 class NoteOut(BaseModel):
@@ -42,5 +44,6 @@ class NoteOut(BaseModel):
     z_index: int
     pinned: bool
     archived: bool
+    project_id: str | None
     created_at: datetime
     updated_at: datetime

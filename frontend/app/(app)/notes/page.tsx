@@ -10,15 +10,17 @@ import { PageHeader } from "@/components/page-header";
 import { useNoteMutations, useNotes, useNoteSearch } from "@/features/notes/api";
 import { NOTE_COLORS } from "@/features/notes/note-colors";
 import { NotesBoard } from "@/features/notes/notes-board";
+import { ProjectPicker } from "@/features/projects/project-picker";
 
 export default function NotesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showArchived, setShowArchived] = useState(false);
   const [query, setQuery] = useState("");
+  const [projectId, setProjectId] = useState<string | null>(() => searchParams.get("project_id"));
   const { create } = useNoteMutations();
 
-  const notesQuery = useNotes(showArchived);
+  const notesQuery = useNotes(showArchived, projectId ?? undefined);
   const searchQuery = useNoteSearch(query);
 
   const notes = query.trim() ? searchQuery.data ?? [] : notesQuery.data ?? [];
@@ -29,6 +31,7 @@ export default function NotesPage() {
       pos_x: 40 + Math.random() * 200,
       pos_y: 40 + Math.random() * 120,
       color,
+      project_id: projectId ?? undefined,
     });
   }
 
@@ -68,11 +71,12 @@ export default function NotesPage() {
         }
       />
 
-      <div className="border-b border-border p-3">
-        <div className="relative max-w-sm">
+      <div className="flex flex-wrap items-center gap-2 border-b border-border p-3">
+        <div className="relative max-w-sm flex-1">
           <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search notes…" className="pl-8" />
         </div>
+        <ProjectPicker value={projectId} onChange={setProjectId} className="w-48" />
       </div>
 
       <NotesBoard notes={notes} />

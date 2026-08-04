@@ -19,10 +19,11 @@ async def _get_or_404(session: AsyncSession, note_id: str) -> Note:
     return note
 
 
-async def list_notes(session: AsyncSession, *, archived: bool = False) -> list[Note]:
-    result = await session.execute(
-        select(Note).where(Note.archived == archived).order_by(Note.pinned.desc(), Note.updated_at.desc())
-    )
+async def list_notes(session: AsyncSession, *, archived: bool = False, project_id: str | None = None) -> list[Note]:
+    stmt = select(Note).where(Note.archived == archived)
+    if project_id:
+        stmt = stmt.where(Note.project_id == project_id)
+    result = await session.execute(stmt.order_by(Note.pinned.desc(), Note.updated_at.desc()))
     return list(result.scalars().all())
 
 

@@ -5,9 +5,11 @@ import { CSS } from "@dnd-kit/utilities";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Archive, ArchiveRestore, Pin, PinOff, Trash2 } from "lucide-react";
+import { Archive, ArchiveRestore, FolderKanban, Pin, PinOff, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ProjectPicker } from "@/features/projects/project-picker";
 import { cn } from "@/lib/utils";
 import type { Note } from "./api";
 import { useNoteMutations } from "./api";
@@ -118,6 +120,30 @@ export function NoteCard({ note }: { note: Note }) {
           >
             {note.archived ? <ArchiveRestore className="h-3 w-3" /> : <Archive className="h-3 w-3" />}
           </IconAction>
+          <Popover>
+            <PopoverTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  title="Assign to project"
+                  className={cn(
+                    "text-neutral-900/60 hover:bg-black/10 hover:text-neutral-900",
+                    note.project_id && "text-neutral-900",
+                  )}
+                />
+              }
+            >
+              <FolderKanban className="h-3 w-3" />
+            </PopoverTrigger>
+            <PopoverContent className="w-48 p-2" onPointerDown={(e) => e.stopPropagation()}>
+              <ProjectPicker
+                value={note.project_id}
+                onChange={(projectId) => update.mutate({ id: note.id, input: { project_id: projectId } })}
+                className="w-full"
+              />
+            </PopoverContent>
+          </Popover>
           <IconAction label="Delete" onClick={() => remove.mutate(note.id)}>
             <Trash2 className="h-3 w-3" />
           </IconAction>

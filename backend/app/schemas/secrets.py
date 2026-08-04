@@ -45,6 +45,7 @@ class SecretCreateIn(BaseModel):
     type: SecretType = SecretType.other
     value: str
     folder_id: str | None = None
+    project_id: str | None = None
     tag_ids: list[str] = Field(default_factory=list)
     metadata: SecretMetadata = Field(default_factory=SecretMetadata)
     favorite: bool = False
@@ -55,6 +56,7 @@ class SecretUpdateIn(BaseModel):
     type: SecretType | None = None
     value: str | None = None
     folder_id: str | None = None
+    project_id: str | None = None
     tag_ids: list[str] | None = None
     metadata: SecretMetadata | None = None
     favorite: bool | None = None
@@ -65,6 +67,7 @@ class SecretSummaryOut(BaseModel):
     name: str
     type: SecretType
     folder_id: str | None
+    project_id: str | None
     tags: list[TagOut]
     favorite: bool
     created_at: datetime

@@ -29,6 +29,7 @@ def _summary(secret) -> SecretSummaryOut:
         name=secret.name,
         type=secret.type,
         folder_id=secret.folder_id,
+        project_id=secret.project_id,
         tags=[TagOut(id=t.id, name=t.name, color=t.color) for t in secret.tags],
         favorite=secret.favorite,
         created_at=secret.created_at,
@@ -41,9 +42,10 @@ async def list_secrets(
     session: SessionDep,
     folder_id: str | None = None,
     tag_id: str | None = None,
+    project_id: str | None = None,
     q: str | None = Query(default=None),
 ) -> list[SecretSummaryOut]:
-    secrets = await service.list_secrets(session, folder_id=folder_id, tag_id=tag_id, query=q)
+    secrets = await service.list_secrets(session, folder_id=folder_id, tag_id=tag_id, project_id=project_id, query=q)
     return [_summary(s) for s in secrets]
 
 

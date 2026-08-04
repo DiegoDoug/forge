@@ -2,64 +2,78 @@
 
 > **Purpose:** Entry point for the Projects phase — objective, scope, deliverables, and completion criteria.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
-> **Ownership:** TODO — assign a phase owner.
-> **Status:** Draft — template scaffold, not yet filled in
-> **Last Updated:** 2026-07-20
+> **Ownership:** Project owner (confirmed 2026-08-02)
+> **Status:** COMPLETE / READY FOR RELEASE
+> **Last Updated:** 2026-08-03
 
 ---
 
 
 ## Objective
 
-Introduce a cross-feature 'Project' grouping concept so Vault secrets, Notes, and Documents can be organized per project or workspace instead of one flat list each.
+Introduce a cross-feature 'Project' grouping concept so Vault secrets, Notes, and Documents can be organized per project or workspace instead of one flat list each, with an optional per-project default AI provider/model built on the existing Phase 05 provider abstraction.
 
 ## Scope
 
 **In scope:**
-- [ ] TODO: enumerate the concrete capabilities this phase delivers.
+- [x] Project CRUD (create/list/get/update/archive/delete).
+- [x] Optional `project_id` scoping on Secrets, Notes, Documents (additive — unassigned items behave exactly as today).
+- [x] Project-level default AI provider/model selection, referencing the existing `PROVIDER_REGISTRY` (Phase 05) — no new credential storage.
+- [x] A project-scoped AI "quick run" that delegates to the existing Model Playground run pipeline.
+- [x] "Recent Projects" Workbench panel (per ADR-0005).
+- [x] Sidebar + command palette navigation entry.
 
 **Out of scope:**
-- [ ] TODO: enumerate explicitly excluded capabilities (link them to a future phase or `../../02_ROADMAP.md` if deferred rather than dropped).
+- [ ] Multi-project membership per entity (see [ADR-0014](../../decisions/0014-project-data-model-shape.md) §3) — future phase if needed.
+- [ ] Nested/sub-projects, per-project access control/sharing.
+- [ ] Deep AI-assisted editing inside Notes/Documents — candidate for Knowledge Hub (Phase 07) or later.
+- [ ] Prompt Studio scoping into Projects — named as a future candidate in ADR-0005, not this phase.
+- [ ] List pagination — tracked as a pre-existing gap in `../../02_ROADMAP.md` §5, not solved here.
+
+Full detail: [`01_SPEC.md`](01_SPEC.md).
 
 ## Relationship to the shipped application
 
-New organizational layer. Touches the existing **Vault**, **Notes**, and **Documents** data models — likely an optional foreign key or join table, not a rewrite of any of them.
+New organizational layer. Touches the existing **Secrets**, **Notes**, and **Documents** data models via an additive, nullable `project_id` foreign key on each (resolved in [ADR-0014](../../decisions/0014-project-data-model-shape.md) — not a rewrite of any of them, not a join table for this phase).
 
-> **TODO:** This relationship is the Lead Architect's proposal, not a ratified decision — confirm before [`01_SPEC.md`](01_SPEC.md) is finalized.
-
-- Related frontend: `frontend/features/vault/, frontend/features/notes/, frontend/features/documents/`
-- Related backend: `backend/app/vault/, backend/app/notes/, backend/app/documents/`
+- Related frontend: `frontend/features/secrets/`, `frontend/features/notes/`, `frontend/features/documents/`, `frontend/features/model-playground/` (read-only reuse)
+- Related backend: `backend/app/services/secrets/`, `backend/app/services/notes/`, `backend/app/services/documents/`, `backend/app/services/model_playground/` (reused for AI execution, not modified)
 
 ## Deliverables
 
-- [ ] TODO: list concrete deliverables (a shipped page, an API surface, a migration, etc.)
+- [x] `projects` table + migration `0008_projects.py`, plus additive `project_id` columns on `secrets`/`notes`/`documents`/`playground_runs`.
+- [x] `services/projects/`, `schemas/projects.py`, `api/routes/projects.py` (full CRUD + AI run endpoints).
+- [x] `frontend/features/projects/` + `/projects` and `/projects/[id]` pages + nav entry.
+- [x] Project-picker integration in Secrets/Notes/Documents forms and filters.
+- [x] "Recent Projects" Workbench panel.
+- [x] Backend test coverage per [`07_TESTING.md`](07_TESTING.md); lint/typecheck/build passing; manual QA pass recorded.
 
 ## Dependencies
 
-Should land before or alongside Phase 07 (Knowledge Hub), which likely assumes a similar grouping concept — TODO: confirm ordering.
+Lands after Phase 05 (Model Playground, released as `v0.5.1-ai-providers`), which it depends on for the provider/model abstraction — satisfied. Should land before or alongside Phase 07 (Knowledge Hub), which likely assumes a similar grouping concept.
 
-- [ ] TODO: confirm dependency status before authorizing `IMPLEMENT.md` for this phase (see [`../../09_CLAUDE_CODE_RULES.md`](../../09_CLAUDE_CODE_RULES.md) §3).
+- [x] Phase 05 dependency confirmed complete before this phase's implementation begins.
 
 ## Milestones
 
-- [ ] Milestone 1 — TODO: name and define
-- [ ] Milestone 2 — TODO: name and define
-- [ ] Milestone 3 — TODO: name and define
+- [x] Milestone 1 — Spec confirmed, backend implemented (data model, migration, service, API) and unit/integration-tested.
+- [x] Milestone 2 — Frontend implemented (pages, feature module, cross-feature picker integration, Workbench panel) and manually QA'd.
+- [x] Milestone 3 — Full regression pass, security review, documentation finalized, phase marked complete.
 
 > Each milestone completion is a checkpoint trigger — see [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md) §1.
 
 ## Risks
 
-- [ ] TODO: enumerate technical risks
-- [ ] TODO: enumerate product/UX risks
-- [ ] TODO: enumerate risks to existing features this phase touches or consolidates
+- Cross-feature scope: touching Secrets (security-sensitive), Notes, and Documents simultaneously — mitigated by keeping every change additive/optional (see ADR-0014) so unassigned items are provably unaffected.
+- AI integration risk: any temptation to duplicate credential handling — mitigated by delegating 100% of outbound AI calls to the existing `model_playground.runs.create_run()`.
+- Migration risk on an existing populated database — mitigated by the guarded fresh-install-vs-upgrade pattern already established since `0006`, plus an explicit upgrade/downgrade/upgrade test.
 
 ## Definition of Complete
 
-- [ ] All deliverables above are shipped and meet [`../../08_DEFINITION_OF_DONE.md`](../../08_DEFINITION_OF_DONE.md).
-- [ ] [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) criteria are fully checked off.
-- [ ] [`CURRENT_STATE.md`](CURRENT_STATE.md) reflects reality with no stale "In Progress" items.
-- [ ] A final checkpoint has been produced per [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md).
+- [x] All deliverables above are shipped and meet [`../../08_DEFINITION_OF_DONE.md`](../../08_DEFINITION_OF_DONE.md).
+- [x] [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) criteria are fully checked off.
+- [x] [`CURRENT_STATE.md`](CURRENT_STATE.md) reflects reality with no stale "In Progress" items.
+- [x] A final checkpoint has been produced per [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md).
 
 ## Cross-references
 
