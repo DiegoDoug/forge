@@ -3,31 +3,30 @@
 > **Purpose:** Data model changes required for this phase.
 > **Scope:** Schema and migration planning only. Service logic lives in 03_BACKEND.md.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** Draft — template scaffold, not yet filled in
-> **Last Updated:** 2026-07-20
+> **Status:** Approved in principle by the project owner 2026-08-05 — the "no database migration" conclusion is confirmed.
+> **Last Updated:** 2026-08-05
 
 ---
 
-
 ## 1. New or modified tables
 
-- [ ] TODO: enumerate new SQLModel tables, or fields added to existing ones.
+**None.** No database schema change is required for Phase 08.
 
 ## 2. Relationships
 
-- [ ] TODO: foreign keys / relationships to existing tables (Vault, Notes, Documents, etc., if applicable).
+Not applicable — no new or modified table.
 
 ## 3. Migration plan
 
-- [ ] TODO: this must be an explicit Alembic migration — no direct schema edits (per [`../../03_ARCHITECTURE.md`](../../03_ARCHITECTURE.md) §2 and [`../../../docs/Database.md`](../../../docs/Database.md)).
+**No Alembic migration is introduced by this phase.** Confirmed by investigation (see [`01_SPEC.md`](01_SPEC.md) §6 and [`03_BACKEND.md`](03_BACKEND.md) §1): Generators and Crypto persist nothing (every operation is stateless request/response); Utilities has no backend component at all. There is no data model for a Developer Toolkit consolidation to touch.
 
 ## 4. Data lifecycle
 
-- [ ] TODO: does this data persist indefinitely (like Vault/Notes) or is it scratch data with TTL cleanup (like Ingest)?
+Not applicable — no data is introduced, persisted, or made ephemeral by this phase.
 
 ## 5. TODO
 
-- [ ] This document is a template placeholder — fill in against [`01_SPEC.md`](01_SPEC.md) before implementation. If this phase introduces no schema changes, state that explicitly rather than leaving this file as an unfilled template.
+- [ ] None — this document explicitly states, per its own template instruction, that no schema change is required, rather than being left as an unfilled placeholder.
 
 ## 6. Cross-references
 
