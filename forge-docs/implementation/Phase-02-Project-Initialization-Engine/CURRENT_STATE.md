@@ -3,8 +3,8 @@
 > **Purpose:** Live snapshot of where this phase actually stands, updated at every checkpoint.
 > **Scope:** This phase only — updated continuously, never left stale.
 > **Ownership:** Lead Software Engineer (session-assigned).
-> **Status:** Implementation complete (Milestones 1–3). Per [`../../13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md), next stage is Release Candidate (independent audit) → Owner Sign-off (requires the actual project owner) → Released. Not yet merged to `master`.
-> **Last Updated:** 2026-07-22
+> **Status:** 🔒 RELEASED & FROZEN — tagged `v0.2.0-project-init`, committed directly to `master` (commit `bedab9d`). Specification: Locked. Implementation: Closed. Future changes: bug fixes only.
+> **Last Updated:** 2026-08-05
 
 ---
 
@@ -38,11 +38,9 @@ None — implementation stage is complete.
 
 ## Remaining
 
-Nothing at the Implementation stage. Per the phase lifecycle, what's left belongs to later stages, not to this implementation session:
-- Release Candidate: an independent verification/audit pass against the spec (a fresh reviewer or dedicated review pass, per Phase 01's precedent finding BUG-0001).
-- QA: any acceptance criteria this environment couldn't verify (see Known Issues) tracked as tickets, not blocking.
-- Owner Sign-off: requires the actual project owner — this session self-authorized the *spec* per explicit instruction, but cannot self-perform *owner sign-off* on the finished implementation; that is a distinct, later gate.
-- Released: tag + merge to `master` — a git action with real consequences requiring explicit user permission, not performed by this session.
+None. Phase 02 has completed every lifecycle stage: Release Candidate (RC1_AUDIT.md, zero BLOCKERs), Owner Sign-off (APPROVED), Released (tagged `v0.2.0-project-init`, commit `bedab9d`), and Frozen (end-of-phase artifacts archived to `history/Phase-02/`, per [`../../13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §5).
+
+The two non-blocking QA tickets RC1_AUDIT.md §7 recommended (keyboard-navigation Tab-sequence walkthrough; pixel-level visual verification of dark mode/mobile) are now filed: [`QA-0001`](../../history/Phase-02/QA/QA-0001-keyboard-navigation.md) and [`QA-0002`](../../history/Phase-02/QA/QA-0002-pixel-level-screenshots.md), both still `Open` pending an actual human QA pass — filing the ticket documents the gap, it doesn't close it.
 
 ## Known Issues
 
@@ -66,29 +64,30 @@ Nothing at the Implementation stage. Per the phase lifecycle, what's left belong
 
 ## Modified Files
 
-Full list in [`../../history/2026-07-22-phase-02-milestone-1-backend-engine.md`](../../history/2026-07-22-phase-02-milestone-1-backend-engine.md) (Milestone 1) and [`../../history/2026-07-22-phase-02-final-checkpoint.md`](../../history/2026-07-22-phase-02-final-checkpoint.md) (Milestones 2–3, this checkpoint).
+Full implementation list in [`../../history/2026-07-22-phase-02-milestone-1-backend-engine.md`](../../history/2026-07-22-phase-02-milestone-1-backend-engine.md) (Milestone 1) and [`../../history/2026-07-22-phase-02-final-checkpoint.md`](../../history/2026-07-22-phase-02-final-checkpoint.md) (Milestones 2–3). Freeze/archive changes in [`../../history/2026-08-05-phase-02-freeze-checkpoint.md`](../../history/2026-08-05-phase-02-freeze-checkpoint.md).
 
 ## Next Milestone
 
-None remaining at the Implementation stage. Next lifecycle stage is Release Candidate (independent audit pass) per [`../../13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md).
+None. Phase 02 is Released & Frozen. Future work against this phase is limited to genuine bug fixes, per `13_PHASE_LIFECYCLE.md` §4.
 
 ## Next Claude Prompt
 
 ```
-Phase 02 (Project Initialization Engine) implementation is complete - see
-forge-docs/history/2026-07-22-phase-02-final-checkpoint.md. Per
-13_PHASE_LIFECYCLE.md, the next stage is Release Candidate: run an
-independent verification/audit pass against 01_SPEC.md through
-08_ACCEPTANCE.md (fresh eyes, adversarial - Phase 01's precedent found
-BUG-0001 this way), classify any findings per 12_BUG_CLASSIFICATION.md,
-fix BLOCKERs, then present to the project owner for Owner Sign-off before
-any merge/release.
+Phase 02 (Project Initialization Engine) is released, tagged
+v0.2.0-project-init (commit bedab9d), and now frozen - see
+forge-docs/history/2026-08-05-phase-02-freeze-checkpoint.md. No further
+work is expected against this phase outside genuine bug fixes. If picking
+up FDK work generally, check forge-docs/02_ROADMAP.md for the next
+unstarted phase.
 ```
 
 ## Session Notes
 
 - 2026-07-20 — Phase scaffold created by the Lead Architect FDK setup. No implementation work occurred.
 - 2026-07-22 — Lead Software Engineer session. Found the phase unauthorized and a scope conflict; stopped and asked the user rather than guessing. User chose unified scope and "draft spec, then implement in this session," then gave an explicit follow-up instruction to self-authorize the spec and proceed through implementation without further confirmation, following the checkpoint protocol. Drafted and self-authorized the spec package, opened the branch, implemented Milestone 1 (Backend engine, T1–T9), checkpointed. Resumed per the user's exact recommended next prompt and implemented Milestone 2 (Frontend UI, T10–T12) and Milestone 3 (Validation, T13–T14): full frontend build/lint clean; extensive browser verification of both template kinds end-to-end (generate, download, history, delete-with-confirmation, sidebar nav, command palette, empty states, dark mode, mobile viewport); `docker compose build` + full stack boot with the migration applying automatically against the pre-existing data volume. Found and fixed two real bugs during backend testing (documented in the Milestone 1 checkpoint) and one doc-vs-reality gap during frontend work (react-hook-form/zod assumed in the draft spec but never actually used anywhere in this codebase — corrected to match the real convention). All implementation tasks (T1–T14) are complete; `08_ACCEPTANCE.md` is checked off except two honestly-flagged partial items this environment structurally couldn't fully verify (explicit keyboard Tab-sequence; pixel-level screenshot confirmation — the Browser pane's screenshot tool was unavailable this session). This is the final Implementation-stage checkpoint — logged to `history/2026-07-22-phase-02-final-checkpoint.md`. Per `13_PHASE_LIFECYCLE.md`, this session does not perform Release Candidate audit, Owner Sign-off, or merge/release — those are distinct later stages requiring either an independent review pass or the actual project owner, and merging/tagging is a git action needing explicit user permission this session was not given.
+- 2026-07-22 (same day, separate session) — RC1 audit performed (`RC1_AUDIT.md`, zero BLOCKERs), Owner Sign-off recorded APPROVED, and the phase committed directly to `master` (commit `bedab9d`, tag `v0.2.0-project-init`) — evidenced by the release commit's own message ("Release Status: ✅ Owner Sign-off: Approved, ✅ RC1 Audit: Passed"). The freeze/archive step (moving end-of-phase artifacts to `history/Phase-02/`, updating this document and `README.md` to Released & Frozen) was not performed at that time, leaving the phase in an inconsistent state: released in git, but still reading "Implementation complete... Not yet merged to master" in its own docs.
+- 2026-08-05 — Freeze/archive step run retroactively at the user's explicit request, per `13_PHASE_LIFECYCLE.md` §5 and Phase 04/06's precedent (this phase shipped via direct commit, not a PR, matching Phase 06's release mechanics rather than Phase 03/04/05's PR-based ones). `git mv`'d `10_RELEASE_NOTES.md` to `forge-docs/history/Phase-02/`, fixed its internal cross-references and status header. Updated this document and `README.md` to 🔒 RELEASED & FROZEN, referencing commit `bedab9d`. No `QA/`, `BUGS/`, or `POST_IMPLEMENTATION_REVIEW.md` existed for this phase to archive — only `10_RELEASE_NOTES.md` was present among the four archivable artifacts (see Remaining, above, for the one gap this surfaced: two RC-recommended QA tickets were never filed). Logged to `history/2026-08-05-phase-02-freeze-checkpoint.md`; added the missing index row to `history/README.md`.
+- 2026-08-05 (same day, follow-up) — The two QA tickets flagged above were filed at the user's explicit request: `history/Phase-02/QA/README.md`, `QA-0001-keyboard-navigation.md`, `QA-0002-pixel-level-screenshots.md`, matching Phase 01/03's QA-ticket template exactly. Cross-referenced from `08_ACCEPTANCE.md` §2 (the two criteria the tickets close out) and from this document's Remaining section. Both tickets remain `Open` — filing them documents the gap for a human QA pass to eventually close, it does not perform that pass.
 
 ## Cross-references
 

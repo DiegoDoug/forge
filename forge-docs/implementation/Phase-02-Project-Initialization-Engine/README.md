@@ -3,8 +3,8 @@
 > **Purpose:** Entry point for the Project Initialization Engine phase — objective, scope, deliverables, and completion criteria.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
 > **Ownership:** Lead Software Engineer (session-assigned, per project owner's Phase 02 kickoff instruction).
-> **Status:** Implementation complete (all three milestones done, Docker-verified, browser-verified) — per [`../../13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md), next stage is Release Candidate (an independent audit pass), then Owner Sign-off (requires the actual project owner) before Released/merge. Not yet merged to `master`.
-> **Last Updated:** 2026-07-22
+> **Status:** 🔒 RELEASED & FROZEN — tagged `v0.2.0-project-init`, merged to `master` (commit `bedab9d`). Specification: Locked. Implementation: Closed. Future changes: bug fixes only.
+> **Last Updated:** 2026-08-05
 
 ---
 
@@ -75,12 +75,16 @@ Benefits from Phase 01 (Workbench) existing as the natural entry point for launc
 - [x] All deliverables above are shipped and meet [`../../08_DEFINITION_OF_DONE.md`](../../08_DEFINITION_OF_DONE.md).
 - [x] [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) criteria are checked off, with two honestly-flagged partial items (explicit Tab-key testing; pixel-level screenshot confirmation of dark mode/mobile — this environment's screenshot tool was unavailable, structural verification substituted) rather than falsely marked fully verified.
 - [x] [`CURRENT_STATE.md`](CURRENT_STATE.md) reflects reality with no stale "In Progress" items.
-- [x] A final checkpoint has been produced per [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md).
+- [x] A final checkpoint has been produced per [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md) — see [`../../history/2026-07-22-phase-02-final-checkpoint.md`](../../history/2026-07-22-phase-02-final-checkpoint.md).
+- [x] Committed directly to `master` (commit `bedab9d`, no feature branch/PR for this release); release tagged `v0.2.0-project-init`; implementation directory frozen; end-of-phase artifacts archived to [`../../history/Phase-02/`](../../history/Phase-02/) — see [`../../history/2026-08-05-phase-02-freeze-checkpoint.md`](../../history/2026-08-05-phase-02-freeze-checkpoint.md).
 
 ## Cross-references
 
 - [CURRENT_STATE.md](CURRENT_STATE.md)
 - [01_SPEC.md](01_SPEC.md)
+- [RC1_AUDIT.md](RC1_AUDIT.md)
 - [IMPLEMENT.md](IMPLEMENT.md)
+- [../../history/Phase-02/10_RELEASE_NOTES.md](../../history/Phase-02/10_RELEASE_NOTES.md)
+- [../../history/Phase-02/QA/README.md](../../history/Phase-02/QA/README.md)
 - [../../02_ROADMAP.md](../../02_ROADMAP.md)
 - [../../09_CLAUDE_CODE_RULES.md](../../09_CLAUDE_CODE_RULES.md)
