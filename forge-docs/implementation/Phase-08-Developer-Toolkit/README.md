@@ -3,7 +3,7 @@
 > **Purpose:** Entry point for the Developer Toolkit phase — objective, scope, deliverables, and completion criteria.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** Implementation complete and verified 2026-08-05 — **awaiting project-owner sign-off**. Not released, not tagged, not frozen, not merged.
+> **Status:** 🔒 Released & frozen — `v0.8.0-developer-toolkit` (commit `529b6b8`), bug fixes only from here. See [`CURRENT_STATE.md`](CURRENT_STATE.md) for the full history and [`../../history/Phase-08/`](../../history/Phase-08/) for the archived BLOCKER and QA records.
 > **Last Updated:** 2026-08-05
 
 ---
@@ -41,7 +41,7 @@ Consolidates the existing **Generators**, **Crypto**, and **Utilities** feature 
 - [x] `/generators`, `/crypto`, `/utilities` → `/developer-toolkit?tab=<name>` redirects (307, verified on both dev and production paths).
 - [x] Single consolidated `nav-registry.ts` entry.
 - [x] `WORKBENCH_TOOL_KEYS` / `tool-metadata.ts` catalog merge.
-- [x] Zero regressions to any existing Generators, Crypto, or Utilities capability — verified against every criterion in [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md). One BLOCKER *was* introduced against the Workbench during implementation and was found, fixed, and regression-tested before sign-off: [`BUGS/BUG-0001`](BUGS/BUG-0001-stale-pinned-tool-key-500.md).
+- [x] Zero regressions to any existing Generators, Crypto, or Utilities capability — verified against every criterion in [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md). One BLOCKER *was* introduced against the Workbench during implementation and was found, fixed, and regression-tested before sign-off: [`BUGS/BUG-0001`](../../history/Phase-08/BUGS/BUG-0001-stale-pinned-tool-key-500.md).
 
 ## Dependencies
 
@@ -71,7 +71,7 @@ One milestone (approved in principle 2026-08-05) — see [`09_IMPLEMENTATION_TAS
 - [x] [`CURRENT_STATE.md`](CURRENT_STATE.md) reflects reality with no stale "In Progress" items.
 - [x] A final checkpoint has been produced per [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md).
 
-**Awaiting sign-off (2026-08-05).** Implementation and verification are complete; the phase sits at **Owner Sign-off** per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §1. It has deliberately **not** been released, tagged, frozen, or merged — those steps wait on an explicit decision. See [`CURRENT_STATE.md`](CURRENT_STATE.md) "Remaining" for the exact post-sign-off sequence.
+**Released & Frozen (2026-08-05).** The project owner recorded Sign-off: "sufficient to move into the release sequence," explicitly noting BUG-0001's discovery-and-fix strengthened rather than weakened release confidence, and confirming QA-0001's disposition as accurately documented and non-blocking. Merged to `master` via [PR #25](https://github.com/DiegoDoug/forge/pull/25) (squash commit `529b6b8`), tagged `v0.8.0-developer-toolkit`. Per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md), this phase's directory now accepts bug fixes only — no new features, no architectural changes; any further enhancement (e.g. resolving QA-0001 by touching the shared `Tabs` primitive) begins as a new phase or a scoped fix outside this directory.
 
 ## Cross-references
 

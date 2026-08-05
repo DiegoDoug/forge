@@ -3,8 +3,8 @@
 > **Purpose:** Durable, append-only log of every checkpoint produced under [10_CHECKPOINT_PROTOCOL.md](../10_CHECKPOINT_PROTOCOL.md), so state survives even after a phase's `CURRENT_STATE.md` is overwritten by its next update. Also holds each frozen phase's archived end-of-phase artifacts (`Phase-NN/`) — see §2.1.
 > **Scope:** Checkpoint records and frozen-phase archives. Architectural decisions belong in [`../decisions/`](../decisions/README.md), not here.
 > **Ownership:** TODO — assign an owner.
-> **Status:** 17 checkpoints/reports logged across Phases 01–07; post-freeze archives added for `Phase-01/`, `Phase-02/`, `Phase-03/`, `Phase-04/`, `Phase-05/`, `Phase-06/`, `Phase-07/`
-> **Version:** 0.8.0
+> **Status:** 17 checkpoints/reports logged across Phases 01–07; post-freeze archives added for `Phase-01/`, `Phase-02/`, `Phase-03/`, `Phase-04/`, `Phase-05/`, `Phase-06/`, `Phase-07/`, `Phase-08/`
+> **Version:** 0.9.0
 > **Last Updated:** 2026-08-05
 > **Depends On:** [../10_CHECKPOINT_PROTOCOL.md](../10_CHECKPOINT_PROTOCOL.md), [../13_PHASE_LIFECYCLE.md](../13_PHASE_LIFECYCLE.md)
 > **Supersedes:** —
@@ -54,6 +54,7 @@ Per [`../13_PHASE_LIFECYCLE.md`](../13_PHASE_LIFECYCLE.md) §5, once a phase rea
 | 05 — Model Playground | [Phase-05/](Phase-05/) | `v0.5.0-model-playground` |
 | 06 — Projects | [Phase-06/](Phase-06/) | `v0.6.0-projects` |
 | 07 — Knowledge Hub | [Phase-07/](Phase-07/) | `v0.7.0-knowledge-hub` |
+| 08 — Developer Toolkit | [Phase-08/](Phase-08/) | `v0.8.0-developer-toolkit` |
 
 ## 3. TODO
 

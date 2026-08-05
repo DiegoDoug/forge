@@ -3,7 +3,7 @@
 > **Purpose:** Live snapshot of where this phase actually stands, updated at every checkpoint.
 > **Scope:** This phase only — updated continuously, never left stale.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** Implementation complete and verified (2026-08-05) — awaiting project-owner sign-off. Not released, not frozen.
+> **Status:** 🔒 **Released & Frozen.** Tagged `v0.8.0-developer-toolkit`, merged to `master` via [PR #25](https://github.com/DiegoDoug/forge/pull/25) (squash commit `529b6b8`), following owner sign-off (`08_ACCEPTANCE.md` §5, 2026-08-05). This implementation directory now accepts bug fixes only, per `13_PHASE_LIFECYCLE.md` §4. End-of-phase artifacts (`BUGS/`, `QA/`) moved to [`forge-docs/history/Phase-08/`](../../history/Phase-08/).
 > **Last Updated:** 2026-08-05
 
 ---
@@ -11,11 +11,11 @@
 
 ## Current Status
 
-**Implementation complete, verified, awaiting owner sign-off.** All ten tasks in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) are done; every criterion in [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) is checked with cited evidence. Per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) the phase sits at **Owner Sign-off** — it is **not Released and not Frozen**, there is no `v0.8.x` tag, and nothing has been merged to `master`.
+**Released & Frozen.** All ten tasks in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) are done; every criterion in [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) is checked with cited evidence; owner sign-off recorded. Per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) the phase has completed the full lifecycle through **Frozen**: tagged `v0.8.0-developer-toolkit`, merged to `master` at commit `529b6b8`.
 
-One 🔴 BLOCKER was found during verification and fixed: [`BUGS/BUG-0001`](BUGS/BUG-0001-stale-pinned-tool-key-500.md). One item is deferred, non-blocking, to [`QA/QA-0001`](QA/QA-0001-tab-keyboard-activation.md).
+One 🔴 BLOCKER was found during verification and fixed: [`BUGS/BUG-0001`](../../history/Phase-08/BUGS/BUG-0001-stale-pinned-tool-key-500.md) — the project owner explicitly noted this strengthened rather than weakened release confidence. One item remains open, non-blocking: [`QA/QA-0001`](../../history/Phase-08/QA/QA-0001-tab-keyboard-activation.md).
 
-Work lives on branch `Phase-08/Developer-Toolkit`.
+Implementation branch `Phase-08/Developer-Toolkit` merged and retained (not deleted).
 
 ## Completed
 
@@ -35,13 +35,16 @@ Work lives on branch `Phase-08/Developer-Toolkit`.
 - [x] Project-owner review of the drafted document set — **approved in principle 2026-08-05**, with three requested corrections applied the same day.
 - [x] Explicit authorization to move from **Specification** to **Authorized** — **granted 2026-08-05**, recorded in [`IMPLEMENT.md`](IMPLEMENT.md).
 - [x] All 10 implementation tasks (T1–T10).
-- [ ] **Project-owner sign-off** — the only remaining gate. Nothing else in this phase is outstanding.
-- [ ] Post-sign-off, in order, and none of it started: PR → merge to `master` → tag `v0.8.0-developer-toolkit` → post-release freeze commit → move end-of-phase artifacts to `history/Phase-08/` per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §5.
+- [x] **Project-owner sign-off** — recorded 2026-08-05. Explicit: "The evidence you provided is sufficient to move into the release sequence," with BUG-0001 called out as strengthening release confidence and QA-0001's disposition confirmed accurate.
+- [x] PR #25 opened and squash-merged to `master` (commit `529b6b8`).
+- [x] Tag `v0.8.0-developer-toolkit` created on the merge commit and pushed. Verified: `git rev-list -n1 v0.8.0-developer-toolkit` equals `git rev-parse master`.
+- [x] Post-release freeze: this document, `README.md`, and `../../02_ROADMAP.md` updated to Released & Frozen; `BUGS/` and `QA/` moved to `history/Phase-08/` with internal cross-references repaired for the new path.
+- [ ] Nothing remaining. This phase is closed; only bug fixes are accepted from here per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §4.
 
 ## Known Issues
 
-- [x] [`BUGS/BUG-0001`](BUGS/BUG-0001-stale-pinned-tool-key-500.md) — 🔴 BLOCKER, **fixed and verified**. Retiring the three tool keys 500'd the whole Workbench for any user whose saved layout pinned one of them, because `serialize_layout()` indexed the catalog dict unguarded. Found by loading the Workbench against real data during T8; the automated gates could not have caught it, and did not.
-- [ ] [`QA/QA-0001`](QA/QA-0001-tab-keyboard-activation.md) — **open, non-blocking, pre-existing.** `Enter`/`Space` did not activate a focused tab under automation. Ruled out as a Phase 08 regression: the unmodified nested Crypto tab set behaves identically. Needs a real-keyboard session to distinguish a harness artifact from a genuine gap in the shared `Tabs` primitive.
+- [x] [`BUGS/BUG-0001`](../../history/Phase-08/BUGS/BUG-0001-stale-pinned-tool-key-500.md) — 🔴 BLOCKER, **fixed and verified**. Retiring the three tool keys 500'd the whole Workbench for any user whose saved layout pinned one of them, because `serialize_layout()` indexed the catalog dict unguarded. Found by loading the Workbench against real data during T8; the automated gates could not have caught it, and did not.
+- [ ] [`QA/QA-0001`](../../history/Phase-08/QA/QA-0001-tab-keyboard-activation.md) — **open, non-blocking, pre-existing.** `Enter`/`Space` did not activate a focused tab under automation. Ruled out as a Phase 08 regression: the unmodified nested Crypto tab set behaves identically. Needs a real-keyboard session to distinguish a harness artifact from a genuine gap in the shared `Tabs` primitive.
 - [ ] Pre-existing, unchanged by this phase: the frontend has no test framework ([`07_TESTING.md`](07_TESTING.md) §2), so this phase ships with no automated frontend tests. Out of scope to fix here — it is a cross-cutting decision affecting every feature.
 
 ## Architectural Decisions
@@ -72,32 +75,33 @@ Shipped-app docs also updated: root `README.md` and `forge-docs/02_ROADMAP.md`. 
 
 ## Next Milestone
 
-Milestone 1 is complete. The next step is not a milestone but a gate: project-owner sign-off.
+None. This phase is Released & Frozen. Any further work is either a bug fix within this directory (per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §4) or a new phase — most concretely, resolving [`QA/QA-0001`](../../history/Phase-08/QA/QA-0001-tab-keyboard-activation.md), which if it turns out to be a real gap belongs to a scoped fix against `frontend/components/ui/tabs.tsx`, not to this directory.
 
 ## Next Claude Prompt
 
 ```
-Phase 08 (Developer Toolkit) implementation is complete and verified on branch
-Phase-08/Developer-Toolkit (commits f23b5c7, 62cbd54, and the verification
-commit). Every 08_ACCEPTANCE.md criterion is checked with evidence. The phase
-is parked at Owner Sign-off per 13_PHASE_LIFECYCLE.md.
+Phase 08 (Developer Toolkit) is Released & Frozen - tagged
+v0.8.0-developer-toolkit, merged to master at commit 529b6b8 via PR #25.
+This directory accepts bug fixes only from here (13_PHASE_LIFECYCLE.md §4).
 
-Do not release or freeze without explicit instruction. Once sign-off is
-recorded: open a PR, merge to master, tag v0.8.0-developer-toolkit, then make
-the post-release freeze commit and move BUGS/ and QA/ to history/Phase-08/.
+If asked to touch this phase's code, first confirm the change is a genuine
+bug fix, not a feature/architecture change - those require a new phase.
 
-Read BUGS/BUG-0001 and QA/QA-0001 first — one BLOCKER was found and fixed
-during verification, and one non-blocking, pre-existing keyboard-activation
-question remains open.
+One open, non-blocking QA item remains: history/Phase-08/QA/QA-0001 (a
+pre-existing keyboard-activation question in the shared Tabs primitive,
+ruled out as a Phase 08 regression). If resolving it requires editing
+frontend/components/ui/tabs.tsx, that fix affects every consumer of that
+primitive and should not be scoped as a Phase 08 bug fix.
 ```
 
 ## Session Notes
 
+- 2026-08-05 — **Released & Frozen.** Owner sign-off recorded: "The evidence you provided is sufficient to move into the release sequence... I would treat BUG-0001 as resolved and in-scope, not scope creep... QA-0001 [accepted as documented], do not block the release on it." Release sequence executed in order per explicit instruction: pre-PR integrity check (26 changed files, all expected; master untouched; `HANDOUT.md` still the sole pre-existing untracked file; no secrets); PR #25 opened and squash-merged (`529b6b8`), matching the established squash-merge convention (`Phase 07: Knowledge Hub (#23)` → `9653b6a`); tag `v0.8.0-developer-toolkit` created and pushed *after* the merge, verified to resolve to the merge commit, not the pre-merge branch tip; `BUGS/`/`QA/` moved to `history/Phase-08/` with internal links repaired for the new relative paths; this document, `README.md`, and `02_ROADMAP.md` updated to Released & Frozen, matching the wording precedent in Phase 06's and Phase 07's own frozen docs.
 - 2026-08-05 — **Implementation complete and verified.** Authorization granted; `IMPLEMENT.md` flipped to "Approved to begin," recording implementation authorization as a gate distinct from specification approval. T1–T10 executed in three commits. T2+T3's atomicity requirement held in practice — both landed in `62cbd54`, and all three legacy routes were confirmed to return 307 (never 404) against both the dev server and the production nginx path.
 
-  **A 🔴 BLOCKER surfaced during T8** and is the most important record of this session: every automated gate passed — 292 backend tests, typecheck, lint, production build, Docker build — and the Workbench was still completely broken. `serialize_layout()` indexed `WORKBENCH_TOOL_KEYS[key]` unguarded against persisted user data, so retiring the three tool keys raised `KeyError` → 500 for any layout that pinned one. The real instance's layout pinned two. Fixed with a guard, covered by a regression test that was itself verified to fail without the fix, and re-verified live. See [`BUGS/BUG-0001`](BUGS/BUG-0001-stale-pinned-tool-key-500.md). The lesson worth carrying forward: a code comment written alongside the merge asserted the graceful behavior that turned out not to exist, and only real data disproved it.
+  **A 🔴 BLOCKER surfaced during T8** and is the most important record of this session: every automated gate passed — 292 backend tests, typecheck, lint, production build, Docker build — and the Workbench was still completely broken. `serialize_layout()` indexed `WORKBENCH_TOOL_KEYS[key]` unguarded against persisted user data, so retiring the three tool keys raised `KeyError` → 500 for any layout that pinned one. The real instance's layout pinned two. Fixed with a guard, covered by a regression test that was itself verified to fail without the fix, and re-verified live. See [`BUGS/BUG-0001`](../../history/Phase-08/BUGS/BUG-0001-stale-pinned-tool-key-500.md). The lesson worth carrying forward: a code comment written alongside the merge asserted the graceful behavior that turned out not to exist, and only real data disproved it.
 
-  One non-blocking item deferred to [`QA/QA-0001`](QA/QA-0001-tab-keyboard-activation.md) after ruling it out as a Phase 08 regression. Phase left at **Owner Sign-off** — deliberately not released, not tagged, not frozen, not merged.
+  One non-blocking item deferred to [`QA/QA-0001`](../../history/Phase-08/QA/QA-0001-tab-keyboard-activation.md) after ruling it out as a Phase 08 regression. Phase left at **Owner Sign-off** — deliberately not released, not tagged, not frozen, not merged.
 - 2026-07-20 — Phase scaffold created by the Lead Architect FDK setup. No implementation work has occurred.
 - 2026-08-05 — **Specification approved in principle.** The project owner approved the overall scope, route, navigation identity, top-level tab architecture, Utilities frontend-only conclusion, no-backend-abstraction decision, and ten-task shape — and requested three documentation corrections before authorization, all applied the same day: (1) `08_ACCEPTANCE.md` FR1 no longer demands "pixel-identical" tab content, instead requiring preserved components/configuration/ordering/behavior, with visual and layout regression left to §2's UX criteria; (2) FR6 now states explicitly that page-level composition, import wiring, and content-preserving relocation are permitted, so it cannot be misread as forbidding the new page from importing the existing components; (3) `09_IMPLEMENTATION_TASKS.md` T2/T3 are now a single atomic change, with an explicit requirement that the three legacy routes never resolve to a 404 at any commit. A full consistency pass across all eleven documents followed. Implementation authorization deliberately still withheld — no code written.
 - 2026-08-05 — Open questions resolved. The project owner confirmed all three load-bearing proposals as drafted: route `/developer-toolkit` + label "Developer Toolkit" (a shorter `/toolkit` was declined), `Wrench` icon + shortcut `U` (an alternative `D` was declined, since `D` is Workbench's), and top-level tabs (Phase 04's stacked-section layout was declined). Owner then asked to review the full drafted document set before implementation begins — phase deliberately held at **Specification**, `IMPLEMENT.md` still reads "Not authorized," branch `Phase-08/Developer-Toolkit` created with the spec pass uncommitted.

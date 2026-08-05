@@ -22,7 +22,7 @@
 
 When those two disagree — specifically, when a key exists in the saved layout but no longer exists in the catalog — the index raises `KeyError`, which surfaces as **`GET /api/workbench` → 500**. That endpoint backs the entire Workbench page, so the result is not a missing tile; it is the whole home screen replaced by "Couldn't load your Workbench layout."
 
-Phase 08 is what made the two disagree: [`01_SPEC.md`](../01_SPEC.md) §3 requirement 4 retires the `"generators"`, `"crypto"`, and `"utilities"` keys in favor of a single `"developer_toolkit"`.
+Phase 08 is what made the two disagree: [`01_SPEC.md`](../../../implementation/Phase-08-Developer-Toolkit/01_SPEC.md) §3 requirement 4 retires the `"generators"`, `"crypto"`, and `"utilities"` keys in favor of a single `"developer_toolkit"`.
 
 ## How it was found
 
@@ -42,7 +42,7 @@ The Workbench is Forge's home screen ([ADR-0001](../../../decisions/0001-workben
 
 ## Scope note — was fixing this in scope for Phase 08?
 
-Yes, and deliberately checked against [`IMPLEMENT.md`](../IMPLEMENT.md)'s scope lock rather than assumed. The defect is *caused by* Phase 08's own catalog merge; [`08_ACCEPTANCE.md`](../08_ACCEPTANCE.md) §4 requires that no other Workbench panel regresses, and FR4 requires the merge itself. Leaving it would mean shipping a phase that breaks the application's home screen. Per the kickoff prompt's finding procedure, this is a true dependency of the approved work, so it takes the smallest justified change — a guard in the existing function — rather than a redesign.
+Yes, and deliberately checked against [`IMPLEMENT.md`](../../../implementation/Phase-08-Developer-Toolkit/IMPLEMENT.md)'s scope lock rather than assumed. The defect is *caused by* Phase 08's own catalog merge; [`08_ACCEPTANCE.md`](../../../implementation/Phase-08-Developer-Toolkit/08_ACCEPTANCE.md) §4 requires that no other Workbench panel regresses, and FR4 requires the merge itself. Leaving it would mean shipping a phase that breaks the application's home screen. Per the kickoff prompt's finding procedure, this is a true dependency of the approved work, so it takes the smallest justified change — a guard in the existing function — rather than a redesign.
 
 ## Pre-existing latency
 
@@ -73,8 +73,8 @@ Read-only: nothing rewrites the persisted layout. The stale key stays in storage
 
 ## Cross-references
 
-- [../01_SPEC.md](../01_SPEC.md) §3 requirement 4 — the catalog merge that triggered this
-- [../08_ACCEPTANCE.md](../08_ACCEPTANCE.md) §4 — the regression criterion this was caught by
-- [../07_TESTING.md](../07_TESTING.md) §4 — Workbench listed as a regression risk area
+- [../../implementation/Phase-08-Developer-Toolkit/01_SPEC.md](../../implementation/Phase-08-Developer-Toolkit/01_SPEC.md) §3 requirement 4 — the catalog merge that triggered this
+- [../../implementation/Phase-08-Developer-Toolkit/08_ACCEPTANCE.md](../../implementation/Phase-08-Developer-Toolkit/08_ACCEPTANCE.md) §4 — the regression criterion this was caught by
+- [../../implementation/Phase-08-Developer-Toolkit/07_TESTING.md](../../implementation/Phase-08-Developer-Toolkit/07_TESTING.md) §4 — Workbench listed as a regression risk area
 - [../../../12_BUG_CLASSIFICATION.md](../../../12_BUG_CLASSIFICATION.md) §2
-- [../../Phase-04-Universal-Converter/01_SPEC.md](../../Phase-04-Universal-Converter/01_SPEC.md) — the earlier key retirement that shared this latent fragility
+- [../../implementation/Phase-04-Universal-Converter/01_SPEC.md](../../implementation/Phase-04-Universal-Converter/01_SPEC.md) — the earlier key retirement that shared this latent fragility

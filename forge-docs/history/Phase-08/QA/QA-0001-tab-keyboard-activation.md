@@ -1,9 +1,9 @@
 # QA-0001 — Verify keyboard activation of the shared `Tabs` primitive with a real keyboard
 
-> **Purpose:** Close out the keyboard-navigation criterion in [`../08_ACCEPTANCE.md`](../08_ACCEPTANCE.md) §2 that the T8 automated browser session could not answer conclusively.
+> **Purpose:** Close out the keyboard-navigation criterion in [`08_ACCEPTANCE.md`](../../../implementation/Phase-08-Developer-Toolkit/08_ACCEPTANCE.md) §2 that the T8 automated browser session could not answer conclusively.
 > **Status:** Open — not yet run
 > **Owner:** TODO — assign a QA owner
-> **Type:** Manual Browser Session (not automatable in this repo's current toolchain — no frontend test runner exists per [`../07_TESTING.md`](../07_TESTING.md) §2)
+> **Type:** Manual Browser Session (not automatable in this repo's current toolchain — no frontend test runner exists per [`07_TESTING.md`](../../../implementation/Phase-08-Developer-Toolkit/07_TESTING.md) §2)
 > **Blocks Phase 08 sign-off:** No — and, critically, the behavior in question is **pre-existing, not introduced by Phase 08** (see below). Tracked here so it is neither silently dropped nor falsely checked off, per [`../../../13_PHASE_LIFECYCLE.md`](../../../13_PHASE_LIFECYCLE.md) §3.
 
 ---
@@ -50,11 +50,11 @@ Mouse activation works correctly in both cases, verified repeatedly during T8, s
 - [ ] A keyboard-only user can both focus **and activate** every top-level tab on `/developer-toolkit`.
 - [ ] The same holds for the nested Crypto tab set.
 - [ ] If explanation 1 (harness artifact) is confirmed, close this ticket and note that `08_ACCEPTANCE.md` §2's keyboard criterion is genuinely met.
-- [ ] If explanation 2 (real gap) is confirmed, this becomes a bug against `frontend/components/ui/tabs.tsx` — a **shared, cross-feature primitive**, so it belongs in its own scoped fix affecting every consumer, **not** in Phase 08's directory. Phase 08 is explicitly barred from redesigning shared UI it did not introduce ([`../01_SPEC.md`](../01_SPEC.md) §5, [`../IMPLEMENT.md`](../IMPLEMENT.md) scope lock).
+- [ ] If explanation 2 (real gap) is confirmed, this becomes a bug against `frontend/components/ui/tabs.tsx` — a **shared, cross-feature primitive**, so it belongs in its own scoped fix affecting every consumer, **not** in Phase 08's directory. Phase 08 is explicitly barred from redesigning shared UI it did not introduce ([`01_SPEC.md`](../../../implementation/Phase-08-Developer-Toolkit/01_SPEC.md) §5, [`IMPLEMENT.md`](../../../implementation/Phase-08-Developer-Toolkit/IMPLEMENT.md) scope lock).
 
 ## Cross-references
 
-- [../08_ACCEPTANCE.md](../08_ACCEPTANCE.md) §2 — the keyboard criterion this defers
-- [../02_UI.md](../02_UI.md) §5 — the accessibility position this phase took (reuse the existing primitive, introduce no new pattern)
-- [../07_TESTING.md](../07_TESTING.md) §2 — why no automated frontend test can close this
+- [../../implementation/Phase-08-Developer-Toolkit/08_ACCEPTANCE.md](../../implementation/Phase-08-Developer-Toolkit/08_ACCEPTANCE.md) §2 — the keyboard criterion this defers
+- [../../implementation/Phase-08-Developer-Toolkit/02_UI.md](../../implementation/Phase-08-Developer-Toolkit/02_UI.md) §5 — the accessibility position this phase took (reuse the existing primitive, introduce no new pattern)
+- [../../implementation/Phase-08-Developer-Toolkit/07_TESTING.md](../../implementation/Phase-08-Developer-Toolkit/07_TESTING.md) §2 — why no automated frontend test can close this
 - [../../../13_PHASE_LIFECYCLE.md](../../../13_PHASE_LIFECYCLE.md) §3 — why a QA ticket does not block sign-off

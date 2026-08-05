@@ -3,8 +3,8 @@
 > **Purpose:** Sequence the vision in [00_VISION.md](00_VISION.md) into ordered, buildable phases.
 > **Scope:** Cross-phase sequencing and dependency ordering. Per-phase detail lives in `implementation/Phase-XX-*/`.
 > **Ownership:** TODO — assign a roadmap owner.
-> **Status:** Phase 01–07 complete and released; Phase 08 implemented, awaiting owner sign-off
-> **Version:** 0.11.0
+> **Status:** Phase 01–08 complete and released
+> **Version:** 0.12.0
 > **Last Updated:** 2026-08-05
 > **Depends On:** [00_VISION.md](00_VISION.md)
 > **Supersedes:** —
@@ -40,7 +40,7 @@ The following already exist in the application and are **not** re-specified here
 | 05 | [Model Playground](implementation/Phase-05-Model-Playground/README.md) | New — test/compare LLM providers and models (see [ADR-0011](decisions/0011-model-playground-provider-credential-security.md)/[ADR-0012](decisions/0012-model-playground-provider-sdk-selection.md)) | ✓ Complete — 🔒 released & frozen as `v0.5.0-model-playground` |
 | 06 | [Projects](implementation/Phase-06-Projects/README.md) | New — cross-feature project/workspace grouping (see [ADR-0014](decisions/0014-project-data-model-shape.md)) | ✓ Complete — 🔒 released & frozen as `v0.6.0-projects` |
 | 07 | [Knowledge Hub](implementation/Phase-07-Knowledge-Hub/README.md) | Unifies Notes + Documents + Ingest output into a searchable knowledge base | Released — `v0.7.0-knowledge-hub` |
-| 08 | [Developer Toolkit](implementation/Phase-08-Developer-Toolkit/README.md) | Consolidates Generators + Crypto + Utilities under one umbrella — confirmed correct; implemented as a navigation/presentation consolidation with no backend abstraction, no schema change, and no API change | Implementation complete — awaiting owner sign-off |
+| 08 | [Developer Toolkit](implementation/Phase-08-Developer-Toolkit/README.md) | Consolidates Generators + Crypto + Utilities under one umbrella — confirmed correct; implemented as a navigation/presentation consolidation with no backend abstraction, no schema change, and no API change | ✓ Complete — 🔒 released & frozen as `v0.8.0-developer-toolkit` |
 
 > **TODO:** The "proposed relationship" column is the Lead Architect's inference from the shipped feature set, not a ratified decision. Confirmed correct for Phase 01 (now released). Confirm or correct the remaining phases with the project owner before each begins.
 

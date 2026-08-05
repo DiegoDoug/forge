@@ -3,7 +3,7 @@
 > **Purpose:** The ordered, checkable task list Claude Code executes against for this phase — the direct input to the checkpoint protocol's task-count trigger.
 > **Scope:** This phase only. Tasks here must trace back to a requirement in 01_SPEC.md.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** All ten tasks complete (2026-08-05). Implementation authorized 2026-08-05; executed and verified the same day. One BLOCKER was found during T8 and fixed — see [`BUGS/BUG-0001-stale-pinned-tool-key-500.md`](BUGS/BUG-0001-stale-pinned-tool-key-500.md).
+> **Status:** All ten tasks complete (2026-08-05). Implementation authorized 2026-08-05; executed and verified the same day. One BLOCKER was found during T8 and fixed — see [`../../history/Phase-08/BUGS/BUG-0001-stale-pinned-tool-key-500.md`](../../history/Phase-08/BUGS/BUG-0001-stale-pinned-tool-key-500.md).
 > **Last Updated:** 2026-08-05
 
 ---
@@ -12,7 +12,7 @@
 
 Given this phase's small, precedent-following shape (no backend/database work), one milestone rather than Universal Converter's seven — see §2. All ten completed 2026-08-05.
 
-One task list item is *not* in the original ten, and is recorded here rather than folded in silently: fixing [`BUGS/BUG-0001`](BUGS/BUG-0001-stale-pinned-tool-key-500.md), a BLOCKER that T5's catalog merge exposed and that T8 caught. It was in scope as a direct consequence of approved work (see that bug's "Scope note"), and carried its own regression test.
+One task list item is *not* in the original ten, and is recorded here rather than folded in silently: fixing [`BUGS/BUG-0001`](../../history/Phase-08/BUGS/BUG-0001-stale-pinned-tool-key-500.md), a BLOCKER that T5's catalog merge exposed and that T8 caught. It was in scope as a direct consequence of approved work (see that bug's "Scope note"), and carried its own regression test.
 
 - [x] T1 — Create `app/(app)/developer-toolkit/page.tsx`: top-level `Tabs` (Generators / Crypto / Utilities), each `TabsContent` importing the existing, unmodified components per [`01_SPEC.md`](01_SPEC.md) §3 requirement 1. Read `?tab=` search param to preselect the active tab.
 - [x] **T2 + T3 — atomic; must land as a single implementation change, never separately.**
