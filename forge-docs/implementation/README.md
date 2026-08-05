@@ -3,9 +3,9 @@
 > **Purpose:** Index of every FDK implementation phase — the buildable work that realizes the roadmap in [`../02_ROADMAP.md`](../02_ROADMAP.md).
 > **Scope:** Index only. Each phase owns its own full spec in its own folder.
 > **Ownership:** TODO — assign an owner.
-> **Status:** Draft — Phase 01 🔒 released & frozen (v0.1.0-workbench); Phase 02 current; Phases 03–08 still template scaffolds
-> **Version:** 0.4.0
-> **Last Updated:** 2026-07-25
+> **Status:** Phases 01–07 🔒 released & frozen (bug fixes only); Phase 08 not started — spec placeholder
+> **Version:** 0.5.0
+> **Last Updated:** 2026-08-05
 > **Depends On:** [../02_ROADMAP.md](../02_ROADMAP.md)
 > **Supersedes:** —
 
@@ -16,11 +16,11 @@
 | # | Phase | Status |
 |---|-------|--------|
 | 01 | [Workbench](Phase-01-Workbench/README.md) | 🔒 Released & frozen — `v0.1.0-workbench`, bug fixes only from here |
-| 02 | [Project Initialization Engine](Phase-02-Project-Initialization-Engine/README.md) | Current phase — not yet started |
-| 03 | [Prompt Studio](Phase-03-Prompt-Studio/README.md) | Not started — spec placeholder |
-| 04 | [Universal Converter](Phase-04-Universal-Converter/README.md) | Not started — spec placeholder |
-| 05 | [Model Playground](Phase-05-Model-Playground/README.md) | Not started — spec placeholder |
-| 06 | [Projects](Phase-06-Projects/README.md) | Not started — spec placeholder |
+| 02 | [Project Initialization Engine](Phase-02-Project-Initialization-Engine/README.md) | 🔒 Released & frozen — `v0.2.0-project-init`, bug fixes only from here |
+| 03 | [Prompt Studio](Phase-03-Prompt-Studio/README.md) | 🔒 Released & frozen — `v0.3.0-prompt-studio`, bug fixes only from here |
+| 04 | [Universal Converter](Phase-04-Universal-Converter/README.md) | 🔒 Released & frozen — `v0.4.0-universal-converter`, bug fixes only from here |
+| 05 | [Model Playground](Phase-05-Model-Playground/README.md) | 🔒 Released & frozen — `v0.5.0-model-playground`, bug fixes only from here |
+| 06 | [Projects](Phase-06-Projects/README.md) | 🔒 Released & frozen — `v0.6.0-projects`, bug fixes only from here |
 | 07 | [Knowledge Hub](Phase-07-Knowledge-Hub/README.md) | 🔒 Released & frozen — `v0.7.0-knowledge-hub`, bug fixes only from here |
 | 08 | [Developer Toolkit](Phase-08-Developer-Toolkit/README.md) | Not started — spec placeholder |
 
@@ -47,7 +47,7 @@ As a phase approaches RC/sign-off, it accumulates a few more standard artifacts 
 - **`BUGS/`** — one issue file per finding from manual verification or a post-implementation audit, classified BLOCKER/MAJOR/MINOR per [`../12_BUG_CLASSIFICATION.md`](../12_BUG_CLASSIFICATION.md). See [`../history/Phase-01/BUGS/README.md`](../history/Phase-01/BUGS/README.md) for the pattern.
 - **`POST_IMPLEMENTATION_REVIEW.md`** — the retrospective (What Went Well / What Didn't / Unexpected Problems / Architecture Changes / Performance Notes / Accessibility Notes / Lessons Learned / Recommendations for the next phase). See [`../history/Phase-01/POST_IMPLEMENTATION_REVIEW.md`](../history/Phase-01/POST_IMPLEMENTATION_REVIEW.md) for the pattern.
 
-None of these four block a phase from starting — they're end-state artifacts, not upfront scaffolding. All four move to [`../history/Phase-NN/`](../history/) once the phase freezes (per [`../13_PHASE_LIFECYCLE.md`](../13_PHASE_LIFECYCLE.md) §5) — the links above point at Phase 01's already-archived copies, since Phase 01 is the only phase to have reached that point so far.
+None of these four block a phase from starting — they're end-state artifacts, not upfront scaffolding. All four move to [`../history/Phase-NN/`](../history/) once the phase freezes (per [`../13_PHASE_LIFECYCLE.md`](../13_PHASE_LIFECYCLE.md) §5) — the links above point at Phase 01's already-archived copies. All of Phases 01–07 have now reached that point and archived their end-of-phase artifacts under [`../history/`](../history/).
 
 See [`../11_PROJECT_STRUCTURE.md`](../11_PROJECT_STRUCTURE.md) §5 for how this maps onto the repository as a whole.
 

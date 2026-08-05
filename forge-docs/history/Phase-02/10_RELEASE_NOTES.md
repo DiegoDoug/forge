@@ -3,8 +3,8 @@
 > **Purpose:** User-facing summary of what shipped in this phase, for `../../../docs/Roadmap.md`-style consumption once released.
 > **Scope:** This phase only.
 > **Ownership:** Lead Software Engineer (session-assigned).
-> **Status:** Content-complete for the implemented feature set. Formally finalized at the Released stage (per `13_PHASE_LIFECYCLE.md`), after Release Candidate audit + Owner Sign-off.
-> **Last Updated:** 2026-07-22
+> **Status:** Finalized — Released & Frozen. Tagged `v0.2.0-project-init`, committed directly to `master` (commit `bedab9d`).
+> **Last Updated:** 2026-08-05
 
 ---
 
@@ -31,13 +31,19 @@ Both are pure server-side templating — no outbound network calls, no filesyste
 - Any LLM-assisted content generation.
 - Workbench panel/pin registration for this feature (nav-registry reachability only).
 
+## Known limitations
+
+Two items are tracked as QA tickets rather than claimed as fully tested, since the implementation session's environment could not exercise them reliably: an explicit keyboard Tab-sequence walkthrough of the kind picker, both forms, and history-row actions; and pixel-level screenshot confirmation of dark mode and the 375px mobile layout (the session's screenshot tool was unavailable). Neither reflects a known defect — both were verified structurally instead, using accessible-by-construction primitives and Tailwind tokens already proven correct elsewhere in the app. See [`QA/README.md`](QA/README.md) for the full detail on why each is environment-limited rather than untested by choice.
+
 ## Upgrade notes
 
 Additive migration only — no existing table, route, or model changes. No new environment variables or configuration required.
 
 ## Cross-references
 
-- [README.md](README.md)
-- [01_SPEC.md](01_SPEC.md)
-- [08_ACCEPTANCE.md](08_ACCEPTANCE.md)
+- [../../implementation/Phase-02-Project-Initialization-Engine/README.md](../../implementation/Phase-02-Project-Initialization-Engine/README.md)
+- [../../implementation/Phase-02-Project-Initialization-Engine/01_SPEC.md](../../implementation/Phase-02-Project-Initialization-Engine/01_SPEC.md)
+- [../../implementation/Phase-02-Project-Initialization-Engine/08_ACCEPTANCE.md](../../implementation/Phase-02-Project-Initialization-Engine/08_ACCEPTANCE.md)
+- [../../implementation/Phase-02-Project-Initialization-Engine/RC1_AUDIT.md](../../implementation/Phase-02-Project-Initialization-Engine/RC1_AUDIT.md)
+- [QA/README.md](QA/README.md)
 - [../../02_ROADMAP.md](../../02_ROADMAP.md)

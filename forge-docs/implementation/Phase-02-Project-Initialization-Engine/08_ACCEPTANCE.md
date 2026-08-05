@@ -3,8 +3,8 @@
 > **Purpose:** The pass/fail checklist that decides whether this phase is complete — the authoritative list referenced by 08_DEFINITION_OF_DONE.md.
 > **Scope:** This phase only. Each criterion must be independently verifiable.
 > **Ownership:** Lead Software Engineer (session-assigned).
-> **Status:** Accepted.
-> **Last Updated:** 2026-07-22
+> **Status:** Accepted — one criterion (§2 keyboard navigation) and two pixel-level-verification gaps (§2 dark mode, mobile viewport) ruled non-blocking and tracked in [`../../history/Phase-02/QA/`](../../history/Phase-02/QA/README.md).
+> **Last Updated:** 2026-08-05
 
 ---
 
@@ -23,9 +23,9 @@
 ## 2. UX acceptance criteria
 
 - [x] Every screen/state in [02_UI.md](02_UI.md) §3 (empty, loading, error, populated) is implemented and visually confirmed for both the form area and the history list. Browser-verified: initial empty/no-kind-selected state, populated history, empty history.
-- [ ] Keyboard navigation reaches the kind picker, both forms, the preview disclosure, and history row actions ([02_UI.md](02_UI.md) §5). Structurally correct (native `<button role="radio">`, `<Label htmlFor>` associations, shadcn `Accordion`/`AlertDialog` primitives — same accessible-by-construction components used elsewhere in the app) but not explicitly Tab-key-sequence tested this session — honest gap, not claimed as verified.
-- [x] Light and dark mode both render correctly. Dark mode toggled via the browser tool and re-inspected structurally (no visual screenshot available in this environment — see Known Issues); uses only the app's existing semantic Tailwind tokens (`bg-muted`, `text-destructive`, etc.), already dark-mode-correct everywhere else they're used.
-- [x] Mobile viewport (375px) usable without horizontal scrolling or clipped controls. Verified structurally at 375×812 (accessibility tree intact, same responsive utility classes as the rest of the app); no pixel-level screenshot available in this environment.
+- [ ] Keyboard navigation reaches the kind picker, both forms, the preview disclosure, and history row actions ([02_UI.md](02_UI.md) §5). Structurally correct (native `<button role="radio">`, `<Label htmlFor>` associations, shadcn `Accordion`/`AlertDialog` primitives — same accessible-by-construction components used elsewhere in the app) but not explicitly Tab-key-sequence tested this session — honest gap, not claimed as verified. **Tracked as [`QA/QA-0001-keyboard-navigation.md`](../../history/Phase-02/QA/QA-0001-keyboard-navigation.md)** — does not block Phase 02 sign-off, per `RC1_AUDIT.md` §4.3.
+- [x] Light and dark mode both render correctly. Dark mode toggled via the browser tool and re-inspected structurally (no visual screenshot available in this environment — see Known Issues); uses only the app's existing semantic Tailwind tokens (`bg-muted`, `text-destructive`, etc.), already dark-mode-correct everywhere else they're used. **Pixel-level confirmation tracked as [`QA/QA-0002-pixel-level-screenshots.md`](../../history/Phase-02/QA/QA-0002-pixel-level-screenshots.md)**.
+- [x] Mobile viewport (375px) usable without horizontal scrolling or clipped controls. Verified structurally at 375×812 (accessibility tree intact, same responsive utility classes as the rest of the app); no pixel-level screenshot available in this environment. **Pixel-level confirmation tracked as [`QA/QA-0002-pixel-level-screenshots.md`](../../history/Phase-02/QA/QA-0002-pixel-level-screenshots.md)**.
 
 ## 3. Quality acceptance criteria
 
