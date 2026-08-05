@@ -19,14 +19,17 @@ export interface ToolMetadata {
 // Milestone 5 - the page was consolidated into "/converters" (see
 // Phase-04-Universal-Converter/01_SPEC.md §3), and the backend's matching
 // "ingest" tool key was retired alongside it.
+//
+// "/generators", "/crypto", and "/utilities" were collapsed into a single
+// "/developer-toolkit" entry by Phase 08 (Developer Toolkit) - the three
+// pages became one, and the backend's three matching tool keys were merged
+// into "developer_toolkit" alongside it (see workbench.py).
 const NAV_KEY_BY_HREF: Record<string, string> = {
   "/secrets": "secrets",
   "/notes": "notes",
   "/documents": "documents",
-  "/generators": "generators",
-  "/crypto": "crypto",
   "/converters": "converters",
-  "/utilities": "utilities",
+  "/developer-toolkit": "developer_toolkit",
 };
 
 // Tool-catalog keys with no frontend/lib/nav-registry.ts entry: Search isn't

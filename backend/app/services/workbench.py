@@ -26,14 +26,20 @@ from app.models.workbench import WorkbenchLayout
 # "converters" once unified, not a separate tile. "converters" (already
 # below, already available) now covers both. This mirrors Phase 03's own
 # precedent of flipping a forward-looking placeholder once its phase ships.
+#
+# "generators", "crypto", and "utilities" were likewise merged into a single
+# "developer_toolkit" key by Phase 08 (Developer Toolkit), whose three pages
+# became one at `/developer-toolkit` — see Phase-08-Developer-Toolkit/
+# 01_SPEC.md §3 requirement 4. None of the three retired keys appeared in
+# DEFAULT_PINNED_TOOLS, so no pinned-layout migration was needed; a user who
+# had pinned one of them individually simply loses that pin (the key no
+# longer validates), which is the same behavior Phase 04's merge produced.
 WORKBENCH_TOOL_KEYS: dict[str, dict[str, bool]] = {
     "secrets": {"available": True},
     "notes": {"available": True},
     "documents": {"available": True},
-    "generators": {"available": True},
-    "crypto": {"available": True},
     "converters": {"available": True},
-    "utilities": {"available": True},
+    "developer_toolkit": {"available": True},
     "search": {"available": True},
     "prompt_studio": {"available": True},
     "model_playground": {"available": True},

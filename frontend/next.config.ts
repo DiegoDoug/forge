@@ -20,6 +20,19 @@ const nextConfig: NextConfig = {
       // `permanent: false` matches the alias above rather than issuing a
       // cacheable 308, since a redirect is easier to adjust than to undo.
       { source: "/ingest", destination: "/converters", permanent: false },
+      // Generators, Crypto, and Utilities were consolidated into the unified
+      // Developer Toolkit page — see Phase 08 01_SPEC.md §3 requirement 2.
+      // Each carries a `?tab=` so a bookmark lands on the section it named,
+      // rather than defaulting to the first tab. `permanent: false` for the
+      // same reason as the two aliases above.
+      //
+      // These three entries and the deletion of the corresponding
+      // app/(app)/{generators,crypto,utilities}/page.tsx files are a single
+      // atomic change (09_IMPLEMENTATION_TASKS.md T2+T3): the routes must
+      // never resolve to a 404, at any commit.
+      { source: "/generators", destination: "/developer-toolkit?tab=generators", permanent: false },
+      { source: "/crypto", destination: "/developer-toolkit?tab=crypto", permanent: false },
+      { source: "/utilities", destination: "/developer-toolkit?tab=utilities", permanent: false },
     ];
   },
   async rewrites() {
