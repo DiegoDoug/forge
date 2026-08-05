@@ -3,7 +3,7 @@
 > **Purpose:** Entry point for the Developer Toolkit phase — objective, scope, deliverables, and completion criteria.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** Specification — **approved in principle by the project owner 2026-08-05**, all [`01_SPEC.md`](01_SPEC.md) §7 open questions resolved and three requested corrections applied. **Not yet authorized for implementation** — explicit authorization is a separate step, see [`IMPLEMENT.md`](IMPLEMENT.md).
+> **Status:** Implementation complete and verified 2026-08-05 — **awaiting project-owner sign-off**. Not released, not tagged, not frozen, not merged.
 > **Last Updated:** 2026-08-05
 
 ---
@@ -16,10 +16,10 @@ Consolidate Generators, Crypto, and Utilities under one unified Developer Toolki
 ## Scope
 
 **In scope:**
-- [ ] One unified page at `/developer-toolkit` (slug confirmed 2026-08-05) with three tabs — Generators, Crypto, Utilities — each rendering today's existing page content unmodified.
-- [ ] One nav-registry entry replacing the current three ("Generators", "Crypto", "Utilities").
-- [ ] Redirects from `/generators`, `/crypto`, `/utilities` to `/developer-toolkit?tab=<name>` so existing bookmarks/links keep working.
-- [ ] A merge of `backend/app/services/workbench.py`'s three existing `WORKBENCH_TOOL_KEYS` entries into one, and the matching frontend `tool-metadata.ts` update.
+- [x] One unified page at `/developer-toolkit` (slug confirmed 2026-08-05) with three tabs — Generators, Crypto, Utilities — each rendering today's existing page content unmodified.
+- [x] One nav-registry entry replacing the current three ("Generators", "Crypto", "Utilities").
+- [x] Redirects from `/generators`, `/crypto`, `/utilities` to `/developer-toolkit?tab=<name>` so existing bookmarks/links keep working.
+- [x] A merge of `backend/app/services/workbench.py`'s three existing `WORKBENCH_TOOL_KEYS` entries into one, and the matching frontend `tool-metadata.ts` update.
 
 **Out of scope:**
 - [ ] Any change to Generators or Crypto service/route/schema logic (see [`03_BACKEND.md`](03_BACKEND.md)).
@@ -37,11 +37,11 @@ Consolidates the existing **Generators**, **Crypto**, and **Utilities** feature 
 
 ## Deliverables
 
-- [ ] Unified `/developer-toolkit` page (Generators / Crypto / Utilities tabs) — see [`02_UI.md`](02_UI.md).
-- [ ] `/generators`, `/crypto`, `/utilities` → `/developer-toolkit?tab=<name>` redirects.
-- [ ] Single consolidated `nav-registry.ts` entry.
-- [ ] `WORKBENCH_TOOL_KEYS` / `tool-metadata.ts` catalog merge.
-- [ ] Zero regressions to any existing Generators, Crypto, or Utilities capability — verified against every criterion in [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md).
+- [x] Unified `/developer-toolkit` page (Generators / Crypto / Utilities tabs) — see [`02_UI.md`](02_UI.md).
+- [x] `/generators`, `/crypto`, `/utilities` → `/developer-toolkit?tab=<name>` redirects (307, verified on both dev and production paths).
+- [x] Single consolidated `nav-registry.ts` entry.
+- [x] `WORKBENCH_TOOL_KEYS` / `tool-metadata.ts` catalog merge.
+- [x] Zero regressions to any existing Generators, Crypto, or Utilities capability — verified against every criterion in [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md). One BLOCKER *was* introduced against the Workbench during implementation and was found, fixed, and regression-tested before sign-off: [`BUGS/BUG-0001`](BUGS/BUG-0001-stale-pinned-tool-key-500.md).
 
 ## Dependencies
 
@@ -53,7 +53,7 @@ None hard — a consolidation of shipped, stable foundation features (all releas
 
 One milestone (approved in principle 2026-08-05) — see [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) §2 for why this phase's shape (no backend/database work) doesn't warrant Universal Converter's seven-milestone breakdown.
 
-- [ ] Milestone 1 — Unified page, redirects, nav/workbench catalog merge, verification, and documentation (T1–T10 in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md)).
+- [x] Milestone 1 — Unified page, redirects, nav/workbench catalog merge, verification, and documentation (T1–T10 in [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md)). **Complete 2026-08-05.**
 
 > Each milestone completion is a checkpoint trigger — see [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md) §1.
 
@@ -66,12 +66,12 @@ One milestone (approved in principle 2026-08-05) — see [`09_IMPLEMENTATION_TAS
 
 ## Definition of Complete
 
-- [ ] All deliverables above are shipped and meet [`../../08_DEFINITION_OF_DONE.md`](../../08_DEFINITION_OF_DONE.md).
-- [ ] [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) criteria are fully checked off.
-- [ ] [`CURRENT_STATE.md`](CURRENT_STATE.md) reflects reality with no stale "In Progress" items.
-- [ ] A final checkpoint has been produced per [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md).
+- [x] All deliverables above are shipped and meet [`../../08_DEFINITION_OF_DONE.md`](../../08_DEFINITION_OF_DONE.md).
+- [x] [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) criteria are fully checked off, each with cited evidence.
+- [x] [`CURRENT_STATE.md`](CURRENT_STATE.md) reflects reality with no stale "In Progress" items.
+- [x] A final checkpoint has been produced per [`../../10_CHECKPOINT_PROTOCOL.md`](../../10_CHECKPOINT_PROTOCOL.md).
 
-**Not yet authorized.** This phase is at the **Specification** stage (per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §1). The specification is content-complete and approved in principle, which satisfies the Specification stage's exit condition — but the move to **Authorized** requires the project owner's explicit approval for implementation to begin, and that has not been given. See [`CURRENT_STATE.md`](CURRENT_STATE.md) "Remaining".
+**Awaiting sign-off (2026-08-05).** Implementation and verification are complete; the phase sits at **Owner Sign-off** per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §1. It has deliberately **not** been released, tagged, frozen, or merged — those steps wait on an explicit decision. See [`CURRENT_STATE.md`](CURRENT_STATE.md) "Remaining" for the exact post-sign-off sequence.
 
 ## Cross-references
 

@@ -3,27 +3,29 @@
 > **Purpose:** The ordered, checkable task list Claude Code executes against for this phase — the direct input to the checkpoint protocol's task-count trigger.
 > **Scope:** This phase only. Tasks here must trace back to a requirement in 01_SPEC.md.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** Ten-task shape approved in principle by the project owner 2026-08-05, with the requested T2/T3 atomicity correction applied the same day. **Not yet authorized for execution** — approval of the task breakdown is not itself implementation authorization; see [`IMPLEMENT.md`](IMPLEMENT.md).
+> **Status:** All ten tasks complete (2026-08-05). Implementation authorized 2026-08-05; executed and verified the same day. One BLOCKER was found during T8 and fixed — see [`BUGS/BUG-0001-stale-pinned-tool-key-500.md`](BUGS/BUG-0001-stale-pinned-tool-key-500.md).
 > **Last Updated:** 2026-08-05
 
 ---
 
 ## 1. Task list
 
-Given this phase's small, precedent-following shape (no backend/database work), one milestone rather than Universal Converter's seven is proposed — see §2.
+Given this phase's small, precedent-following shape (no backend/database work), one milestone rather than Universal Converter's seven — see §2. All ten completed 2026-08-05.
 
-- [ ] T1 — Create `app/(app)/developer-toolkit/page.tsx`: top-level `Tabs` (Generators / Crypto / Utilities), each `TabsContent` importing the existing, unmodified components per [`01_SPEC.md`](01_SPEC.md) §3 requirement 1. Read `?tab=` search param to preselect the active tab.
-- [ ] **T2 + T3 — atomic; must land as a single implementation change, never separately.**
+One task list item is *not* in the original ten, and is recorded here rather than folded in silently: fixing [`BUGS/BUG-0001`](BUGS/BUG-0001-stale-pinned-tool-key-500.md), a BLOCKER that T5's catalog merge exposed and that T8 caught. It was in scope as a direct consequence of approved work (see that bug's "Scope note"), and carried its own regression test.
+
+- [x] T1 — Create `app/(app)/developer-toolkit/page.tsx`: top-level `Tabs` (Generators / Crypto / Utilities), each `TabsContent` importing the existing, unmodified components per [`01_SPEC.md`](01_SPEC.md) §3 requirement 1. Read `?tab=` search param to preselect the active tab.
+- [x] **T2 + T3 — atomic; must land as a single implementation change, never separately.**
   - T2 — Delete `app/(app)/generators/page.tsx`, `app/(app)/crypto/page.tsx`, `app/(app)/utilities/page.tsx` (their content now lives in T1's page; the routes themselves become redirects, not pages).
   - T3 — Add three entries to `next.config.ts`'s `redirects()`: `/generators`, `/crypto`, `/utilities` → `/developer-toolkit?tab=<name>` (`permanent: false`), per [`01_SPEC.md`](01_SPEC.md) §3 requirement 2.
   - **Atomicity requirement:** the page deletions and the redirect entries must be committed together. At no point in the implementation sequence — including intermediate commits, partial checkouts, or a reviewer checking out any single commit on this branch — may `/generators`, `/crypto`, or `/utilities` resolve to a 404. Deleting the pages first and adding redirects afterwards is explicitly out of contract, even if the end state is correct.
-- [ ] T4 — Replace `frontend/lib/nav-registry.ts`'s three entries (Generators/Crypto/Utilities) with one entry: title "Developer Toolkit", href `/developer-toolkit`, icon `Wrench`, shortcut `U` (confirmed 2026-08-05 — see [`02_UI.md`](02_UI.md) §2).
-- [ ] T5 — Update `backend/app/services/workbench.py`'s `WORKBENCH_TOOL_KEYS`: remove `"generators"`, `"crypto"`, `"utilities"`; add `"developer_toolkit"` (`available: true`). Add a code comment documenting this merge, mirroring the existing Phase 04 precedent comment already in that file.
-- [ ] T6 — Update `frontend/features/workbench/tool-metadata.ts`'s `NAV_KEY_BY_HREF`: collapse the three existing entries into one (`/developer-toolkit` → `developer_toolkit`).
-- [ ] T7 — Update `frontend/features/workbench/components/quick-actions-panel.tsx`'s "Generate password" quick action href to `/developer-toolkit?tab=generators`.
-- [ ] T8 — Manual verification pass per [`07_TESTING.md`](07_TESTING.md) §3 (every tool exercised, redirects confirmed, palette/sidebar confirmed, dark/mobile checked).
-- [ ] T9 — Regression pass per [`07_TESTING.md`](07_TESTING.md) §4: full backend suite (`test_generators.py`, `test_crypto.py`, `test_workbench.py`, full suite for zero-regression count), `tsc --noEmit`, `npm run lint`, `next build`, `docker compose build`.
-- [ ] T10 — Documentation sweep: update `docs/Architecture.md`, `docs/API.md` (if route table needs a Developer Toolkit row), `docs/FolderStructure.md`, root `README.md`, `forge-docs/02_ROADMAP.md` (Phase 08 row), and this phase's own `CURRENT_STATE.md`/`README.md` to reflect the shipped state — mirroring Universal Converter's Milestone 6 precedent.
+- [x] T4 — Replace `frontend/lib/nav-registry.ts`'s three entries (Generators/Crypto/Utilities) with one entry: title "Developer Toolkit", href `/developer-toolkit`, icon `Wrench`, shortcut `U` (confirmed 2026-08-05 — see [`02_UI.md`](02_UI.md) §2).
+- [x] T5 — Update `backend/app/services/workbench.py`'s `WORKBENCH_TOOL_KEYS`: remove `"generators"`, `"crypto"`, `"utilities"`; add `"developer_toolkit"` (`available: true`). Add a code comment documenting this merge, mirroring the existing Phase 04 precedent comment already in that file.
+- [x] T6 — Update `frontend/features/workbench/tool-metadata.ts`'s `NAV_KEY_BY_HREF`: collapse the three existing entries into one (`/developer-toolkit` → `developer_toolkit`).
+- [x] T7 — Update `frontend/features/workbench/components/quick-actions-panel.tsx`'s "Generate password" quick action href to `/developer-toolkit?tab=generators`.
+- [x] T8 — Manual verification pass per [`07_TESTING.md`](07_TESTING.md) §3 (every tool exercised, redirects confirmed, palette/sidebar confirmed, dark/mobile checked).
+- [x] T9 — Regression pass per [`07_TESTING.md`](07_TESTING.md) §4: full backend suite (`test_generators.py`, `test_crypto.py`, `test_workbench.py`, full suite for zero-regression count), `tsc --noEmit`, `npm run lint`, `next build`, `docker compose build`.
+- [x] T10 — Documentation sweep: update `docs/Architecture.md`, `docs/API.md` (if route table needs a Developer Toolkit row), `docs/FolderStructure.md`, root `README.md`, `forge-docs/02_ROADMAP.md` (Phase 08 row), and this phase's own `CURRENT_STATE.md`/`README.md` to reflect the shipped state — mirroring Universal Converter's Milestone 6 precedent.
 
 ## 2. Task ordering notes
 
@@ -36,7 +38,8 @@ Given this phase's small, precedent-following shape (no backend/database work), 
 ## 3. TODO
 
 - [x] Project-owner confirmation of this breakdown — **approved in principle 2026-08-05**, with the T2/T3 atomicity correction applied.
-- [ ] Explicit implementation authorization before T1 starts — see [`IMPLEMENT.md`](IMPLEMENT.md)'s Status line.
+- [x] Explicit implementation authorization before T1 starts — **granted 2026-08-05**, recorded in [`IMPLEMENT.md`](IMPLEMENT.md)'s Status line as a gate distinct from specification approval.
+- [x] T2+T3 atomicity held in practice, not just on paper: both landed in commit `62cbd54` together. Verified by `curl` against both the dev server and the production nginx path — all three legacy routes return 307 to their `?tab=` destination, never 404.
 
 ## 4. Cross-references
 

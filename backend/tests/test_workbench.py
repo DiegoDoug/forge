@@ -197,3 +197,30 @@ def test_reset_layout_restores_defaults_confirmed_via_get(client):
     assert get_response.json()["layout"]["panels"] == workbench_service.DEFAULT_LAYOUT_PANELS
     pinned_keys = [p["key"] for p in get_response.json()["layout"]["pinned_tools"]]
     assert pinned_keys == workbench_service.DEFAULT_PINNED_TOOLS
+
+
+def test_serialize_layout_skips_pins_for_retired_tool_keys():
+    # Regression, Phase 08 BUGS/BUG-0001. Pinned tools are user data persisted
+    # against whatever catalog existed when they were saved. A consolidation
+    # phase that retires a tool key (Phase 04 merged "ingest" into
+    # "converters"; Phase 08 merged "generators"/"crypto"/"utilities" into
+    # "developer_toolkit") leaves those keys behind in any layout that pinned
+    # them. serialize_layout used to index WORKBENCH_TOOL_KEYS directly, so
+    # such a layout raised KeyError -> 500 on GET /api/workbench, breaking the
+    # entire Workbench for precisely the users who had pinned the retired
+    # tool. A stale pin must be dropped, not fatal.
+    layout = WorkbenchLayout(
+        id=1,
+        panels=json.dumps([{"type": "pinned_tools", "visible": True}]),
+        pinned_tools=json.dumps(["notes", "generators", "secrets", "utilities"]),
+    )
+
+    serialized = workbench_service.serialize_layout(layout)
+
+    assert [p["key"] for p in serialized["pinned_tools"]] == ["notes", "secrets"]
+    # The surviving pins keep their real availability, and the retired keys
+    # don't reappear in the catalog either.
+    assert all(p["available"] for p in serialized["pinned_tools"])
+    catalog_keys = {entry["key"] for entry in serialized["tool_catalog"]}
+    assert catalog_keys.isdisjoint({"generators", "crypto", "utilities"})
+    assert "developer_toolkit" in catalog_keys
