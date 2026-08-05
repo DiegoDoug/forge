@@ -10,7 +10,10 @@ import type { WorkbenchPanelProps } from "../panel-types";
 const ACTIONS = [
   { title: "New note", href: "/notes?new=1", icon: StickyNote },
   { title: "New secret", href: "/secrets?new=1", icon: KeyRound },
-  { title: "Generate password", href: "/generators", icon: Wand2 },
+  // Points straight at the unified page's Generators tab rather than the
+  // retired /generators route - that route still redirects here (Phase 08,
+  // next.config.ts), but a frequently-used action shouldn't pay for the hop.
+  { title: "Generate password", href: "/developer-toolkit?tab=generators", icon: Wand2 },
 ];
 
 const QuickActionsPanel: ComponentType<WorkbenchPanelProps> = () => {

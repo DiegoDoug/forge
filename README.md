@@ -9,10 +9,11 @@ converter into one application you run on your own hardware.
 - **Secrets** — encrypted secret storage with folders, tags, favorites, and version history
 - **Notes** — drag-and-resize sticky note board with Markdown support and full-text search
 - **Documents** — rich text editor with pin/history sidebar and export to TXT, Markdown, Word (.doc/.docx), PDF, and XML
-- **Generators** — passwords, UUIDs, NanoIDs, random bytes, API keys, JWT secrets
-- **Crypto** — Base64, hashing, AES-256-GCM, JWT decode/verify/build, RSA, ECDSA
 - **Converter** — JSON/YAML/XML/CSV formatting, regex tester, URL/Unicode tools, cron parser, diff viewer, timestamp converter, and document conversion (PDF, Office, HTML, images, audio) into clean Markdown
-- **Utilities** — QR code generator, checksum/file hashing, color picker, timezone converter
+- **Developer Toolkit** — one page gathering three sets of tools:
+  - *Generators* — passwords, UUIDs, NanoIDs, random bytes, API keys, JWT secrets
+  - *Crypto* — Base64, hashing, AES-256-GCM, JWT decode/verify/build, RSA, ECDSA
+  - *Utilities* — QR code generator, checksum/file hashing, color picker, timezone converter
 - **Workbench & search** — a customizable home screen of pinned tools, recent activity, and quick actions, plus a command palette (Ctrl+K) across the whole app
 
 ## Requirements

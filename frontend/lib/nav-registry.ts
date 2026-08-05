@@ -7,11 +7,9 @@ import {
   Library,
   MessageSquareText,
   Settings,
-  ShieldHalf,
   Sparkles,
   StickyNote,
   Repeat,
-  Wand2,
   Wrench,
   type LucideIcon,
 } from "lucide-react";
@@ -31,10 +29,19 @@ export const NAV_ITEMS: NavItem[] = [
   { title: "Documents", href: "/documents", icon: FileText, description: "Rich text editor, history & export" },
   { title: "Knowledge", href: "/knowledge", icon: Library, description: "Search, tag & link notes and documents", shortcut: "K" },
   { title: "Projects", href: "/projects", icon: FolderKanban, description: "Group secrets, notes & documents by workspace", shortcut: "P" },
-  { title: "Generators", href: "/generators", icon: Wand2, description: "Passwords, UUIDs, keys", shortcut: "G" },
-  { title: "Crypto", href: "/crypto", icon: ShieldHalf, description: "Encrypt, hash, sign, JWT", shortcut: "C" },
   { title: "Converter", href: "/converters", icon: Repeat, description: "Text, data & document conversion", shortcut: "O" },
-  { title: "Utilities", href: "/utilities", icon: Wrench, description: "QR, checksums, timezones", shortcut: "U" },
+  // Generators, Crypto, and Utilities were consolidated into one entry by
+  // Phase 08 (Developer Toolkit) — see its 01_SPEC.md §3 requirement 3. The
+  // Wrench icon and "U" shortcut are inherited from the old Utilities entry;
+  // Wand2/"G" and ShieldHalf/"C" are freed. The old routes redirect (see
+  // next.config.ts), so nothing that linked to them breaks.
+  {
+    title: "Developer Toolkit",
+    href: "/developer-toolkit",
+    icon: Wrench,
+    description: "Generators, crypto, and utilities",
+    shortcut: "U",
+  },
   { title: "Project Init", href: "/project-init", icon: Sparkles, description: "Generate FDK scaffolds & AI instructions" },
   { title: "Prompt Studio", href: "/prompt-studio", icon: MessageSquareText, description: "Author, version & preview LLM prompts" },
   { title: "Model Playground", href: "/model-playground", icon: FlaskConical, description: "Compare LLM provider outputs side by side" },

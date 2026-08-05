@@ -26,14 +26,22 @@ from app.models.workbench import WorkbenchLayout
 # "converters" once unified, not a separate tile. "converters" (already
 # below, already available) now covers both. This mirrors Phase 03's own
 # precedent of flipping a forward-looking placeholder once its phase ships.
+#
+# "generators", "crypto", and "utilities" were likewise merged into a single
+# "developer_toolkit" key by Phase 08 (Developer Toolkit), whose three pages
+# became one at `/developer-toolkit` — see Phase-08-Developer-Toolkit/
+# 01_SPEC.md §3 requirement 4. None of the three retired keys appeared in
+# DEFAULT_PINNED_TOOLS, so no pinned-layout migration was needed - but a user
+# who had pinned one of them individually still has it in their saved layout,
+# which serialize_layout() below now drops on read. That skip is load-bearing,
+# not cosmetic: without it this merge is a 500 on every Workbench load for
+# those users. See BUGS/BUG-0001 in this phase's directory.
 WORKBENCH_TOOL_KEYS: dict[str, dict[str, bool]] = {
     "secrets": {"available": True},
     "notes": {"available": True},
     "documents": {"available": True},
-    "generators": {"available": True},
-    "crypto": {"available": True},
     "converters": {"available": True},
-    "utilities": {"available": True},
+    "developer_toolkit": {"available": True},
     "search": {"available": True},
     "prompt_studio": {"available": True},
     "model_playground": {"available": True},
@@ -127,11 +135,21 @@ async def reset_layout(session: AsyncSession) -> WorkbenchLayout:
 
 
 def serialize_layout(layout: WorkbenchLayout) -> dict:
+    # Persisted pins are user data written against whatever catalog existed at
+    # the time, so a key here may no longer be in WORKBENCH_TOOL_KEYS - a
+    # consolidation phase that merges tool keys (Phase 04's ingest/converters,
+    # Phase 08's developer_toolkit) retires the old ones out from under any
+    # layout that pinned them. Skip those stale pins rather than indexing
+    # WORKBENCH_TOOL_KEYS directly, which raised KeyError -> 500 and took the
+    # whole Workbench down for exactly the users who had pinned the retired
+    # tool. Found during Phase 08 verification; see that phase's BUGS/BUG-0001.
     pinned_tool_keys: list[str] = json.loads(layout.pinned_tools)
     return {
         "panels": json.loads(layout.panels),
         "pinned_tools": [
-            {"key": key, "available": WORKBENCH_TOOL_KEYS[key]["available"]} for key in pinned_tool_keys
+            {"key": key, "available": WORKBENCH_TOOL_KEYS[key]["available"]}
+            for key in pinned_tool_keys
+            if key in WORKBENCH_TOOL_KEYS
         ],
         "tool_catalog": [{"key": key, "available": meta["available"]} for key, meta in WORKBENCH_TOOL_KEYS.items()],
     }
