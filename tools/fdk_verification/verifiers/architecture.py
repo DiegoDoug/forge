@@ -14,6 +14,7 @@ from pathlib import Path
 
 from ..contract import VerificationContract
 from ..report import VerifierResult, VerifierStatus
+from ._generated_artifacts import is_rc_generated_artifact
 from ._git import changed_files
 from ._paths import extract_path_tokens
 
@@ -43,10 +44,15 @@ class ArchitectureVerifier:
             f"{path} matches declared out-of-scope path {token!r}"
             for path in changed
             for token in out_of_scope_tokens
-            if path.startswith(token)
+            if path.startswith(token) and not is_rc_generated_artifact(path)
         ]
 
         warnings = [_SCOPE_LIMITATION_WARNING]
+        if any(path.startswith(token) and is_rc_generated_artifact(path) for path in changed for token in out_of_scope_tokens):
+            warnings.append(
+                "ignored one or more RC-pipeline-generated verification/escalation reports under "
+                "forge-docs/history/ — see _generated_artifacts.py"
+            )
         if not out_of_scope_tokens:
             warnings.append("§4 Expected File Scope declares no explicit out-of-scope paths to check changed files against")
 

@@ -21,7 +21,7 @@
 | 04 | [Universal Converter](Phase-04-Universal-Converter/README.md) | Not started — spec placeholder |
 | 05 | [Model Playground](Phase-05-Model-Playground/README.md) | Not started — spec placeholder |
 | 06 | [Projects](Phase-06-Projects/README.md) | Not started — spec placeholder |
-| 07 | [Knowledge Hub](Phase-07-Knowledge-Hub/README.md) | Not started — spec placeholder |
+| 07 | [Knowledge Hub](Phase-07-Knowledge-Hub/README.md) | 🔒 Released & frozen — `v0.7.0-knowledge-hub`, bug fixes only from here |
 | 08 | [Developer Toolkit](Phase-08-Developer-Toolkit/README.md) | Not started — spec placeholder |
 
 ## 2. Shape of every phase folder

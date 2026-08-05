@@ -3,9 +3,9 @@
 > **Purpose:** Durable record of every architectural exception, blocking decision, or cross-cutting choice made during FDK-driven development — the things [09_CLAUDE_CODE_RULES.md](../09_CLAUDE_CODE_RULES.md) requires stopping for.
 > **Scope:** Decisions that affect architecture, principles, or cross-phase behavior. Day-to-day implementation choices belong in a phase's own docs, not here.
 > **Ownership:** TODO — assign an owner (recommended: whoever owns [03_ARCHITECTURE.md](../03_ARCHITECTURE.md)).
-> **Status:** Active — 14 decisions recorded (13 accepted, 1 proposed)
-> **Version:** 0.8.0
-> **Last Updated:** 2026-08-02
+> **Status:** Active — 15 decisions recorded (14 accepted, 1 proposed)
+> **Version:** 0.9.0
+> **Last Updated:** 2026-08-04
 > **Depends On:** [../01_PRODUCT_PRINCIPLES.md](../01_PRODUCT_PRINCIPLES.md), [../03_ARCHITECTURE.md](../03_ARCHITECTURE.md)
 > **Supersedes:** —
 
@@ -45,6 +45,7 @@ Add one whenever:
 | [0012](0012-model-playground-provider-sdk-selection.md) | Model Playground provider & SDK selection (v1) | Accepted | 2026-07-29 |
 | [0013](0013-model-playground-deepseek-and-openai-compatible-providers.md) | Model Playground: DeepSeek, additional named providers, and a generic OpenAI-compatible provider | Accepted | 2026-08-02 |
 | [0014](0014-project-data-model-shape.md) | Project data model shape | Accepted | 2026-08-02 |
+| [0015](0015-knowledge-hub-reuses-fts5.md) | Knowledge Hub reuses the existing FTS5 indexes; Search stays untouched | Accepted | 2026-08-04 |
 
 ## 4. TODO
 

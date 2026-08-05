@@ -22,6 +22,9 @@ migrations run from the FastAPI lifespan on startup).
 | `activity_log` | Lightweight feed for the Workbench's "Recent Activity" panel — never stores secret values or document contents |
 | `workbench_layout` | Single row (`id=1`): JSON-encoded `panels` (display order/visibility) and `pinned_tools` (pin order) for the home Workbench |
 | `projects` | Project workspaces (Phase 06) — name/description/color/archived plus an optional `default_provider`/`default_model` string pair referencing Model Playground's provider registry, never a credential |
+| `note_tag_links` | Many-to-many join between `notes` and the existing `tags` table (Phase 07 Knowledge Hub) — mirrors `secret_tag_links` exactly, same shared tag vocabulary |
+| `document_tag_links` | Many-to-many join between `documents` and `tags` (Phase 07) |
+| `knowledge_links` | Explicit link between two knowledge items — `(source_type, source_id, target_type, target_id)`, `type` is `note` or `document` (Phase 07). Polymorphic, so there is no foreign key on `source_id`/`target_id`; SQLite cannot express a conditional FK across two possible target tables. Orphan prevention on delete is therefore application-enforced (`services/knowledge/service.py::purge_links_for`, invoked from `api/routes/notes.py`/`documents.py`'s delete handlers), not a database guarantee — the one place in this schema that trade-off is made. A pair is normalized before insert (ordered by `(type, id)`) so A→B and B→A always store as one row, enforced by a unique constraint on the four columns. |
 
 `secrets`, `notes`, `documents`, and `playground_runs` each additionally carry a nullable, indexed `project_id` foreign key to `projects.id` (added in `0008_projects.py`, see [ADR-0014](../forge-docs/decisions/0014-project-data-model-shape.md)) — an entity's project assignment is optional and additive; deleting a project clears `project_id` on everything that referenced it rather than deleting those rows.
 
@@ -43,6 +46,11 @@ pattern over `documents`.
 Secrets are **not** in an FTS index — only `secrets.name` is
 searchable (plain `LIKE`), and only the name; values stay encrypted and are
 never indexed in plaintext.
+
+The Knowledge Hub (`/api/knowledge`, Phase 07) reuses these same two indexes
+via the existing `notes_service.search_notes()`/`documents_service.search_documents()`
+functions rather than introducing a third index or its own `MATCH` SQL — see
+[ADR-0015](../forge-docs/decisions/0015-knowledge-hub-reuses-fts5.md).
 
 ## Migrations
 

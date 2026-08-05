@@ -5,10 +5,13 @@ import { CSS } from "@dnd-kit/utilities";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Archive, ArchiveRestore, FolderKanban, Pin, PinOff, Trash2 } from "lucide-react";
+import { Archive, ArchiveRestore, FolderKanban, Pin, PinOff, Tags, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useKnowledgeList } from "@/features/knowledge/api";
+import { KnowledgeLinkPanel } from "@/features/knowledge/knowledge-link-panel";
+import { KnowledgeTagPicker } from "@/features/knowledge/knowledge-tag-picker";
 import { ProjectPicker } from "@/features/projects/project-picker";
 import { cn } from "@/lib/utils";
 import type { Note } from "./api";
@@ -21,6 +24,11 @@ const MIN_HEIGHT = 160;
 export function NoteCard({ note }: { note: Note }) {
   const { attributes, listeners, setNodeRef, isDragging, transform } = useDraggable({ id: note.id });
   const { update, remove } = useNoteMutations();
+  // Note/NoteOut carries no `tags` field - the Hub's own list is the
+  // source for this note's current tags (see documents/page.tsx's
+  // identical pattern and comment).
+  const hubNotesQuery = useKnowledgeList({ type: "note" });
+  const noteTags = hubNotesQuery.data?.items.find((i) => i.id === note.id)?.tags ?? [];
 
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(note.title);
@@ -142,6 +150,38 @@ export function NoteCard({ note }: { note: Note }) {
                 onChange={(projectId) => update.mutate({ id: note.id, input: { project_id: projectId } })}
                 className="w-full"
               />
+            </PopoverContent>
+          </Popover>
+          <Popover>
+            <PopoverTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  title="Tags & linked items"
+                  className={cn(
+                    "text-neutral-900/60 hover:bg-black/10 hover:text-neutral-900",
+                    noteTags.length > 0 && "text-neutral-900",
+                  )}
+                />
+              }
+            >
+              <Tags className="h-3 w-3" />
+            </PopoverTrigger>
+            <PopoverContent
+              className="w-64 space-y-3 p-3"
+              onPointerDown={(e) => e.stopPropagation()}
+            >
+              <div>
+                <p className="mb-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">Tags</p>
+                <KnowledgeTagPicker itemType="note" itemId={note.id} tags={noteTags} />
+              </div>
+              <div>
+                <p className="mb-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
+                  Linked items
+                </p>
+                <KnowledgeLinkPanel itemType="note" itemId={note.id} />
+              </div>
             </PopoverContent>
           </Popover>
           <IconAction label="Delete" onClick={() => remove.mutate(note.id)}>

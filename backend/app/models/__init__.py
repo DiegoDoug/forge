@@ -4,6 +4,7 @@ and ``SQLModel.metadata.create_all`` (tests) see the full schema."""
 from .activity import ActivityLog
 from .app_config import AppConfig
 from .document import Document
+from .knowledge import DocumentTagLink, KnowledgeLink, NoteTagLink
 from .model_playground import PlaygroundResult, PlaygroundRun, ProviderCredential
 from .note import Note
 from .project import Project
@@ -16,7 +17,10 @@ __all__ = [
     "ActivityLog",
     "AppConfig",
     "Document",
+    "DocumentTagLink",
+    "KnowledgeLink",
     "Note",
+    "NoteTagLink",
     "PlaygroundResult",
     "PlaygroundRun",
     "Project",

@@ -41,6 +41,7 @@ full reference.
 | `/api/settings` | Theme, backup export/import, about |
 | `/api/model-playground` | Provider listing, per-provider API-key credentials (OpenAI, Anthropic, DeepSeek, Kimi, GLM, Gemini, Custom OpenAI-compatible), a stateless provider connection test, and prompt-comparison runs/history — see [Security.md](Security.md) "Outbound network calls" |
 | `/api/projects` | Project CRUD (workspaces that Secrets/Notes/Documents optionally scope into via `project_id`), a per-project default AI provider/model, and a project-scoped AI quick-run that delegates to `/api/model-playground`'s run pipeline — no separate credential storage |
+| `/api/knowledge` | Unified query over Notes + Documents (reuses `/api/notes` and `/api/documents`'s existing FTS5 search — no new index, per ADR-0015), AND-only tag filtering, a fixed 100-item result cap (`total`/`truncated`, no page/offset/limit parameter anywhere), tag assignment (shared `tags` table), and explicit note/document links visible from both sides. Does not touch `/api/search` or `/api/notes`, `/api/documents` themselves. |
 
 ## Example
 
