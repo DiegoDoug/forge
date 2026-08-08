@@ -3,14 +3,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { KeyRound, Plus, Search, Star } from "lucide-react";
+import { KeyRound, Plus, Star } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DataList, DataListRow, DataListSkeleton } from "@/components/data-list";
 import { EmptyState } from "@/components/empty-state";
-import { Input } from "@/components/ui/input";
+import { ErrorState } from "@/components/error-state";
+import { FilterRail } from "@/components/filter-rail";
 import { PageHeader } from "@/components/page-header";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SearchField } from "@/components/search-field";
+import { Toolbar } from "@/components/toolbar";
 import { formatRelativeTime } from "@/lib/format";
 import { useSecrets, secretsApi, type SecretDetail } from "@/features/secrets/api";
 import { SECRET_TYPE_LABELS } from "@/features/secrets/secret-types";
@@ -53,6 +56,14 @@ export default function SecretsPage() {
   }
 
   const secrets = useMemo(() => secretsQuery.data ?? [], [secretsQuery.data]);
+  const hasActiveFilters = Boolean(folderId || tagId || projectId || query);
+
+  function clearFilters() {
+    setFolderId(null);
+    setTagId(null);
+    setProjectId(null);
+    setQuery("");
+  }
 
   // Deep-link from the Workbench Quick Actions panel (?new=1): open the
   // create-secret dialog immediately, then drop the param.
@@ -86,60 +97,60 @@ export default function SecretsPage() {
         }
       />
 
-      <div className="flex">
-        <SecretsFilters folderId={folderId} tagId={tagId} onFolderChange={setFolderId} onTagChange={setTagId} />
+      <Toolbar>
+        <SearchField value={query} onChange={setQuery} placeholder="Search secrets…" className="max-w-sm flex-1" />
+        <ProjectPicker value={projectId} onChange={setProjectId} className="w-48" />
+      </Toolbar>
+
+      <div className="flex flex-col lg:flex-row">
+        <FilterRail title="Filters">
+          <SecretsFilters folderId={folderId} tagId={tagId} onFolderChange={setFolderId} onTagChange={setTagId} />
+        </FilterRail>
 
         <div className="flex-1 p-4 md:p-6">
-          <div className="mb-4 flex items-center gap-2">
-            <div className="relative flex-1 max-w-sm">
-              <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search secrets…"
-                className="pl-8"
-              />
-            </div>
-            <ProjectPicker value={projectId} onChange={setProjectId} className="w-48" />
-          </div>
-
           {secretsQuery.isLoading ? (
-            <div className="flex flex-col gap-2">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full" />
-              ))}
-            </div>
+            <DataListSkeleton rows={4} />
+          ) : secretsQuery.isError ? (
+            <ErrorState description="Couldn't load your secrets." onRetry={() => secretsQuery.refetch()} />
           ) : secrets.length === 0 ? (
-            <EmptyState
-              icon={KeyRound}
-              title="No secrets here yet"
-              description="Store passwords, API keys, SSH keys, and other credentials — encrypted at rest."
-              action={
-                <Button size="sm" onClick={() => setFormOpen(true)}>
-                  <Plus className="h-4 w-4" />
-                  New secret
-                </Button>
-              }
-            />
+            hasActiveFilters ? (
+              <EmptyState
+                icon={KeyRound}
+                title="No secrets match these filters"
+                description="Try a different folder, tag, project, or search term."
+                action={
+                  <Button size="sm" variant="outline" onClick={clearFilters}>
+                    Clear filters
+                  </Button>
+                }
+              />
+            ) : (
+              <EmptyState
+                icon={KeyRound}
+                title="No secrets here yet"
+                description="Store passwords, API keys, SSH keys, and other credentials — encrypted at rest."
+                action={
+                  <Button size="sm" onClick={() => setFormOpen(true)}>
+                    <Plus className="h-4 w-4" />
+                    New secret
+                  </Button>
+                }
+              />
+            )
           ) : (
-            <div className="overflow-hidden rounded-xl border border-border">
-              {secrets.map((secret, i) => (
-                <button
-                  key={secret.id}
-                  onClick={() => router.push(`/secrets?open=${secret.id}`)}
-                  className={`flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors hover:bg-accent/40 ${
-                    i > 0 ? "border-t border-border" : ""
-                  }`}
-                >
+            <DataList>
+              {secrets.map((secret) => (
+                <DataListRow key={secret.id} onClick={() => router.push(`/secrets?open=${secret.id}`)}>
                   {secret.favorite ? (
                     <Star className="h-3.5 w-3.5 shrink-0 fill-primary text-primary" />
                   ) : (
                     <KeyRound className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                   )}
-                  <span className="flex-1 truncate font-medium">{secret.name}</span>
+                  <span className="data-primary flex-1 truncate">{secret.name}</span>
                   <div className="hidden shrink-0 gap-1 sm:flex">
                     {secret.tags.map((tag) => (
-                      <Badge key={tag.id} variant="outline" style={{ borderColor: tag.color, color: tag.color }}>
+                      <Badge key={tag.id} variant="outline" style={{ borderColor: tag.color }}>
+                        <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: tag.color }} />
                         {tag.name}
                       </Badge>
                     ))}
@@ -147,12 +158,10 @@ export default function SecretsPage() {
                   <Badge variant="secondary" className="shrink-0">
                     {SECRET_TYPE_LABELS[secret.type]}
                   </Badge>
-                  <span className="hidden shrink-0 text-xs text-muted-foreground sm:inline">
-                    {formatRelativeTime(secret.updated_at)}
-                  </span>
-                </button>
+                  <span className="data-meta hidden shrink-0 sm:inline">{formatRelativeTime(secret.updated_at)}</span>
+                </DataListRow>
               ))}
-            </div>
+            </DataList>
           )}
         </div>
       </div>

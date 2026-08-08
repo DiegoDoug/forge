@@ -14,6 +14,35 @@
 - **Rate limiting** — see [Security.md](Security.md) for why this is
   currently a deployment-time concern (VPN/reverse-proxy) rather than
   built in.
+- **`/system/status` is unreachable in production** — 🟡 MAJOR, found
+  2026-08-06 during the Phase 09 audit and confirmed at runtime. The backend
+  serves `GET /system/status` (`app/api/routes/health.py`) mounted at the
+  root, without the `/api` prefix. But `docker/nginx.conf` proxies only
+  `/api/` and `/health`, so the request falls through to the frontend and
+  returns a 404 with an HTML body. The Settings → About card's storage row
+  has therefore never rendered in a production deployment.
+
+  Phase 09 fixed the *development* path by adding a rewrite to
+  `frontend/next.config.ts`. It deliberately did **not** touch
+  `docker/nginx.conf`, which is inspect-only under that phase's contract.
+
+  **The fix, approved 2026-08-06:** mirror the existing `/health` block in
+  `docker/nginx.conf`:
+
+  ```nginx
+  location /system/status {
+      proxy_pass http://backend:8000/system/status;
+  }
+  ```
+
+  Deliberately *not* fixed by repointing Settings at `/api/workbench`, which
+  returns an identical `storage` object today. That would couple Settings to
+  an endpoint whose primary responsibility is something else, and the two
+  payloads are only incidentally identical — they can drift. The
+  misconfiguration is in nginx; the frontend architecture is correct and
+  stays as it is. See
+  [`../forge-docs/implementation/Phase-09-Frontend-Reimagine/00_AUDIT.md`](../forge-docs/implementation/Phase-09-Frontend-Reimagine/00_AUDIT.md)
+  §3.2.
 
 ## Near-term
 

@@ -1,0 +1,554 @@
+/* =========================================================================
+ * Forge — Design Tokens (Phase 09: Frontend Reimagine)
+ * =========================================================================
+ *
+ * Produced by the `design-tokens` skill (julianoczkowski/designer-skills),
+ * 2026-08-06. Derived from .design/frontend-reimagine/DESIGN_BRIEF.md.
+ *
+ * Philosophy: Dieter Rams (functionalist) base + Swiss / International
+ * Typographic treatment on data-dense surfaces.
+ *
+ * STATUS: PROPOSED. This file is the specification. It is NOT yet applied.
+ * Phase 09 implementation task T1 merges it into frontend/app/globals.css.
+ * Do not import this file — globals.css remains the single runtime source.
+ *
+ * -------------------------------------------------------------------------
+ * ARCHITECTURE — three layers, and why
+ * -------------------------------------------------------------------------
+ *
+ *   Layer 1  FOUNDATION   Raw scales. Never referenced by a component.
+ *   Layer 2  SEMANTIC     Role tokens. The ONLY layer components may use.
+ *   Layer 3  COMPONENT    A few shared structural constants (shell, density).
+ *
+ * The `design-tokens` skill instructs: "If tokens already exist, extend them
+ * rather than replacing." Forge already has a complete and *correct* shadcn
+ * semantic layer (--background, --foreground, --card, --primary, --muted,
+ * --accent, --destructive, --border, --input, --ring, --sidebar-*, --chart-*,
+ * --radius). Forty primitives in components/ui/ consume those names.
+ *
+ * Therefore: EVERY EXISTING SHADCN TOKEN NAME IS PRESERVED VERBATIM. Layer 2
+ * below re-expresses them in terms of Layer 1 and adds only what was missing.
+ * Renaming any of them would be a 40-file breaking change bought for nothing.
+ *
+ * What was genuinely missing, and is added here:
+ *   - a working --font-sans / --font-mono           (see §2.0 — this is a bug fix)
+ *   - a type ramp                                   (none existed)
+ *   - a spacing scale                               (Tailwind defaults, unconfigured)
+ *   - status roles beyond --destructive             (no success/warning/info)
+ *   - motion tokens + reduced-motion                (none existed)
+ *   - elevation tokens                              (ad hoc, e.g. shadow-black/5)
+ *   - shell + density constants                     (hardcoded per page)
+ *
+ * -------------------------------------------------------------------------
+ * RECORDED DEVIATIONS FROM THE SKILL
+ * -------------------------------------------------------------------------
+ *
+ * 1. Dark-mode selector is `.dark`, not `[data-theme="dark"]`.
+ *    next-themes runs with attribute="class", and globals.css declares
+ *    `@custom-variant dark (&:is(.dark *))`. Every `dark:` utility in the
+ *    codebase depends on the class. Switching selectors would break theming
+ *    app-wide to satisfy a naming preference. `prefers-color-scheme` is not
+ *    used as a separate source of truth either: next-themes already resolves
+ *    the system preference (enableSystem) INTO the class, so adding a media
+ *    query would create a second, conflicting authority.
+ *
+ * 2. Base body size is 14px, not 16px.
+ *    The skill's 16px floor exists to prevent iOS input zoom. That hazard is
+ *    specific to form controls, so it is solved precisely: §2.2 raises INPUT
+ *    font-size to 16px below the md breakpoint, while dense UI text stays at
+ *    14px — correct for a developer tool with 112 endpoints of dense surface.
+ *
+ * 3. No new font is introduced. See DESIGN_BRIEF.md → "Deviation from the
+ *    frontend-design skill". Forge is self-hosted and offline-capable; the
+ *    already-bundled Geist / Geist Mono pairing is wired up instead.
+ *
+ * 4. The accent hue (~275) is retained rather than re-picked for Rams.
+ *    A warmer, more Braun-like accent was considered and rejected: Phase 09's
+ *    stated success criterion is that an existing user "should recognize the
+ *    same product". Hue is the strongest recognition cue Forge has. What
+ *    changes is how much the accent is USED — it becomes strictly functional
+ *    (active state, focus, primary action) rather than decorative.
+ * ========================================================================= */
+
+
+/* =========================================================================
+ * LAYER 1 — FOUNDATION
+ * Raw scales. Components must never reference these directly.
+ * ========================================================================= */
+
+:root {
+  /* --- Neutral ramp (OKLCH, hue 285 — cool grey, matches shipped palette) */
+  --forge-neutral-0:    oklch(1     0     0);
+  --forge-neutral-50:   oklch(0.99  0     0);
+  --forge-neutral-100:  oklch(0.96  0.003 285);
+  --forge-neutral-200:  oklch(0.91  0.005 285);
+  --forge-neutral-300:  oklch(0.87  0.006 285);
+  --forge-neutral-400:  oklch(0.70  0.008 285);
+  --forge-neutral-500:  oklch(0.52  0.01  285);
+  --forge-neutral-600:  oklch(0.43  0.01  285);
+  --forge-neutral-700:  oklch(0.30  0.009 285);
+  --forge-neutral-800:  oklch(0.24  0.008 285);
+  --forge-neutral-850:  oklch(0.18  0.008 285);
+  --forge-neutral-900:  oklch(0.16  0.007 285);
+  --forge-neutral-950:  oklch(0.14  0.006 285);
+
+  /* --- Accent ramp (hue 275 — the single functional accent) */
+  --forge-accent-100:   oklch(0.95  0.03  275);
+  --forge-accent-200:   oklch(0.88  0.06  275);
+  --forge-accent-300:   oklch(0.78  0.11  275);
+  --forge-accent-400:   oklch(0.71  0.16  275);   /* dark-theme accent */
+  --forge-accent-500:   oklch(0.54  0.20  275);   /* light-theme accent */
+  --forge-accent-600:   oklch(0.47  0.20  275);
+  --forge-accent-700:   oklch(0.40  0.17  275);
+  --forge-accent-900:   oklch(0.27  0.04  275);
+
+  /* --- Status hues. Lightness is tuned per theme in Layer 2 for AA. */
+  --forge-hue-success:  150;
+  --forge-hue-warning:   80;
+  --forge-hue-danger:    27;
+  --forge-hue-info:     235;
+
+  /* --- Spacing. 4px base — Rams "consistent mathematical scale", tightened
+         for a dense tool. Every layout value in the app maps to one of these. */
+  --space-0:   0;
+  --space-px:  1px;
+  --space-1:   0.25rem;   /*  4 */
+  --space-2:   0.5rem;    /*  8 */
+  --space-3:   0.75rem;   /* 12 */
+  --space-4:   1rem;      /* 16 */
+  --space-5:   1.5rem;    /* 24 */
+  --space-6:   2rem;      /* 32 */
+  --space-7:   3rem;      /* 48 */
+  --space-8:   4rem;      /* 64 */
+  --space-9:   6rem;      /* 96 */
+  --space-10:  8rem;      /* 128 */
+
+  /* --- Type ramp. Rams: "one size scale, used strictly."
+         Nine steps, no ad-hoc sizes permitted anywhere in the app. */
+  --font-size-2xs:   0.6875rem;  /* 11 — uppercase Swiss labels only */
+  --font-size-xs:    0.75rem;    /* 12 — metadata, timestamps, badges */
+  --font-size-sm:    0.8125rem;  /* 13 — dense list rows */
+  --font-size-base:  0.875rem;   /* 14 — default UI body */
+  --font-size-md:    1rem;       /* 16 — emphasis; mobile input floor */
+  --font-size-lg:    1.125rem;   /* 18 — page title */
+  --font-size-xl:    1.375rem;   /* 22 — section display */
+  --font-size-2xl:   1.75rem;    /* 28 */
+  --font-size-3xl:   2.25rem;    /* 36 — auth screens only */
+
+  --font-weight-normal:    400;
+  --font-weight-medium:    500;
+  --font-weight-semibold:  600;
+  --font-weight-bold:      700;
+
+  --line-height-tight:    1.2;   /* headings */
+  --line-height-snug:     1.35;  /* list rows */
+  --line-height-normal:   1.5;   /* body */
+  --line-height-relaxed:  1.7;   /* long-form prose (Documents) */
+
+  /* Rams: "tight letterspacing on headings"; Swiss: "all-caps with
+     generous letterspacing". Both encoded, each scoped to its register. */
+  --letter-spacing-tight:   -0.015em;
+  --letter-spacing-normal:   0;
+  --letter-spacing-wide:     0.06em;   /* Swiss uppercase labels */
+
+  /* --- Motion. Rams: "minimal, purposeful transitions only." */
+  --duration-instant:  50ms;
+  --duration-fast:     120ms;
+  --duration-normal:   180ms;
+  --duration-slow:     280ms;
+
+  --easing-default:  cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-in:       cubic-bezier(0.4, 0, 1, 1);
+  --easing-out:      cubic-bezier(0, 0, 0.2, 1);
+  /* No --easing-bounce. Overshoot is decorative; this philosophy forbids it. */
+
+  /* --- Breakpoints. Documentary — Tailwind owns the actual media queries.
+         Listed so the four validated widths are stated in one place. */
+  --breakpoint-sm:   40rem;   /*  640 */
+  --breakpoint-md:   48rem;   /*  768 — rail appears, drawer retires */
+  --breakpoint-lg:   64rem;   /* 1024 — split panes, filter rails inline */
+  --breakpoint-xl:   80rem;   /* 1280 — third grid column */
+  --breakpoint-2xl:  96rem;   /* 1536 */
+}
+
+
+/* =========================================================================
+ * LAYER 2 — SEMANTIC (LIGHT)
+ * The only layer components may reference.
+ * Existing shadcn names are preserved verbatim; new roles are added.
+ * ========================================================================= */
+
+:root {
+  /* ---------------------------------------------------------------------
+   * §2.0  TYPOGRAPHY BINDING — THE BUG FIX
+   * ---------------------------------------------------------------------
+   * Shipped globals.css declares, inside `@theme inline`:
+   *     --font-sans: var(--font-sans);     ← self-referential, resolves EMPTY
+   *     --font-mono: var(--font-geist-mono);
+   *
+   * Because the block is `inline`, Tailwind does not emit --font-sans, and
+   * the self-reference overrides Tailwind's own default. `html { @apply
+   * font-sans }` therefore computes to an invalid font-family and the entire
+   * application falls back to the browser default — verified at runtime on
+   * 2026-08-06: computed font-family on <html> and <body> was
+   * "Times New Roman", with --font-sans and --font-mono both EMPTY, while
+   * --font-geist-sans was correctly populated as "Geist, Geist Fallback".
+   *
+   * --font-mono fails for a second, independent reason: next/font emits
+   * --font-geist-mono on the <body> CLASS, so an `@theme inline` reference
+   * evaluated at :root cannot see it.
+   *
+   * Fix: bind both to the real next/font variables, with a real fallback
+   * stack, at :root — outside `@theme inline`.
+   */
+  --font-sans:  var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+                "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono:  var(--font-geist-mono), ui-monospace, "SFMono-Regular",
+                "JetBrains Mono", Menlo, Consolas, monospace;
+  /* Rams uses one family at multiple weights; no separate display face. */
+  --font-heading: var(--font-sans);
+
+  /* --- Surfaces (shadcn names — preserved) */
+  --background:            var(--forge-neutral-0);
+  --foreground:            oklch(0.16 0.01 285);
+  --card:                  var(--forge-neutral-50);
+  --card-foreground:       oklch(0.16 0.01 285);
+  --popover:               var(--forge-neutral-0);
+  --popover-foreground:    oklch(0.16 0.01 285);
+  --muted:                 var(--forge-neutral-100);
+  --muted-foreground:      var(--forge-neutral-500);
+
+  /* --- Accent & action (shadcn names — preserved) */
+  --primary:               var(--forge-accent-500);
+  --primary-foreground:    oklch(0.98 0 0);
+  --secondary:             var(--forge-neutral-100);
+  --secondary-foreground:  oklch(0.21 0.01 285);
+  --accent:                var(--forge-accent-100);
+  --accent-foreground:     oklch(0.30 0.10 275);
+
+  /* --- Lines & focus (shadcn names — preserved) */
+  --border:                var(--forge-neutral-200);
+  --input:                 var(--forge-neutral-200);
+  --ring:                  oklch(0.54 0.20 275 / 50%);
+
+  /* --- NEW: line-weight roles. Swiss treats rules as structure, so the
+         difference between a hairline and a structural rule must be a token,
+         not a per-component judgement call. */
+  --border-subtle:         var(--forge-neutral-100);
+  --border-strong:         var(--forge-neutral-300);
+
+  /* --- NEW: status roles. Only --destructive existed; success/warning/info
+         were previously hardcoded per component. Each pairs a foreground
+         (AA on --background) with a subtle fill and a border. */
+  --destructive:            oklch(0.55 0.22 var(--forge-hue-danger));
+  --destructive-foreground: oklch(0.99 0 0);
+
+  --success:                oklch(0.52 0.13 var(--forge-hue-success));
+  --success-subtle:         oklch(0.96 0.03 var(--forge-hue-success));
+  --success-border:         oklch(0.85 0.08 var(--forge-hue-success));
+
+  --warning:                oklch(0.52 0.12 var(--forge-hue-warning));
+  --warning-subtle:         oklch(0.96 0.04 var(--forge-hue-warning));
+  --warning-border:         oklch(0.85 0.09 var(--forge-hue-warning));
+
+  --info:                   oklch(0.52 0.12 var(--forge-hue-info));
+  --info-subtle:            oklch(0.96 0.03 var(--forge-hue-info));
+  --info-border:            oklch(0.85 0.07 var(--forge-hue-info));
+
+  --danger-subtle:          oklch(0.96 0.02 var(--forge-hue-danger));
+  --danger-border:          oklch(0.86 0.07 var(--forge-hue-danger));
+
+  /* --- Sidebar (shadcn names — preserved) */
+  --sidebar:                        oklch(0.98 0.003 285);
+  --sidebar-foreground:             oklch(0.16 0.01 285);
+  --sidebar-primary:                var(--forge-accent-500);
+  --sidebar-primary-foreground:     oklch(0.98 0 0);
+  --sidebar-accent:                 oklch(0.95 0.02 275);
+  --sidebar-accent-foreground:      oklch(0.30 0.10 275);
+  --sidebar-border:                 var(--forge-neutral-200);
+  --sidebar-ring:                   oklch(0.54 0.20 275 / 50%);
+
+  /* --- Charts (shadcn names — preserved, values unchanged) */
+  --chart-1: oklch(0.54 0.20 275);
+  --chart-2: oklch(0.65 0.17 200);
+  --chart-3: oklch(0.72 0.15 150);
+  --chart-4: oklch(0.75 0.16 80);
+  --chart-5: oklch(0.65 0.22 25);
+
+  /* --- Radius (preserved). Rams: "rounded corners used sparingly and
+         consistently." 0.5rem replaces 0.625rem — the multiplier chain in
+         @theme inline is untouched, so every derived step tightens with it. */
+  --radius: 0.5rem;
+
+  /* --- NEW: elevation. Rams prefers borders to shadows, so there are only
+         three, reserved for true overlays (dialog, popover, drawer, toast).
+         No card, panel, or row may carry a shadow. */
+  --elevation-0:  none;
+  --elevation-1:  0 1px 2px 0 oklch(0 0 0 / 0.04);
+  --elevation-2:  0 4px 12px -2px oklch(0 0 0 / 0.08), 0 2px 4px -2px oklch(0 0 0 / 0.04);
+  --elevation-3:  0 16px 32px -8px oklch(0 0 0 / 0.12), 0 4px 8px -4px oklch(0 0 0 / 0.06);
+  --overlay-scrim: oklch(0.16 0.01 285 / 0.40);
+}
+
+
+/* =========================================================================
+ * LAYER 2 — SEMANTIC (DARK)
+ * Not an inversion. Cool near-black to match the philosophy; foreground
+ * pulled off pure white; accent lifted for contrast on dark ground.
+ * ========================================================================= */
+
+.dark {
+  --background:            var(--forge-neutral-950);
+  --foreground:            var(--forge-neutral-100);   /* off-white, not #fff */
+  --card:                  var(--forge-neutral-850);
+  --card-foreground:       var(--forge-neutral-100);
+  --popover:               var(--forge-neutral-850);
+  --popover-foreground:    var(--forge-neutral-100);
+  --muted:                 var(--forge-neutral-800);
+  --muted-foreground:      oklch(0.65 0.01 285);
+
+  --primary:               var(--forge-accent-400);    /* lifted for AA on dark */
+  --primary-foreground:    oklch(0.14 0.02 275);
+  --secondary:             var(--forge-neutral-800);
+  --secondary-foreground:  var(--forge-neutral-100);
+  --accent:                var(--forge-accent-900);
+  --accent-foreground:     var(--forge-accent-200);
+
+  --border:                oklch(1 0 0 / 8%);
+  --input:                 oklch(1 0 0 / 12%);
+  --ring:                  oklch(0.71 0.16 275 / 50%);
+
+  --border-subtle:         oklch(1 0 0 / 5%);
+  --border-strong:         oklch(1 0 0 / 16%);
+
+  /* Status: lightness raised into the 0.72–0.82 band for AA on near-black;
+     subtle fills become low-alpha tints rather than pale pastels. */
+  --destructive:            oklch(0.72 0.19 var(--forge-hue-danger));
+  --destructive-foreground: oklch(0.14 0.02 275);
+
+  --success:                oklch(0.78 0.15 var(--forge-hue-success));
+  --success-subtle:         oklch(0.78 0.15 var(--forge-hue-success) / 0.12);
+  --success-border:         oklch(0.78 0.15 var(--forge-hue-success) / 0.30);
+
+  --warning:                oklch(0.82 0.15 var(--forge-hue-warning));
+  --warning-subtle:         oklch(0.82 0.15 var(--forge-hue-warning) / 0.12);
+  --warning-border:         oklch(0.82 0.15 var(--forge-hue-warning) / 0.30);
+
+  --info:                   oklch(0.78 0.13 var(--forge-hue-info));
+  --info-subtle:            oklch(0.78 0.13 var(--forge-hue-info) / 0.12);
+  --info-border:            oklch(0.78 0.13 var(--forge-hue-info) / 0.30);
+
+  --danger-subtle:          oklch(0.72 0.19 var(--forge-hue-danger) / 0.12);
+  --danger-border:          oklch(0.72 0.19 var(--forge-hue-danger) / 0.30);
+
+  --sidebar:                        var(--forge-neutral-900);
+  --sidebar-foreground:             var(--forge-neutral-100);
+  --sidebar-primary:                var(--forge-accent-400);
+  --sidebar-primary-foreground:     oklch(0.14 0.02 275);
+  --sidebar-accent:                 oklch(0.24 0.02 275);
+  --sidebar-accent-foreground:      var(--forge-accent-200);
+  --sidebar-border:                 oklch(1 0 0 / 8%);
+  --sidebar-ring:                   oklch(0.71 0.16 275 / 50%);
+
+  --chart-1: oklch(0.71 0.16 275);
+  --chart-2: oklch(0.72 0.14 200);
+  --chart-3: oklch(0.75 0.14 150);
+  --chart-4: oklch(0.80 0.15 80);
+  --chart-5: oklch(0.70 0.19 25);
+
+  /* Darker and more transparent than light mode — never the same values. */
+  --elevation-1:  0 1px 2px 0 oklch(0 0 0 / 0.30);
+  --elevation-2:  0 4px 12px -2px oklch(0 0 0 / 0.45), 0 2px 4px -2px oklch(0 0 0 / 0.30);
+  --elevation-3:  0 16px 32px -8px oklch(0 0 0 / 0.60), 0 4px 8px -4px oklch(0 0 0 / 0.40);
+  --overlay-scrim: oklch(0 0 0 / 0.60);
+}
+
+
+/* =========================================================================
+ * LAYER 3 — COMPONENT / STRUCTURAL
+ * Shared constants that pages currently hardcode. Theme-independent.
+ * ========================================================================= */
+
+:root {
+  /* --- App shell. `--shell-topbar-h` is the token that retires the two
+         hardcoded `h-[calc(100dvh-3.5rem)]` hacks in app/(app)/documents
+         and app/(app)/prompt-studio, and the `calc(100dvh - 7.5rem)` in
+         features/notes/notes-board.tsx. */
+  --shell-topbar-h:        3.5rem;
+  --shell-rail-w:          15rem;      /* primary sidebar */
+  --shell-filter-rail-w:   14rem;      /* secondary filter rails */
+  --shell-detail-rail-w:   20rem;      /* right-hand context columns */
+  --shell-page-pad-x:      var(--space-4);
+  --shell-page-pad-x-md:   var(--space-5);
+
+  /* --- Density. The Swiss data surfaces share one row rhythm so that
+         Secrets, Knowledge, run history and generation history are visually
+         the same instrument rather than seven near-misses. */
+  --row-height:            2.5rem;     /* 40 — desktop data row */
+  --row-height-comfy:      3rem;       /* 48 — touch target at mobile */
+  --row-pad-x:             var(--space-3);
+  --row-gap:               var(--space-2);
+  --control-height-sm:     1.75rem;    /* 28 */
+  --control-height:        2rem;       /* 32 */
+  --control-height-lg:     2.25rem;    /* 36 */
+  --touch-target-min:      2.75rem;    /* 44 — WCAG floor at mobile */
+
+  /* --- Reading measure. Long-form prose only (Documents, Knowledge excerpt). */
+  --max-width-prose:       68ch;      /* invariant I8 */
+  --max-width-form:        32rem;     /* invariant I9 */
+
+  /* --- Dialog width tiers (invariant I10). Four tiers, chosen by purpose.
+         A dialog with a bespoke width is the single most common source of
+         visual inconsistency in a redesign, so there is no fifth option.
+         Below the md breakpoint every tier becomes a full-width sheet. */
+  --dialog-sm:             24rem;     /* confirm / destructive */
+  --dialog-md:             32rem;     /* single-purpose form */
+  --dialog-lg:             42rem;     /* multi-section form */
+  --dialog-xl:             56rem;     /* content / preview */
+}
+
+
+/* =========================================================================
+ * BASE APPLICATION
+ * ========================================================================= */
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-normal);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code, pre, kbd, samp, .font-mono {
+    font-family: var(--font-mono);
+    font-feature-settings: "liga" 0;   /* no ligatures in code/keys/hashes */
+  }
+
+  /* §2.2 — iOS zoom guard, applied precisely to form controls only, so dense
+     UI text can remain 14px. See "Recorded deviations" #2. */
+  @media (max-width: 47.99rem) {
+    input, select, textarea {
+      font-size: var(--font-size-md);
+    }
+  }
+
+  /* One focus treatment, everywhere, both themes. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: oklch(from var(--primary) l c h / 0.25);
+  }
+}
+
+
+/* =========================================================================
+ * TYPOGRAPHIC REGISTERS
+ * Rams governs the shell; Swiss governs data surfaces. The seam is these
+ * two utilities — Swiss is a TREATMENT inside Rams containers, never a
+ * second design system. Anything not listed here is Rams by default.
+ * ========================================================================= */
+
+@layer components {
+  /* Swiss: all-caps structural label. Column heads, group labels, section
+     eyebrows. The only place --letter-spacing-wide is permitted. */
+  .label-structural {
+    font-size: var(--font-size-2xs);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    line-height: var(--line-height-tight);
+  }
+
+  /* Swiss: the data row's primary field. Scale contrast against metadata is
+     what makes a dense list scannable — this is the mechanism the brief means
+     by "density with hierarchy, not density instead of it". */
+  .data-primary {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-snug);
+    letter-spacing: var(--letter-spacing-tight);
+  }
+
+  .data-meta {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-snug);
+    color: var(--muted-foreground);
+    font-variant-numeric: tabular-nums;   /* timestamps and counts align */
+  }
+
+  /* Rams: page and section titles. Tight letterspacing, single family. */
+  .heading-page {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--line-height-tight);
+  }
+
+  .heading-section {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--line-height-tight);
+  }
+}
+
+
+/* =========================================================================
+ * REDUCED MOTION
+ * Currently absent from the codebase entirely. Non-negotiable.
+ * ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant: 0ms;
+    --duration-fast:    0ms;
+    --duration-normal:  0ms;
+    --duration-slow:    0ms;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* =========================================================================
+ * CONTRAST BUDGET — to be verified in Phase 09 task T14 (a11y pass)
+ * =========================================================================
+ * Target: WCAG 2.1 AA — 4.5:1 body text, 3:1 large text and UI boundaries.
+ * This is a NEW explicit standard; forge-docs/04_UI_GUIDELINES.md §4 lists it
+ * as an open TODO. Pairs that must be measured, in BOTH themes:
+ *
+ *   --foreground        on --background        target >= 4.5:1
+ *   --muted-foreground  on --background        target >= 4.5:1   ← tightest pair
+ *   --muted-foreground  on --muted             target >= 4.5:1
+ *   --primary-foreground on --primary          target >= 4.5:1
+ *   --accent-foreground on --accent            target >= 4.5:1
+ *   --sidebar-accent-foreground on --sidebar-accent   >= 4.5:1
+ *   --destructive / --success / --warning / --info on --background  >= 4.5:1
+ *   --border / --border-strong  vs --background  target >= 3:1 (UI boundary)
+ *   --ring vs both --background and --card       target >= 3:1
+ *
+ * The light-mode --muted-foreground (neutral-500, L=0.52) is the value most
+ * at risk and is measured first; if it fails, it moves to neutral-600 rather
+ * than any consumer being special-cased.
+ * ========================================================================= */

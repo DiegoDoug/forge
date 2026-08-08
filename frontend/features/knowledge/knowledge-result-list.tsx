@@ -2,9 +2,10 @@
 
 import { Library, SearchX } from "lucide-react";
 
+import { DataList, DataListRow, DataListSkeleton } from "@/components/data-list";
 import { EmptyState } from "@/components/empty-state";
+import { ErrorState } from "@/components/error-state";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import type { KnowledgeFilters, KnowledgeList } from "./api";
 import { KnowledgeResultRow } from "./knowledge-result-row";
 
@@ -31,21 +32,16 @@ export function KnowledgeResultList({
 }) {
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-2 p-3">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} className="h-14 w-full" />
-        ))}
+      <div className="p-3">
+        <DataListSkeleton rows={6} />
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="flex flex-col items-center gap-2 py-16 text-center">
-        <p className="text-sm text-muted-foreground">Couldn&apos;t load the Knowledge Hub.</p>
-        <Button size="sm" variant="outline" onClick={onRetry}>
-          Retry
-        </Button>
+      <div className="p-3">
+        <ErrorState description="Couldn't load the Knowledge Hub." onRetry={onRetry} />
       </div>
     );
   }
@@ -78,7 +74,7 @@ export function KnowledgeResultList({
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="p-3">
       {/* Announces result-count/truncation changes to assistive tech
           (02_UI.md SS3/SS5). */}
       <div aria-live="polite" className="sr-only">
@@ -87,17 +83,18 @@ export function KnowledgeResultList({
           : `${items.length} result${items.length === 1 ? "" : "s"}`}
       </div>
 
-      <div className="flex flex-col gap-0.5 p-2">
+      <DataList>
         {items.map((item) => (
           <KnowledgeResultRow key={`${item.type}-${item.id}`} item={item} />
         ))}
-      </div>
-
-      {data?.truncated ? (
-        <p className="border-t border-border px-4 py-2.5 text-center text-xs text-muted-foreground">
-          Showing the first {RESULT_CAP} of {data.total} — narrow your filters to see more.
-        </p>
-      ) : null}
+        {data?.truncated ? (
+          <DataListRow className="justify-center hover:bg-transparent">
+            <span className="data-meta text-center">
+              Showing the first {RESULT_CAP} of {data.total} — narrow your filters to see more.
+            </span>
+          </DataListRow>
+        ) : null}
+      </DataList>
     </div>
   );
 }

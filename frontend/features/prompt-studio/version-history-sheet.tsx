@@ -35,7 +35,7 @@ export function VersionHistorySheet({
   onOpenChange: (open: boolean) => void;
 }) {
   const [selected, setSelected] = useState<string[]>([]);
-  const { data, isLoading, isError } = usePromptVersions(open ? promptId : null);
+  const { data, isLoading, isError, refetch } = usePromptVersions(open ? promptId : null);
   const { restoreVersion } = usePromptStudioMutations();
 
   const versions = data?.items ?? [];
@@ -78,7 +78,12 @@ export function VersionHistorySheet({
               ))}
             </div>
           ) : isError ? (
-            <p className="text-sm text-destructive">Couldn&apos;t load version history.</p>
+            <div className="flex flex-col items-center gap-2 py-4 text-center">
+              <p className="text-sm text-destructive">Couldn&apos;t load version history.</p>
+              <Button size="sm" variant="outline" onClick={() => refetch()}>
+                Retry
+              </Button>
+            </div>
           ) : versions.length === 0 ? (
             <p className="text-sm text-muted-foreground">No versions yet.</p>
           ) : (

@@ -3,9 +3,9 @@
 > **Purpose:** Sequence the vision in [00_VISION.md](00_VISION.md) into ordered, buildable phases.
 > **Scope:** Cross-phase sequencing and dependency ordering. Per-phase detail lives in `implementation/Phase-XX-*/`.
 > **Ownership:** TODO — assign a roadmap owner.
-> **Status:** Phase 01–08 complete and released
-> **Version:** 0.12.0
-> **Last Updated:** 2026-08-05
+> **Status:** Phases 01–08 complete and released; Phase 09 implementation complete, Release Candidate verified 2026-08-07, awaiting owner sign-off
+> **Version:** 0.13.0
+> **Last Updated:** 2026-08-06
 > **Depends On:** [00_VISION.md](00_VISION.md)
 > **Supersedes:** —
 
@@ -41,6 +41,7 @@ The following already exist in the application and are **not** re-specified here
 | 06 | [Projects](implementation/Phase-06-Projects/README.md) | New — cross-feature project/workspace grouping (see [ADR-0014](decisions/0014-project-data-model-shape.md)) | ✓ Complete — 🔒 released & frozen as `v0.6.0-projects` |
 | 07 | [Knowledge Hub](implementation/Phase-07-Knowledge-Hub/README.md) | Unifies Notes + Documents + Ingest output into a searchable knowledge base | Released — `v0.7.0-knowledge-hub` |
 | 08 | [Developer Toolkit](implementation/Phase-08-Developer-Toolkit/README.md) | Consolidates Generators + Crypto + Utilities under one umbrella — confirmed correct; implemented as a navigation/presentation consolidation with no backend abstraction, no schema change, and no API change | ✓ Complete — 🔒 released & frozen as `v0.8.0-developer-toolkit` |
+| 09 | [Frontend Reimagine](implementation/Phase-09-Frontend-Reimagine/README.md) | Reimagines the presentation layer across **all** shipped surfaces: design tokens, application shell, grouped navigation ([ADR-0016](decisions/0016-grouped-navigation-and-search-surface-consolidation.md)), component consolidation, responsive layouts, and an accessibility baseline. Touches every frontend surface and **no** backend surface ([ADR-0017](decisions/0017-layered-design-token-architecture.md)) | **Release Candidate** — all 30 tasks (T0–T30) complete 2026-08-06/07; RC verified 2026-08-07; awaiting owner sign-off |
 
 > **TODO:** The "proposed relationship" column is the Lead Architect's inference from the shipped feature set, not a ratified decision. Confirmed correct for Phase 01 (now released). Confirm or correct the remaining phases with the project owner before each begins.
 
@@ -60,6 +61,7 @@ Tracked in detail in [`../docs/Roadmap.md`](../docs/Roadmap.md): PGP support, li
 
 ## 6. TODO
 
+- [x] **Phase 09's existence and position ratified, 2026-08-06.** Phase 09 (Frontend Reimagine) was added to §3 by its own discovery session; it was not in this roadmap beforehand and was not part of the originally-inferred phase sequence. Per this document's §3 note — the "proposed relationship" column is the Lead Architect's inference, not a ratified decision — the row required explicit owner confirmation, which was granted as gate 1 of the three in [`implementation/Phase-09-Frontend-Reimagine/IMPLEMENT.md`](implementation/Phase-09-Frontend-Reimagine/IMPLEMENT.md).
 - [ ] TODO: Get roadmap ordering ratified by the project owner.
 - [ ] TODO: Attach target quarters/dates once ownership and capacity are known — deliberately omitted for now to avoid a fake sense of schedule certainty.
 - [ ] TODO: Re-evaluate this roadmap after each phase's checkpoint (see [10_CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md)).

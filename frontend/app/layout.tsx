@@ -28,8 +28,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    // The next/font variable classes belong on <html>, not <body>: globals.css
+    // binds --font-sans/--font-mono at :root, and a :root rule cannot resolve a
+    // custom property that is only in scope on <body>. Keeping them on <body>
+    // makes that binding invalid at computed-value time — the same failure mode
+    // as the original --font-sans bug. See Phase 09 T0.5a / ADR-0017.
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <body className="antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <QueryProvider>
             <TooltipProvider delay={200}>

@@ -3,9 +3,9 @@
 > **Purpose:** Durable record of every architectural exception, blocking decision, or cross-cutting choice made during FDK-driven development — the things [09_CLAUDE_CODE_RULES.md](../09_CLAUDE_CODE_RULES.md) requires stopping for.
 > **Scope:** Decisions that affect architecture, principles, or cross-phase behavior. Day-to-day implementation choices belong in a phase's own docs, not here.
 > **Ownership:** TODO — assign an owner (recommended: whoever owns [03_ARCHITECTURE.md](../03_ARCHITECTURE.md)).
-> **Status:** Active — 15 decisions recorded (14 accepted, 1 proposed)
-> **Version:** 0.9.0
-> **Last Updated:** 2026-08-04
+> **Status:** Active — 17 decisions recorded (16 accepted, 1 proposed)
+> **Version:** 0.10.0
+> **Last Updated:** 2026-08-06
 > **Depends On:** [../01_PRODUCT_PRINCIPLES.md](../01_PRODUCT_PRINCIPLES.md), [../03_ARCHITECTURE.md](../03_ARCHITECTURE.md)
 > **Supersedes:** —
 
@@ -46,11 +46,14 @@ Add one whenever:
 | [0013](0013-model-playground-deepseek-and-openai-compatible-providers.md) | Model Playground: DeepSeek, additional named providers, and a generic OpenAI-compatible provider | Accepted | 2026-08-02 |
 | [0014](0014-project-data-model-shape.md) | Project data model shape | Accepted | 2026-08-02 |
 | [0015](0015-knowledge-hub-reuses-fts5.md) | Knowledge Hub reuses the existing FTS5 indexes; Search stays untouched | Accepted | 2026-08-04 |
+| [0016](0016-grouped-navigation-and-search-surface-consolidation.md) | Grouped navigation, and one job per search surface | Accepted | 2026-08-06 |
+| [0017](0017-layered-design-token-architecture.md) | Layered design tokens, preserving the shadcn semantic contract | Accepted | 2026-08-06 |
 
 ## 4. TODO
 
 - [ ] TODO: ADR-0006 (Vault → Secrets) and ADR-0004 (interactive workflows) record decisions whose consequences reach beyond Phase 01 — fold ADR-0004 into [`../01_PRODUCT_PRINCIPLES.md`](../01_PRODUCT_PRINCIPLES.md) as a numbered principle, and confirm ADR-0006's actual code rename is tracked in [`../implementation/Phase-01-Workbench/09_IMPLEMENTATION_TASKS.md`](../implementation/Phase-01-Workbench/09_IMPLEMENTATION_TASKS.md) before Phase 01 implementation begins.
 - [ ] TODO: ADR-0008 is intentionally left `Proposed`, not `Accepted` — do not promote it without a phase that actually needs a second registry to generalize against (see ADR-0008 §2 for the trigger condition). No Phase 01 document should depend on it being accepted.
+- [x] ADR-0016 and ADR-0017 were Accepted 2026-08-06 alongside the Phase 09 specification. Note that ADR-0016 §3.1 records a *rejected* proposal (redirecting `/search` into Knowledge Hub) whose premise was disproved by inspecting the two services; that section exists to stop the idea being re-proposed on the same false premise.
 
 ## 5. Cross-references
 

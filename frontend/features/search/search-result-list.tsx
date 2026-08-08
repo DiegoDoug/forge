@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { FileText, KeyRound, StickyNote, type LucideIcon } from "lucide-react";
 
+import { DataList, DataListRow } from "@/components/data-list";
 import { EmptyState } from "@/components/empty-state";
 import type { SearchResults } from "./api";
 
@@ -43,10 +43,10 @@ export function SearchResultList({ results, query }: { results: SearchResults; q
 function ResultGroup({ title, icon: Icon, children }: { title: string; icon: LucideIcon; children: React.ReactNode }) {
   return (
     <div>
-      <h2 className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
+      <h2 className="label-structural mb-2 flex items-center gap-2 text-muted-foreground">
         <Icon className="h-4 w-4" /> {title}
       </h2>
-      <div className="overflow-hidden rounded-xl border border-border">{children}</div>
+      <DataList>{children}</DataList>
     </div>
   );
 }
@@ -63,15 +63,12 @@ function ResultRow({
   sublabel?: string;
 }) {
   return (
-    <Link
-      href={href}
-      className="flex items-center gap-3 border-t border-border px-4 py-3 text-sm first:border-t-0 hover:bg-accent/40"
-    >
+    <DataListRow href={href}>
       <Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
       <div className="min-w-0 flex-1">
-        <p className="truncate font-medium">{label}</p>
-        {sublabel ? <p className="truncate text-xs text-muted-foreground">{sublabel}</p> : null}
+        <p className="data-primary truncate">{label}</p>
+        {sublabel ? <p className="data-meta truncate">{sublabel}</p> : null}
       </div>
-    </Link>
+    </DataListRow>
   );
 }

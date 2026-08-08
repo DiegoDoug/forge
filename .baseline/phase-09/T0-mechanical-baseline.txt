@@ -1,0 +1,68 @@
+# Phase 09 — T0 pre-phase mechanical baseline
+# Captured: 2026-08-06  |  commit: 2b9e40d  |  frontend :3001, backend :8001
+
+## Redirects (next.config.ts) — expect 307 + target
+  /vault         -> 307 http://localhost:3001/secrets
+  /ingest        -> 307 http://localhost:3001/converters
+  /generators    -> 307 http://localhost:3001/developer-toolkit?tab=generators
+  /crypto        -> 307 http://localhost:3001/developer-toolkit?tab=crypto
+  /utilities     -> 307 http://localhost:3001/developer-toolkit?tab=utilities
+
+## Route resolution — expect 200 (page compiles; AuthGate redirects client-side)
+  /                      200
+  /secrets               200
+  /notes                 200
+  /documents             200
+  /knowledge             200
+  /projects              200
+  /prompt-studio         200
+  /model-playground      200
+  /project-init          200
+  /converters            200
+  /developer-toolkit     200
+  /search                200
+  /settings              200
+  /setup                 200
+  /unlock                200
+  /projects/[id]         200
+
+## Proxy behaviour — the T0.5b defect
+  frontend /system/status            404 text/html; charset=utf-8
+  frontend /health                   200 application/json
+  backend  /system/status (direct)   200 application/json
+  docker/nginx.conf routes it?       NO — only /api/ and /health; falls through to frontend
+## Toolchain — pre-phase
+  tsc --noEmit : [exit 0]
+  lint         :  > frontend@0.1.0 lint > eslint  
+
+## Computed-style baseline — PRE-T0.5 (measured on /unlock)
+  html font-family            "Times New Roman"     <-- DEFECT
+  body font-family            "Times New Roman"     <-- DEFECT
+  --font-sans (at :root)      (EMPTY)               <-- DEFECT
+  --font-mono (at :root)      (EMPTY)
+  --font-geist-sans (on body) "Geist", "Geist Fallback"
+  --font-geist-mono (on body) "Geist Mono", "Geist Mono Fallback"
+  .font-sans utility          "Times New Roman"     <-- DEFECT
+  .font-mono utility          "Geist Mono", ...     <-- WORKS (audit's 2nd claim was wrong)
+
+## Computed-style — POST-T0.5a
+  html font-family            Geist, "Geist Fallback", ui-sans-serif, ...
+  body font-family            Geist, ...
+  <h1> font-family            Geist, ...
+  --font-sans (at :root)      "Geist", "Geist Fallback", ui-sans-serif, ...
+  --font-mono (at :root)      "Geist Mono", "Geist Mono Fallback", ui-monospace, ...
+  .font-sans utility          Geist, ...            <-- FIXED
+  .font-mono utility          "Geist Mono", ...     <-- unchanged, still correct
+  html class                  geist_*__variable geist_mono_*__variable dark   <-- next-themes intact
+
+## Proxy — POST-T0.5b
+  frontend /system/status     200 application/json  <-- FIXED (dev only)
+  docker/nginx.conf           still does NOT route /system/status -> production still 404s
+                              RAISED AS FINDING, not patched (docker/** is inspect-only)
+
+## Toolchain — POST-T0.5
+  tsc --noEmit                exit 0, no output
+  lint                        clean
+  build                       succeeded, all 17 routes compiled
+  git diff --stat backend/    empty
+  git diff --stat docker/     empty

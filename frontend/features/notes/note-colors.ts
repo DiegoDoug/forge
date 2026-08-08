@@ -1,9 +1,9 @@
 export const NOTE_COLORS = [
-  "#fde68a", // amber
-  "#fca5a5", // red
-  "#bbf7d0", // green
-  "#bfdbfe", // blue
-  "#e9d5ff", // purple
-  "#fbcfe8", // pink
-  "#d1d5db", // gray
+  { hex: "#fde68a", name: "amber" },
+  { hex: "#fca5a5", name: "red" },
+  { hex: "#bbf7d0", name: "green" },
+  { hex: "#bfdbfe", name: "blue" },
+  { hex: "#e9d5ff", name: "purple" },
+  { hex: "#fbcfe8", name: "pink" },
+  { hex: "#d1d5db", name: "gray" },
 ];

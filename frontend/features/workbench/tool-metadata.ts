@@ -1,4 +1,4 @@
-import { Search, Sparkles, type LucideIcon } from "lucide-react";
+import { MessageSquareText, Search, type LucideIcon } from "lucide-react";
 
 import { NAV_ITEMS } from "@/lib/nav-registry";
 
@@ -34,10 +34,11 @@ const NAV_KEY_BY_HREF: Record<string, string> = {
 
 // Tool-catalog keys with no frontend/lib/nav-registry.ts entry: Search isn't
 // a permanent sidebar item (ADR-0007). Prompt Studio does have a nav-registry
-// entry now (Phase 03 shipped), but keeps its own metadata here too since its
-// icon differs from the sidebar's (MessageSquareText) - this entry is what
-// the Workbench pinned-tools tile renders, matching Search's precedent of a
-// tool having its own Workbench-facing metadata distinct from the sidebar's.
+// entry now (Phase 03 shipped) and keeps its own metadata here too, purely
+// because it isn't in NAV_KEY_BY_HREF above - its icon now matches the
+// sidebar's (MessageSquareText) exactly. It used to diverge (Sparkles here vs
+// MessageSquareText in the sidebar); unified 2026-08-06 per Phase 09 AC21 -
+// one destination, one icon, everywhere it appears.
 //
 // The forward-looking "universal_converter" placeholder that used to live
 // here (anticipating Phase 04) was removed rather than activated: Phase 04's
@@ -49,7 +50,7 @@ const EXTRA_TOOL_METADATA: Record<string, Omit<ToolMetadata, "key">> = {
   prompt_studio: {
     title: "Prompt Studio",
     description: "Author and version LLM prompts",
-    icon: Sparkles,
+    icon: MessageSquareText,
     href: "/prompt-studio",
   },
 };

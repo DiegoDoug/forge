@@ -4,9 +4,10 @@ import { Tag as TagIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { SearchField } from "@/components/search-field";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Toolbar } from "@/components/toolbar";
 import { ProjectPicker } from "@/features/projects/project-picker";
 import { useKnowledgeTags } from "./api";
 import type { KnowledgeFilters } from "./api";
@@ -32,13 +33,12 @@ export function KnowledgeFilterBar({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2 border-b border-border p-3">
-      <Input
+    <Toolbar>
+      <SearchField
         value={filters.q ?? ""}
-        onChange={(e) => onChange({ ...filters, q: e.target.value || undefined })}
-        placeholder="Search notes and documents…"
-        aria-label="Search knowledge"
-        className="h-8 max-w-xs flex-1"
+        onChange={(q) => onChange({ ...filters, q: q || undefined })}
+        placeholder="Filter by keyword…"
+        className="max-w-xs flex-1"
       />
 
       <Select
@@ -121,6 +121,6 @@ export function KnowledgeFilterBar({
           Clear filters
         </button>
       ) : null}
-    </div>
+    </Toolbar>
   );
 }

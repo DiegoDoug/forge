@@ -4,18 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Copy, History, Save, Trash2, Undo2 } from "lucide-react";
 import { toast } from "sonner";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type Prompt, type PromptVariable, usePromptStudioMutations } from "./api";
@@ -53,6 +43,7 @@ export function PromptEditor({
   const [body, setBody] = useState(prompt.body);
   const [variables, setVariables] = useState<PromptVariable[]>(prompt.variables);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const metaSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const loadedFor = useRef<string | null>(null);
 
@@ -152,6 +143,7 @@ export function PromptEditor({
       onSuccess: onDeleted,
       onError: () => toast.error("Couldn't delete this prompt."),
     });
+    setDeleteOpen(false);
   }
 
   function handleDuplicate() {
@@ -185,24 +177,9 @@ export function PromptEditor({
           <Button size="icon-sm" variant="ghost" title="Version history" onClick={() => setHistoryOpen(true)}>
             <History className="h-4 w-4" />
           </Button>
-          <AlertDialog>
-            <AlertDialogTrigger render={<Button size="icon-sm" variant="ghost" title="Delete" />}>
-              <Trash2 className="h-4 w-4" />
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Delete this prompt?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This permanently removes &quot;{prompt.name}&quot; and all {prompt.version_number} of its versions.
-                  This can&apos;t be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <Button size="icon-sm" variant="ghost" title="Delete" onClick={() => setDeleteOpen(true)}>
+            <Trash2 className="h-4 w-4" />
+          </Button>
         </div>
         <Input
           value={description}
@@ -220,6 +197,14 @@ export function PromptEditor({
         />
         {tagsError ? <p className="px-1 text-[11px] text-destructive">{tagsError}</p> : null}
       </div>
+
+      <ConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title="Delete this prompt?"
+        description={`This permanently removes "${prompt.name}" and all ${prompt.version_number} of its versions. This can't be undone.`}
+        onConfirm={handleDelete}
+      />
 
       <div className="flex flex-col gap-4 p-4">
         <VariablesPanel variables={variables} onChange={setVariables} />

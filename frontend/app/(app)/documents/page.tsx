@@ -4,11 +4,17 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FileText, Pin, PinOff, Tags, Trash2 } from "lucide-react";
 
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { EmptyState } from "@/components/empty-state";
+import { ErrorState } from "@/components/error-state";
+import { FilterRail } from "@/components/filter-rail";
+import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useDocument, useDocumentMutations, useDocumentSearch, useDocuments } from "@/features/documents/api";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useDocument, useDocumentMutations, useDocumentSearch, useDocuments, type DocumentSummary } from "@/features/documents/api";
 import { DocumentSidebar } from "@/features/documents/document-sidebar";
 import { DownloadMenu } from "@/features/documents/download-menu";
 import { useKnowledgeList } from "@/features/knowledge/api";
@@ -26,7 +32,10 @@ export default function DocumentsPage() {
   const [projectId, setProjectId] = useState<string | null>(() => searchParams.get("project_id"));
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+  const [deleteTarget, setDeleteTarget] = useState<DocumentSummary | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const savedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const loadedFor = useRef<string | null>(null);
 
   const listQuery = useDocuments(projectId ?? undefined);
@@ -39,7 +48,11 @@ export default function DocumentsPage() {
   // instead, capped to its first 100 most-recently-updated documents.
   const hubDocumentsQuery = useKnowledgeList({ type: "document" });
 
-  const documents = query.trim() ? (searchQuery.data ?? []) : (listQuery.data ?? []);
+  const isSearching = query.trim().length > 0;
+  const documents = isSearching ? (searchQuery.data ?? []) : (listQuery.data ?? []);
+  const listIsLoading = isSearching ? searchQuery.isLoading : listQuery.isLoading;
+  const listIsError = isSearching ? searchQuery.isError : listQuery.isError;
+  const retryList = () => (isSearching ? searchQuery.refetch() : listQuery.refetch());
   const doc = documentQuery.data;
 
   useEffect(() => {
@@ -52,6 +65,7 @@ export default function DocumentsPage() {
       loadedFor.current = null;
       setTitle("");
       setContent("");
+      setSaveState("idle");
     }
   }, [doc, selectedId]);
 
@@ -67,8 +81,18 @@ export default function DocumentsPage() {
   function scheduleSave(patch: { title?: string; content?: string }) {
     if (!selectedId) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
+    if (savedTimer.current) clearTimeout(savedTimer.current);
+    setSaveState("saving");
     saveTimer.current = setTimeout(() => {
-      update.mutate({ id: selectedId, input: patch });
+      update.mutate(
+        { id: selectedId, input: patch },
+        {
+          onSuccess: () => {
+            setSaveState("saved");
+            savedTimer.current = setTimeout(() => setSaveState("idle"), 2000);
+          },
+        },
+      );
     }, 600);
   }
 
@@ -92,84 +116,128 @@ export default function DocumentsPage() {
     if (id === selectedId) router.push("/documents");
   }
 
-  return (
-    <div className="flex h-[calc(100dvh-3.5rem)]">
-      <DocumentSidebar
-        documents={documents}
-        selectedId={selectedId}
-        query={query}
-        onQueryChange={setQuery}
-        projectId={projectId}
-        onProjectChange={setProjectId}
-        onSelect={selectDocument}
-        onNew={handleNew}
-        onTogglePin={(d) => update.mutate({ id: d.id, input: { pinned: !d.pinned } })}
-        onDelete={handleDelete}
-      />
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+    await handleDelete(deleteTarget.id);
+    setDeleteTarget(null);
+  }
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        {selectedId && doc ? (
-          <>
-            <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-              <Input
-                value={title}
-                onChange={(e) => handleTitleChange(e.target.value)}
-                placeholder="Untitled document"
-                className="h-8 flex-1 border-none bg-transparent px-1 text-base font-semibold shadow-none focus-visible:ring-0"
-              />
-              <ProjectPicker
-                value={doc.project_id}
-                onChange={(pid) => update.mutate({ id: selectedId, input: { project_id: pid } })}
-                className="h-8 w-40 shrink-0"
-              />
-              <Button variant="ghost" size="icon-sm" title={doc.pinned ? "Unpin" : "Pin"} onClick={handleTogglePin}>
-                {doc.pinned ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
-              </Button>
-              <Popover>
-                <PopoverTrigger render={<Button variant="ghost" size="icon-sm" title="Tags & linked items" />}>
-                  <Tags className="h-4 w-4" />
-                </PopoverTrigger>
-                <PopoverContent className="w-64 space-y-3 p-3">
-                  <div>
-                    <p className="mb-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">Tags</p>
-                    <KnowledgeTagPicker
-                      itemType="document"
-                      itemId={selectedId}
-                      tags={hubDocumentsQuery.data?.items.find((i) => i.id === selectedId)?.tags ?? []}
-                    />
-                  </div>
-                  <div>
-                    <p className="mb-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
-                      Linked items
-                    </p>
-                    <KnowledgeLinkPanel itemType="document" itemId={selectedId} />
-                  </div>
-                </PopoverContent>
-              </Popover>
-              <DownloadMenu documentId={selectedId} title={title} />
-              <Button variant="ghost" size="icon-sm" title="Delete" onClick={() => handleDelete(selectedId)}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="min-h-0 flex-1">
-              <RichTextEditor documentId={selectedId} html={content} title={title} onChange={handleContentChange} />
-            </div>
-          </>
-        ) : (
-          <div className="flex flex-1 items-center justify-center p-6">
-            <EmptyState
-              icon={FileText}
-              title="No document selected"
-              description="Create a new document or pick one from the history on the left."
-              action={
-                <Button size="sm" onClick={handleNew}>
-                  New document
+  return (
+    <div className="flex h-full flex-col">
+      <PageHeader title="Documents" description="Long-form writing with export, tags, and links" />
+
+      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+        <FilterRail title="Documents">
+          <DocumentSidebar
+            documents={documents}
+            isLoading={listIsLoading}
+            isError={listIsError}
+            onRetry={retryList}
+            selectedId={selectedId}
+            query={query}
+            onQueryChange={setQuery}
+            projectId={projectId}
+            onProjectChange={setProjectId}
+            onSelect={selectDocument}
+            onNew={handleNew}
+            onTogglePin={(d) => update.mutate({ id: d.id, input: { pinned: !d.pinned } })}
+            onDelete={setDeleteTarget}
+          />
+        </FilterRail>
+
+        <div className="flex min-w-0 flex-1 flex-col">
+          {selectedId && doc ? (
+            <>
+              <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+                <Input
+                  value={title}
+                  onChange={(e) => handleTitleChange(e.target.value)}
+                  placeholder="Untitled document"
+                  className="h-8 flex-1 border-none bg-transparent px-1 text-base font-semibold shadow-none focus-visible:ring-0"
+                />
+                <span className="shrink-0 text-xs text-muted-foreground" aria-live="polite">
+                  {saveState === "saving" ? "Saving…" : saveState === "saved" ? "Saved" : ""}
+                </span>
+                <ProjectPicker
+                  value={doc.project_id}
+                  onChange={(pid) => update.mutate({ id: selectedId, input: { project_id: pid } })}
+                  className="h-8 w-40 shrink-0"
+                />
+                <Button variant="ghost" size="icon-sm" title={doc.pinned ? "Unpin" : "Pin"} onClick={handleTogglePin}>
+                  {doc.pinned ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
                 </Button>
-              }
-            />
-          </div>
-        )}
+                <Popover>
+                  <PopoverTrigger render={<Button variant="ghost" size="icon-sm" title="Tags & linked items" />}>
+                    <Tags className="h-4 w-4" />
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 space-y-3 p-3">
+                    <div>
+                      <p className="mb-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">Tags</p>
+                      <KnowledgeTagPicker
+                        itemType="document"
+                        itemId={selectedId}
+                        tags={hubDocumentsQuery.data?.items.find((i) => i.id === selectedId)?.tags ?? []}
+                      />
+                    </div>
+                    <div>
+                      <p className="mb-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
+                        Linked items
+                      </p>
+                      <KnowledgeLinkPanel itemType="document" itemId={selectedId} />
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                <DownloadMenu documentId={selectedId} title={title} />
+                <Separator orientation="vertical" className="h-5" />
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  className="text-destructive"
+                  title="Delete"
+                  onClick={() => doc && setDeleteTarget(doc)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="min-h-0 flex-1">
+                <RichTextEditor documentId={selectedId} html={content} title={title} onChange={handleContentChange} />
+              </div>
+            </>
+          ) : selectedId && documentQuery.isLoading ? (
+            <div className="flex flex-1 flex-col gap-3 p-6">
+              <Skeleton className="h-8 w-1/2" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-2/3" />
+            </div>
+          ) : selectedId && documentQuery.isError ? (
+            <div className="flex flex-1 items-center justify-center p-6">
+              <ErrorState description="Couldn't load this document." onRetry={() => documentQuery.refetch()} />
+            </div>
+          ) : (
+            <div className="flex flex-1 items-center justify-center p-6">
+              <EmptyState
+                icon={FileText}
+                title="No document selected"
+                description="Create a new document or pick one from the history on the left."
+                action={
+                  <Button size="sm" onClick={handleNew}>
+                    New document
+                  </Button>
+                }
+              />
+            </div>
+          )}
+        </div>
       </div>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        title={`Delete "${deleteTarget?.title || "Untitled"}"?`}
+        description="This permanently deletes the document and its content. This cannot be undone."
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }

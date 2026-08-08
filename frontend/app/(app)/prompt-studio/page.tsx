@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
+import { PageHeader } from "@/components/page-header";
 import { usePrompt, usePromptStudioMutations, usePrompts } from "@/features/prompt-studio/api";
 import { PromptEditor } from "@/features/prompt-studio/prompt-editor";
 import { PromptSidebar } from "@/features/prompt-studio/prompt-sidebar";
@@ -42,56 +43,67 @@ export default function PromptStudioPage() {
 
   // Below the lg breakpoint (1024px, per 02_UI.md §4), the list and editor
   // never share the viewport - whichever one is relevant is shown full-width,
-  // with a back affordance in PromptEditor to return to the list.
+  // with a back affordance in PromptEditor to return to the list. This is
+  // the reference single-pane pattern (09_IMPLEMENTATION_TASKS.md T16) -
+  // deliberately NOT rebuilt on FilterRail, whose mobile contract (rail
+  // hidden, list always reachable via a drawer alongside a fixed detail
+  // pane) is a different interaction than "list XOR detail, full width,
+  // with a back button." Only the rail's width and internal search field
+  // adopt the shared tokens/components below.
   return (
-    <div className="flex h-[calc(100dvh-3.5rem)]">
-      <PromptSidebar
-        prompts={listQuery.data?.items ?? []}
-        isLoading={listQuery.isLoading}
-        isError={listQuery.isError}
-        selectedId={selectedId}
-        query={query}
-        onQueryChange={setQuery}
-        activeTag={activeTag}
-        onTagChange={setActiveTag}
-        onSelect={selectPrompt}
-        onNew={handleNew}
-        className={cn(selectedId && "hidden lg:flex")}
-      />
+    <div className="flex h-full flex-col">
+      <PageHeader title="Prompt Studio" description="Author, structure, and version-control reusable LLM prompts" />
 
-      <div className={cn("flex min-w-0 flex-1 flex-col", !selectedId && "hidden lg:flex")}>
-        {selectedId && promptQuery.data ? (
-          <PromptEditor
-            key={selectedId}
-            prompt={promptQuery.data}
-            onDeleted={() => router.push("/prompt-studio")}
-            onDuplicated={(newId) => router.push(`/prompt-studio?open=${newId}`)}
-            onBack={() => router.push("/prompt-studio")}
-          />
-        ) : selectedId && promptQuery.isError ? (
-          <div className="flex flex-1 items-center justify-center p-6">
-            <EmptyState
-              icon={MessageSquareText}
-              title="Couldn't load this prompt"
-              description="It may have been deleted. Pick another one from the list."
+      <div className="flex min-h-0 flex-1">
+        <PromptSidebar
+          prompts={listQuery.data?.items ?? []}
+          isLoading={listQuery.isLoading}
+          isError={listQuery.isError}
+          onRetry={() => listQuery.refetch()}
+          selectedId={selectedId}
+          query={query}
+          onQueryChange={setQuery}
+          activeTag={activeTag}
+          onTagChange={setActiveTag}
+          onSelect={selectPrompt}
+          onNew={handleNew}
+          className={cn(selectedId && "hidden lg:flex")}
+        />
+
+        <div className={cn("flex min-w-0 flex-1 flex-col", !selectedId && "hidden lg:flex")}>
+          {selectedId && promptQuery.data ? (
+            <PromptEditor
+              key={selectedId}
+              prompt={promptQuery.data}
+              onDeleted={() => router.push("/prompt-studio")}
+              onDuplicated={(newId) => router.push(`/prompt-studio?open=${newId}`)}
+              onBack={() => router.push("/prompt-studio")}
             />
-          </div>
-        ) : selectedId && promptQuery.isLoading ? (
-          <div className="p-6 text-sm text-muted-foreground">Loading…</div>
-        ) : (
-          <div className="flex flex-1 items-center justify-center p-6">
-            <EmptyState
-              icon={MessageSquareText}
-              title="Select a prompt, or create a new one"
-              description="Author, structure, and version-control reusable LLM prompts — right here, no external tools needed."
-              action={
-                <Button size="sm" onClick={handleNew}>
-                  New prompt
-                </Button>
-              }
-            />
-          </div>
-        )}
+          ) : selectedId && promptQuery.isError ? (
+            <div className="flex flex-1 items-center justify-center p-6">
+              <EmptyState
+                icon={MessageSquareText}
+                title="Couldn't load this prompt"
+                description="It may have been deleted. Pick another one from the list."
+              />
+            </div>
+          ) : selectedId && promptQuery.isLoading ? (
+            <div className="p-6 text-sm text-muted-foreground">Loading…</div>
+          ) : (
+            <div className="flex flex-1 items-center justify-center p-6">
+              <EmptyState
+                icon={MessageSquareText}
+                title="Select a prompt, or create a new one"
+                description="Author, structure, and version-control reusable LLM prompts — right here, no external tools needed."
+                action={
+                  <Button size="sm" onClick={handleNew}>
+                    New prompt
+                  </Button>
+                }
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

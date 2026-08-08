@@ -11,9 +11,13 @@ interface PanelErrorBoundaryState {
   error: unknown;
 }
 
-// Per 12_PANEL_INTERFACE.md §3, item 4: wraps every panel so one panel's
-// thrown error can never blank the rest of the grid. React error boundaries
-// must be class components (no hook equivalent exists).
+// Generalized in Phase 09 T8 from features/workbench/components/ — where it
+// started (per 12_PANEL_INTERFACE.md §3 item 4, "wraps every panel so one
+// panel's thrown error can never blank the rest of the grid") to the shared
+// layer, so any feature can wrap a region without a cross-feature import
+// into Workbench's internals. Logic is byte-identical to the original;
+// nothing about it was ever Workbench-specific. React error boundaries must
+// be class components — no hook equivalent exists.
 export class PanelErrorBoundary extends React.Component<PanelErrorBoundaryProps, PanelErrorBoundaryState> {
   state: PanelErrorBoundaryState = { error: null };
 

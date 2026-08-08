@@ -1,10 +1,12 @@
 "use client";
 
-import { FileText, Pin, PinOff, Plus, Search, Trash2 } from "lucide-react";
+import { FileText, Pin, PinOff, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { ErrorState } from "@/components/error-state";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { SearchField } from "@/components/search-field";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectPicker } from "@/features/projects/project-picker";
 import { formatRelativeTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -12,6 +14,9 @@ import type { DocumentSummary } from "./api";
 
 export function DocumentSidebar({
   documents,
+  isLoading,
+  isError,
+  onRetry,
   selectedId,
   query,
   onQueryChange,
@@ -23,6 +28,9 @@ export function DocumentSidebar({
   onDelete,
 }: {
   documents: DocumentSummary[];
+  isLoading: boolean;
+  isError: boolean;
+  onRetry: () => void;
   selectedId: string | null;
   query: string;
   onQueryChange: (q: string) => void;
@@ -31,60 +39,64 @@ export function DocumentSidebar({
   onSelect: (id: string) => void;
   onNew: () => void;
   onTogglePin: (doc: DocumentSummary) => void;
-  onDelete: (id: string) => void;
+  onDelete: (doc: DocumentSummary) => void;
 }) {
   const pinned = documents.filter((d) => d.pinned);
   const others = documents.filter((d) => !d.pinned);
 
   return (
-    <aside className="flex w-72 shrink-0 flex-col border-r border-border">
-      <div className="flex flex-col gap-2 border-b border-border p-3">
+    <div className="flex h-full min-h-0 flex-col gap-3">
+      <div className="flex flex-col gap-2 border-b border-border pb-3">
         <div className="flex items-center gap-2">
-          <div className="relative flex-1">
-            <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(e) => onQueryChange(e.target.value)}
-              placeholder="Search documents…"
-              className="h-8 pl-8 text-sm"
-            />
-          </div>
+          <SearchField value={query} onChange={onQueryChange} placeholder="Search documents…" className="flex-1" />
           <Button size="icon-sm" title="New document" onClick={onNew}>
             <Plus className="h-4 w-4" />
           </Button>
         </div>
-        <ProjectPicker value={projectId} onChange={onProjectChange} className="h-8 w-full" />
+        <ProjectPicker value={projectId} onChange={onProjectChange} className="w-full" />
       </div>
 
-      <ScrollArea className="min-h-0 flex-1">
-        <div className="flex flex-col gap-3 p-2">
-          {documents.length === 0 ? (
-            <p className="px-2 py-6 text-center text-xs text-muted-foreground">No documents yet.</p>
-          ) : (
-            <>
-              {pinned.length > 0 ? (
+      {isLoading ? (
+        <div className="flex flex-col gap-2 p-1">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-10 w-full" />
+          ))}
+        </div>
+      ) : isError ? (
+        <ErrorState description="Couldn't load your documents." onRetry={onRetry} />
+      ) : (
+        <ScrollArea className="min-h-0 flex-1">
+          <div className="flex flex-col gap-3 p-1">
+            {documents.length === 0 ? (
+              <p className="px-2 py-6 text-center text-xs text-muted-foreground">
+                {query.trim() ? "No documents match your search." : "No documents yet."}
+              </p>
+            ) : (
+              <>
+                {pinned.length > 0 ? (
+                  <DocumentGroup
+                    label="Pinned"
+                    items={pinned}
+                    selectedId={selectedId}
+                    onSelect={onSelect}
+                    onTogglePin={onTogglePin}
+                    onDelete={onDelete}
+                  />
+                ) : null}
                 <DocumentGroup
-                  label="Pinned"
-                  items={pinned}
+                  label={pinned.length > 0 ? "History" : undefined}
+                  items={others}
                   selectedId={selectedId}
                   onSelect={onSelect}
                   onTogglePin={onTogglePin}
                   onDelete={onDelete}
                 />
-              ) : null}
-              <DocumentGroup
-                label={pinned.length > 0 ? "History" : undefined}
-                items={others}
-                selectedId={selectedId}
-                onSelect={onSelect}
-                onTogglePin={onTogglePin}
-                onDelete={onDelete}
-              />
-            </>
-          )}
-        </div>
-      </ScrollArea>
-    </aside>
+              </>
+            )}
+          </div>
+        </ScrollArea>
+      )}
+    </div>
   );
 }
 
@@ -101,7 +113,7 @@ function DocumentGroup({
   selectedId: string | null;
   onSelect: (id: string) => void;
   onTogglePin: (doc: DocumentSummary) => void;
-  onDelete: (id: string) => void;
+  onDelete: (doc: DocumentSummary) => void;
 }) {
   if (items.length === 0) return null;
   return (
@@ -132,7 +144,7 @@ function DocumentGroup({
               >
                 {doc.pinned ? <PinOff className="h-3 w-3" /> : <Pin className="h-3 w-3" />}
               </Button>
-              <Button variant="ghost" size="icon-xs" title="Delete" onClick={() => onDelete(doc.id)}>
+              <Button variant="ghost" size="icon-xs" title="Delete" onClick={() => onDelete(doc)}>
                 <Trash2 className="h-3 w-3" />
               </Button>
             </div>

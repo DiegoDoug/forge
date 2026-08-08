@@ -3,9 +3,9 @@
 > **Purpose:** Index of every FDK implementation phase — the buildable work that realizes the roadmap in [`../02_ROADMAP.md`](../02_ROADMAP.md).
 > **Scope:** Index only. Each phase owns its own full spec in its own folder.
 > **Ownership:** TODO — assign an owner.
-> **Status:** Phases 01–07 🔒 released & frozen (bug fixes only); Phase 08 not started — spec placeholder
-> **Version:** 0.5.0
-> **Last Updated:** 2026-08-05
+> **Status:** Phases 01–08 🔒 released & frozen (bug fixes only); Phase 09 **Release Candidate** — implementation complete, verified 2026-08-07, awaiting owner sign-off
+> **Version:** 0.6.0
+> **Last Updated:** 2026-08-06
 > **Depends On:** [../02_ROADMAP.md](../02_ROADMAP.md)
 > **Supersedes:** —
 
@@ -22,7 +22,8 @@
 | 05 | [Model Playground](Phase-05-Model-Playground/README.md) | 🔒 Released & frozen — `v0.5.0-model-playground`, bug fixes only from here |
 | 06 | [Projects](Phase-06-Projects/README.md) | 🔒 Released & frozen — `v0.6.0-projects`, bug fixes only from here |
 | 07 | [Knowledge Hub](Phase-07-Knowledge-Hub/README.md) | 🔒 Released & frozen — `v0.7.0-knowledge-hub`, bug fixes only from here |
-| 08 | [Developer Toolkit](Phase-08-Developer-Toolkit/README.md) | Not started — spec placeholder |
+| 08 | [Developer Toolkit](Phase-08-Developer-Toolkit/README.md) | 🔒 Released & frozen — `v0.8.0-developer-toolkit`, bug fixes only from here |
+| 09 | [Frontend Reimagine](Phase-09-Frontend-Reimagine/README.md) | **Release Candidate** — all 30 tasks complete 2026-08-06/07; RC verified 2026-08-07; awaiting owner sign-off |
 
 ## 2. Shape of every phase folder
 
@@ -30,7 +31,7 @@ Each `Phase-XX-Name/` starts, at spec-authoring time, with the same 12 files:
 
 `README.md`, `CURRENT_STATE.md`, `01_SPEC.md`, `02_UI.md`, `03_BACKEND.md`, `04_DATABASE.md`, `05_COMPONENTS.md`, `06_API.md`, `07_TESTING.md`, `08_ACCEPTANCE.md`, `09_IMPLEMENTATION_TASKS.md`, `IMPLEMENT.md`.
 
-A phase may add extra numbered docs beyond this base 12 when its design introduces a contract that doesn't fit an existing file — e.g. Phase 01 (Workbench) adds `12_PANEL_INTERFACE.md` to specify the `WorkbenchPanel` contract (per [ADR-0002](../decisions/0002-workbench-panel-architecture.md)). This is the exception, not the norm — don't add a numbered doc speculatively; only when a phase's own spec work surfaces a real need for one.
+A phase may add extra numbered docs beyond this base 12 when its design introduces a contract that doesn't fit an existing file — e.g. Phase 01 (Workbench) adds `12_PANEL_INTERFACE.md` to specify the `WorkbenchPanel` contract (per [ADR-0002](../decisions/0002-workbench-panel-architecture.md)), and Phase 09 (Frontend Reimagine) adds `00_AUDIT.md` and `11_SCREEN_GRAPH.md` because it is the only phase whose specification is derived from an audit of *existing* code rather than from a new feature's requirements — the evidence base is large enough that inlining it would swamp `01_SPEC.md`, and stable enough that it should not be restated in five places. This is the exception, not the norm — don't add a numbered doc speculatively; only when a phase's own spec work surfaces a real need for one.
 
 ### 2.1 Verification Contract (from Phase 05 onward)
 

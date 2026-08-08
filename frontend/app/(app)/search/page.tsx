@@ -3,13 +3,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { RotateCw, Search as SearchIcon } from "lucide-react";
+import { Search as SearchIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { DataListSkeleton } from "@/components/data-list";
 import { EmptyState } from "@/components/empty-state";
-import { Input } from "@/components/ui/input";
+import { ErrorState } from "@/components/error-state";
 import { PageHeader } from "@/components/page-header";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SearchField } from "@/components/search-field";
 import { searchApi } from "@/features/search/api";
 import { SearchResultList } from "@/features/search/search-result-list";
 
@@ -39,16 +39,13 @@ export default function SearchPage() {
       <PageHeader title="Search" description="Search secrets, notes, and documents" />
 
       <div className="p-4 md:p-6">
-        <div className="relative mb-6 max-w-md">
-          <SearchIcon className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search secrets, notes, documents…"
-            className="pl-8"
-            autoFocus
-          />
-        </div>
+        <SearchField
+          value={query}
+          onChange={setQuery}
+          placeholder="Search secrets, notes, documents…"
+          autoFocus
+          className="mb-6 max-w-md"
+        />
 
         {trimmed.length <= 1 ? (
           <EmptyState
@@ -57,22 +54,11 @@ export default function SearchPage() {
             description="Type at least two characters to search secrets, notes, and documents."
           />
         ) : resultsQuery.isLoading ? (
-          <div className="flex flex-col gap-2">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-12 w-full" />
-            ))}
-          </div>
+          <DataListSkeleton rows={4} />
         ) : resultsQuery.isError ? (
-          <EmptyState
-            icon={SearchIcon}
-            title="Couldn't load results"
+          <ErrorState
             description={resultsQuery.error instanceof Error ? resultsQuery.error.message : "Something went wrong."}
-            action={
-              <Button size="sm" variant="outline" onClick={() => resultsQuery.refetch()}>
-                <RotateCw className="h-3.5 w-3.5" />
-                Retry
-              </Button>
-            }
+            onRetry={() => resultsQuery.refetch()}
           />
         ) : resultsQuery.data ? (
           <SearchResultList results={resultsQuery.data} query={trimmed} />

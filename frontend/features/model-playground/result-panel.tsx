@@ -1,8 +1,8 @@
 import { AlertTriangle, Clock } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CopyButton } from "@/components/copy-button";
+import { StatusBadge } from "@/components/status-badge";
 import type { PlaygroundResult } from "./api";
 
 export function ResultPanel({ result }: { result: PlaygroundResult }) {
@@ -11,7 +11,7 @@ export function ResultPanel({ result }: { result: PlaygroundResult }) {
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
           <CardTitle className="text-sm">{result.model}</CardTitle>
-          <StatusBadge status={result.status} />
+          <ResultStatusBadge status={result.status} />
         </div>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-2">
@@ -43,8 +43,8 @@ export function ResultPanel({ result }: { result: PlaygroundResult }) {
   );
 }
 
-function StatusBadge({ status }: { status: PlaygroundResult["status"] }) {
-  if (status === "success") return <Badge variant="secondary">Success</Badge>;
-  if (status === "timeout") return <Badge variant="destructive">Timed out</Badge>;
-  return <Badge variant="destructive">Error</Badge>;
+function ResultStatusBadge({ status }: { status: PlaygroundResult["status"] }) {
+  if (status === "success") return <StatusBadge tone="success">Success</StatusBadge>;
+  if (status === "timeout") return <StatusBadge tone="warning">Timed out</StatusBadge>;
+  return <StatusBadge tone="danger">Error</StatusBadge>;
 }

@@ -25,6 +25,7 @@ export function CopyButton({
       variant="ghost"
       size={size}
       className={cn("text-muted-foreground", className)}
+      aria-label={copied ? "Copied" : "Copy to clipboard"}
       onClick={() => copy(value, label)}
     >
       {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}

@@ -1,0 +1,60 @@
+# Design Review: Forge Frontend Reimagine (Phase 09)
+
+Reviewed against: [DESIGN_BRIEF.md](DESIGN_BRIEF.md)
+Philosophy: Dieter Rams (functionalist base) + Swiss/International Typographic discipline on data-dense surfaces
+Date: 2026-08-07 (Phase 09, T30, Milestone 5)
+
+## Screenshots Captured
+
+> **Environment note, consistent with T0.6's established finding:** this session's Browser tool has no save-to-disk action for screenshots — they render inline only. No image files exist in a `screenshots/` folder as a result; evidence below is recorded as findings with live DOM measurements (computed styles, bounding rects, `scrollWidth`) backing every claim, not just visual impression. This is the same limitation and the same compensating practice used for the T0.6 canonical reference set and has not changed.
+
+Screens inspected live on the isolated `frontend-phase09` instance (`localhost:3003`), both themes:
+
+| Screen | Breakpoints | Theme(s) | What it showed |
+|---|---|---|---|
+| Workbench (`/`) | 1440, 375 | dark | Rams shell reference: pinned tools, recent activity, quick actions, storage/system cards |
+| Secrets (`/secrets`) | 1440, 768, 375 | dark, light | Swiss data-surface reference: ruled rows, tag badges, folder/tag rail |
+| Documents (`/documents`) | 1440, 768, 375 | dark | Master-detail: sidebar drawer, editor pane, empty state |
+| Settings (`/settings`) | 1440 | dark, light | Reference/consequential grouping, theme toggle, backup |
+| Notes (`/notes`) | 375 | dark | Infinite board, pan-not-reflow, note-card color swatches |
+| Auth (`/unlock`) | 1440 | light | Brand mark, lock icon, background treatment |
+
+## Summary
+
+Implementation is faithful to the brief on almost every axis that matters most: Geist actually renders everywhere (verified via computed `font-family`, not assumed), the Rams/Swiss split holds up as designed, dark and light themes both read as intentional rather than an inversion, and none of the brief's explicitly forbidden anti-references (gradients-as-hero-decoration, glassmorphism, blurred orbs, oversized rounded corners, emoji iconography, illustration-driven empty states) appear anywhere in the shipped surfaces. The biggest finding was a real, systemic layout bug — not a polish nit — that had survived T26's responsive sweep and T28's regression sweep: `FilterRail`'s mobile trigger button was laid out as a persistent flex sibling of the content column on both of its two consumers (Secrets, Documents), silently stealing 78–110px of width from every row on the narrowest supported viewport. Found via live DOM measurement, confirmed systemic (both consumers, not one), root-caused, and fixed during this review rather than merely reported.
+
+## Must Fix
+
+*(None remaining — the one Must Fix found during this review was fixed in place; see "Fixed During This Review" below.)*
+
+## Should Fix
+
+1. **Auth screens carry a decorative radial gradient with no functional purpose. — Classification: ACCEPTED (deferred indefinitely, not a fast-follow candidate).** `frontend/app/(auth)/layout.tsx:4` paints a radial gradient (`--primary` at 18% fading to transparent) behind the unlock/setup card. It's restrained — single-hue, no blur, no "purple-to-blue" — so it doesn't trip the brief's literal anti-reference list, but it fails the Rams test stated in the same brief: *"If a visual element cannot be justified by hierarchy, comprehension, navigation, feedback, or task completion, it does not ship."* This gradient does none of those five things. **Pre-existing since before Phase 09** (confirmed via `git log` — unchanged since the initial commit); T22's scope was card shadow/width/brand-mark only, so this was never this phase's to touch, and isn't a regression. **RC decision (2026-08-07):** accepted as-is. It's mild enough not to undermine the shipped aesthetic, pre-dates this phase, and removing it is a discretionary polish call, not a defect fix — appropriate for the owner to schedule whenever, not a release blocker. _Fix, if ever taken up: delete the gradient `<div>`, or reduce it to nothing (`bg-background` alone already reads as calm and instrumented)._
+2. **Document title input truncates visibly at 768px. — Classification: DEFERRED (fast-follow candidate, not required before this release).** On `/documents` at tablet width with a document open, the title `<input>` measures 94px wide against 116px of needed content (`API Design Notes` → `API Design No`), because the inline action cluster (project picker, pin, tag, download, delete — 5 controls) crowds it out without ever collapsing to an overflow menu. The brief's own responsive table calls for "Page header action clusters collapse to an overflow menu past two [actions]"; this toolbar has five and never collapses. Not a Must Fix — the title remains fully editable and selectable via the native input (click/select/keyboard all work), just visually clipped — but it's a real, measurable violation of a stated responsive principle, on a screen that's supposed to be the master-detail reference implementation. **RC decision (2026-08-07):** deferred rather than required before release, because it degrades gracefully (no data loss, no blocked action) and fixing it correctly means touching the document-toolbar's action-cluster layout — implementation work beyond an RC-verification pass's "do not redesign screens" boundary. Recommended as the first fast-follow after this release. _Fix: apply the same overflow-menu treatment `PageHeader` already uses elsewhere to this document-toolbar action cluster below `lg`, or let the title `input` claim `flex-1 min-w-0` and move non-essential actions (pin, tag) into an overflow menu first._
+
+## Could Improve
+
+1. **Primary nav's breakpoint (`md`/768) reads as a deliberate but under-surfaced deviation from the original brief.** The shipped `Sidebar` becomes a persistent rail at 768px (`md:flex`), while `DESIGN_BRIEF.md`'s own responsive table lists primary nav as a drawer through 768px, persistent only at 1024px (`lg`). This is **not a defect** — it's `02_UI.md` §0's frozen invariant I3, made deliberately during Milestone 0 with a stated rationale (no collapsed-rail state; twelve labelled destinations don't survive icon-only collapse). But the brief itself was never updated to match, so a reader comparing the two documents side by side would flag a contradiction that implementation review resolves in I3's favor. _Suggestion: a one-line note in `DESIGN_BRIEF.md`'s responsive table pointing at I3 would close the loop for future readers._
+2. **The Filters/Documents mobile trigger button's own label could be more affordant as a "back" control.** Now that the layout bug above is fixed, the trigger reads fine, but at the detail view (a document open, tablet width) there's no explicit "← Back" language — the same button that opened the picker is the only way back to the list. Functional, not broken, but a literal back affordance (per the brief's "single-pane with a back affordable" phrasing) would read more clearly than a filter-style button doing double duty. _Suggestion: consider a lightweight breadcrumb or back-chevron in the detail header when a document is open at `<lg`, purely as polish._
+
+## What Works Well
+
+- **The headline fix holds under direct measurement.** `--font-sans`/`--font-mono` both resolve to Geist/Geist Mono on `<html>` and every descendant checked, in both themes, at every breakpoint tested. This was the single most consequential defect in the entire phase and it's genuinely fixed, not just visually plausible.
+- **Zero anti-references found anywhere in the shipped surfaces.** No gradients-as-decoration outside the one pre-existing auth-screen instance noted above, no glassmorphism, no blurred orbs, no oversized rounded corners, no emoji-as-iconography, no "✨"-prefixed headings, no illustration-driven empty states (`EmptyState` uses a plain line icon + text throughout, exactly per the brief's Rams retune). Shadows are absent outside overlays, as I12 requires — borders and dividers do the work instead, consistently.
+- **The Rams/Swiss seam is exactly as bounded as the brief specifies.** Secrets reads unmistakably as a table of record (ruled rows, all-caps-adjacent tag treatment, tight rhythm) while Workbench and Settings read unmistakably as Rams tool containers (restrained cards, one accent, generous but not wasteful spacing) — and nothing in between blurs the two. A user could tell which "mode" a screen is in within two seconds, which is exactly the brief's stated bar.
+- **Both themes are genuinely intentional, not an inversion.** Light theme's Secrets tag badges (post-T27 fix) and Settings' consequential-section divider both hold their hierarchy and contrast correctly; nothing reads as "dark mode's palette run through a filter."
+- **The Notes board's pan-not-reflow requirement holds exactly as specified** at 375px — verified via `document.documentElement.scrollWidth` staying at the viewport width while the canvas itself carries the overflow, not the page.
+- **Destructive-action and state-coverage work (T23/T24) is invisible in the best way** — Settings' Import backup, Secrets' folder/tag deletes, and every list's error/loading states all render as calm, unremarkable UI rather than looking retrofitted.
+
+## Fixed During This Review
+
+1. **`FilterRail` mobile-trigger layout bug (Secrets, Documents) — Must Fix, resolved.** `frontend/app/(app)/secrets/page.tsx` and `frontend/app/(app)/documents/page.tsx` both wrapped `<FilterRail>` (which renders a `<aside>` + a `<div className="lg:hidden">` Sheet-trigger wrapper as two fragment siblings) directly inside a `<div className="flex">` alongside the main content column. Below `lg`, the `<aside>` correctly collapses to zero width, but the trigger wrapper does not — it's a normal flex item, so it reserved its own horizontal track (measured 78px on Secrets, 110px on Documents) for the full height of the page, pushing every row of content right by that amount. Confirmed via `getBoundingClientRect()` on the actual flex children (not inferred from a screenshot): content pane started at `x:78`/`x:110` instead of `x:0`. This is exactly why Secrets' badge/timestamp text looked oddly clipped in the initial mobile screenshot for this review — the available content width was measurably narrower than the viewport, though page-level `scrollWidth` stayed correct (no page-scroll symptom, which is likely why T26's sweep didn't catch it — that sweep checked for horizontal *page* scroll, not per-container available width).
+   **Fix:** changed the wrapping `<div className="flex">` to `<div className="flex flex-col lg:flex-row">` in both files — a one-line class change in each, touching neither `FilterRail`'s own contract nor its callers' props. Below `lg`, the trigger now stacks as its own full-width row above the content, which correctly becomes `flex-1` over the *entire* remaining width. At `lg+`, `lg:flex-row` restores the original side-by-side rail behavior exactly.
+   **Verified:** mobile (375px) — content pane now measures full viewport width, zero horizontal overflow, badge/timestamp text renders uncut. Tablet (768px) — same fix applies, trigger button correctly positioned. Desktop (1440px, `lg+`) — re-screenshotted both Secrets and Documents, pixel-identical to pre-fix (rail + content side by side, unchanged). `tsc --noEmit` and `npm run lint` both clean after the change.
+
+## Cross-references
+
+- [DESIGN_BRIEF.md](DESIGN_BRIEF.md) · [INFORMATION_ARCHITECTURE.md](INFORMATION_ARCHITECTURE.md) · [DESIGN_TOKENS.css](DESIGN_TOKENS.css)
+- [../../forge-docs/implementation/Phase-09-Frontend-Reimagine/02_UI.md](../../forge-docs/implementation/Phase-09-Frontend-Reimagine/02_UI.md) — layout invariants I1–I12, including I3/I4 referenced above
+- [../../forge-docs/implementation/Phase-09-Frontend-Reimagine/09_IMPLEMENTATION_TASKS.md](../../forge-docs/implementation/Phase-09-Frontend-Reimagine/09_IMPLEMENTATION_TASKS.md) — T30 entry
+- [../../forge-docs/implementation/Phase-09-Frontend-Reimagine/CURRENT_STATE.md](../../forge-docs/implementation/Phase-09-Frontend-Reimagine/CURRENT_STATE.md)

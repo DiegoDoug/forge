@@ -2,9 +2,12 @@
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
+import { ErrorState } from "@/components/error-state";
 import { PageHeader } from "@/components/page-header";
+import { SectionHeading } from "@/components/section-heading";
 import { CONVERTER_TOOL_PROVIDERS } from "@/features/converters/providers";
 import { Dropzone } from "@/features/ingest/dropzone";
 import { ingestApi } from "@/features/ingest/api";
@@ -34,8 +37,8 @@ export default function ConvertersPage() {
 
       <div className="flex flex-col gap-8 p-4 md:p-6">
         <section className="flex flex-col gap-4">
-          <h2 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">Text &amp; Data</h2>
-          <div className="grid gap-4 md:grid-cols-2">
+          <SectionHeading>Text &amp; Data</SectionHeading>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {CONVERTER_TOOL_PROVIDERS.map(({ slug, Component }) => (
               <Component key={slug} />
             ))}
@@ -43,9 +46,19 @@ export default function ConvertersPage() {
         </section>
 
         <section className="flex flex-col gap-4">
-          <h2 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">Documents</h2>
+          <SectionHeading>Documents</SectionHeading>
           <Dropzone onFiles={(files) => createJob.mutate(files)} disabled={createJob.isPending} />
-          {jobQuery.data ? <JobList job={jobQuery.data} onPreview={setPreviewFileId} /> : null}
+          {createJob.isPending ? (
+            <p className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              Uploading…
+            </p>
+          ) : null}
+          {jobQuery.isError ? (
+            <ErrorState description="Couldn't check on your conversion job." onRetry={() => jobQuery.refetch()} />
+          ) : jobQuery.data ? (
+            <JobList job={jobQuery.data} onPreview={setPreviewFileId} />
+          ) : null}
         </section>
       </div>
 

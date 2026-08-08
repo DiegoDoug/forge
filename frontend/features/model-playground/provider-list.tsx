@@ -4,20 +4,11 @@ import { useState } from "react";
 import { KeyRound, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/confirm-dialog";
+import { ErrorState } from "@/components/error-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCredentialMutations, useCredentials, useProviders } from "./api";
 import { CredentialFormDialog } from "./credential-form-dialog";
@@ -27,8 +18,12 @@ export function ProviderList() {
   const credentialsQuery = useCredentials();
   const { remove } = useCredentialMutations();
   const [configuringProvider, setConfiguringProvider] = useState<string | null>(null);
+  const [removeTarget, setRemoveTarget] = useState<{ credentialId: string; displayName: string } | null>(null);
 
-  async function handleRemove(credentialId: string, displayName: string) {
+  async function handleRemove() {
+    if (!removeTarget) return;
+    const { credentialId, displayName } = removeTarget;
+    setRemoveTarget(null);
     try {
       await remove.mutateAsync(credentialId);
       toast.success(`${displayName} key removed`);
@@ -43,6 +38,16 @@ export function ProviderList() {
         <CardContent className="flex flex-col gap-2">
           <Skeleton className="h-9 w-full" />
           <Skeleton className="h-9 w-full" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (providersQuery.isError) {
+    return (
+      <Card>
+        <CardContent>
+          <ErrorState description="Couldn't load providers." onRetry={() => providersQuery.refetch()} />
         </CardContent>
       </Card>
     );
@@ -84,29 +89,14 @@ export function ProviderList() {
                   {provider.configured ? "Replace key" : "Configure"}
                 </Button>
                 {provider.configured && credential ? (
-                  <AlertDialog>
-                    <AlertDialogTrigger render={<Button variant="ghost" size="icon-sm" className="text-destructive" />}>
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Remove {provider.display_name} key?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          {provider.display_name} becomes unavailable for new runs. Past runs that used it are
-                          unaffected.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          className="bg-destructive text-white hover:bg-destructive/90"
-                          onClick={() => handleRemove(credential.id, provider.display_name)}
-                        >
-                          Remove
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    className="text-destructive"
+                    onClick={() => setRemoveTarget({ credentialId: credential.id, displayName: provider.display_name })}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
                 ) : null}
               </div>
             </div>
@@ -121,6 +111,15 @@ export function ProviderList() {
           provider={configuring}
         />
       ) : null}
+
+      <ConfirmDialog
+        open={!!removeTarget}
+        onOpenChange={(open) => !open && setRemoveTarget(null)}
+        title={`Remove ${removeTarget?.displayName} key?`}
+        description={`${removeTarget?.displayName} becomes unavailable for new runs. Past runs that used it are unaffected.`}
+        confirmLabel="Remove"
+        onConfirm={handleRemove}
+      />
     </Card>
   );
 }

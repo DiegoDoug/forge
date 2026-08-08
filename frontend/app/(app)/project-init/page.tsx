@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 
+import { ErrorState } from "@/components/error-state";
 import { PageHeader } from "@/components/page-header";
+import { SectionHeading } from "@/components/section-heading";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AiInstructionsForm } from "@/features/project-init/ai-instructions-form";
 import { useProjectInitCatalog, type TemplateKind } from "@/features/project-init/api";
@@ -12,7 +14,7 @@ import { GenerationHistory } from "@/features/project-init/generation-history";
 import { KindPicker } from "@/features/project-init/kind-picker";
 
 export default function ProjectInitPage() {
-  const { data: catalog, isLoading, isError } = useProjectInitCatalog();
+  const { data: catalog, isLoading, isError, refetch } = useProjectInitCatalog();
   const [selectedKind, setSelectedKind] = useState<TemplateKind | null>(null);
 
   return (
@@ -28,7 +30,7 @@ export default function ProjectInitPage() {
             <Skeleton className="h-24 w-full rounded-xl" />
           </div>
         ) : isError || !catalog ? (
-          <p className="text-sm text-destructive">Couldn&apos;t load the template catalog. Try reloading the page.</p>
+          <ErrorState description="Couldn't load the template catalog." onRetry={() => refetch()} />
         ) : (
           <>
             <KindPicker kinds={catalog.kinds} selected={selectedKind} onSelect={setSelectedKind} />
@@ -49,7 +51,7 @@ export default function ProjectInitPage() {
         )}
 
         <div className="flex flex-col gap-3">
-          <h2 className="text-sm font-medium">Recent generations</h2>
+          <SectionHeading>Recent generations</SectionHeading>
           <GenerationHistory />
         </div>
       </div>

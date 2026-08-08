@@ -58,9 +58,9 @@ function PinnedToolTile({
           <GripVertical className="h-3.5 w-3.5" />
         </button>
       )}
-      <Icon className="h-4 w-4 shrink-0 text-primary" />
+      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
       <div className="min-w-0">
-        <p className="truncate text-sm font-medium">{meta.title}</p>
+        <p className="text-sm font-medium leading-snug">{meta.title}</p>
         {!tool.available && <p className="text-xs text-muted-foreground">Coming soon</p>}
       </div>
     </>
@@ -71,14 +71,14 @@ function PinnedToolTile({
       {tool.available && !editable ? (
         <Link
           href={meta.href}
-          className="flex items-center gap-2 rounded-lg border border-border p-3 transition-colors hover:border-primary/40 hover:bg-accent/40"
+          className="flex items-start gap-2 rounded-lg border border-border p-3 transition-colors hover:border-primary/40 hover:bg-accent/40"
         >
           {inner}
         </Link>
       ) : (
         <div
           aria-disabled={!tool.available || undefined}
-          className="flex items-center gap-2 rounded-lg border border-border p-3 data-disabled:cursor-not-allowed data-disabled:border-dashed data-disabled:opacity-60"
+          className="flex items-start gap-2 rounded-lg border border-border p-3 data-disabled:cursor-not-allowed data-disabled:border-dashed data-disabled:opacity-60"
           data-disabled={!tool.available || undefined}
         >
           {inner}

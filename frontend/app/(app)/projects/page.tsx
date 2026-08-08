@@ -6,6 +6,7 @@ import { Archive, FolderKanban, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
+import { ErrorState } from "@/components/error-state";
 import { PageHeader } from "@/components/page-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectCard } from "@/features/projects/project-card";
@@ -61,12 +62,7 @@ export default function ProjectsPage() {
             ))}
           </div>
         ) : projectsQuery.isError ? (
-          <div className="flex flex-col items-center gap-2 py-16 text-center">
-            <p className="text-sm text-muted-foreground">Couldn&apos;t load projects.</p>
-            <Button size="sm" variant="outline" onClick={() => projectsQuery.refetch()}>
-              Retry
-            </Button>
-          </div>
+          <ErrorState description="Couldn't load projects." onRetry={() => projectsQuery.refetch()} />
         ) : (projectsQuery.data?.length ?? 0) === 0 ? (
           <EmptyState
             icon={FolderKanban}

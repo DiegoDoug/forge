@@ -28,14 +28,14 @@ export function UuidGenerator() {
         <div className="flex items-center gap-2">
           <span className="w-10 shrink-0 text-xs text-muted-foreground">v4</span>
           <OutputField value={v4.data?.value ?? ""} className="flex-1" />
-          <Button variant="ghost" size="icon-sm" onClick={() => v4.mutate()}>
+          <Button variant="ghost" size="icon-sm" aria-label="Regenerate v4 UUID" onClick={() => v4.mutate()}>
             <RefreshCw className="h-3.5 w-3.5" />
           </Button>
         </div>
         <div className="flex items-center gap-2">
           <span className="w-10 shrink-0 text-xs text-muted-foreground">v7</span>
           <OutputField value={v7.data?.value ?? ""} className="flex-1" />
-          <Button variant="ghost" size="icon-sm" onClick={() => v7.mutate()}>
+          <Button variant="ghost" size="icon-sm" aria-label="Regenerate v7 UUID" onClick={() => v7.mutate()}>
             <RefreshCw className="h-3.5 w-3.5" />
           </Button>
         </div>

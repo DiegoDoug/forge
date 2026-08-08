@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import { Archive, ArchiveRestore, FolderKanban, Pin, PinOff, Tags, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useKnowledgeList } from "@/features/knowledge/api";
 import { KnowledgeLinkPanel } from "@/features/knowledge/knowledge-link-panel";
@@ -21,9 +22,10 @@ import { NOTE_COLORS } from "./note-colors";
 const MIN_WIDTH = 200;
 const MIN_HEIGHT = 160;
 
-export function NoteCard({ note }: { note: Note }) {
+export function NoteCard({ note, highlighted }: { note: Note; highlighted?: boolean }) {
   const { attributes, listeners, setNodeRef, isDragging, transform } = useDraggable({ id: note.id });
   const { update, remove } = useNoteMutations();
+  const [deleteOpen, setDeleteOpen] = useState(false);
   // Note/NoteOut carries no `tags` field - the Hub's own list is the
   // source for this note's current tags (see documents/page.tsx's
   // identical pattern and comment).
@@ -96,6 +98,7 @@ export function NoteCard({ note }: { note: Note }) {
       className={cn(
         "absolute flex flex-col overflow-hidden rounded-lg text-neutral-900 shadow-md ring-1 ring-black/5",
         isDragging ? "shadow-xl" : "transition duration-150 ease-out",
+        highlighted && "ring-2 ring-primary",
       )}
     >
       <div
@@ -184,11 +187,22 @@ export function NoteCard({ note }: { note: Note }) {
               </div>
             </PopoverContent>
           </Popover>
-          <IconAction label="Delete" onClick={() => remove.mutate(note.id)}>
+          <IconAction label="Delete" onClick={() => setDeleteOpen(true)}>
             <Trash2 className="h-3 w-3" />
           </IconAction>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title={`Delete "${note.title || "Untitled"}"?`}
+        description="This permanently deletes the note. This cannot be undone."
+        onConfirm={() => {
+          remove.mutate(note.id);
+          setDeleteOpen(false);
+        }}
+      />
 
       <div className="min-h-0 flex-1 overflow-auto px-2.5 pb-1.5">
         {editing ? (
@@ -216,15 +230,18 @@ export function NoteCard({ note }: { note: Note }) {
 
       <div className="flex items-center justify-between px-2.5 pb-1.5">
         <div className="flex gap-1">
-          {NOTE_COLORS.map((c) => (
+          {NOTE_COLORS.map(({ hex, name }) => (
             <button
-              key={c}
-              onClick={() => update.mutate({ id: note.id, input: { color: c } })}
+              key={hex}
+              type="button"
+              onClick={() => update.mutate({ id: note.id, input: { color: hex } })}
+              aria-label={`Set note color to ${name}`}
+              aria-pressed={note.color === hex}
               className={cn(
                 "h-3 w-3 rounded-full ring-1 ring-black/10",
-                note.color === c && "ring-2 ring-black/40",
+                note.color === hex && "ring-2 ring-black/40",
               )}
-              style={{ backgroundColor: c }}
+              style={{ backgroundColor: hex }}
             />
           ))}
         </div>

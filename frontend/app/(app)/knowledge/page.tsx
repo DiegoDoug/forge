@@ -54,7 +54,7 @@ export default function KnowledgeHubPage() {
             ? listQuery.data.truncated
               ? `${shown} of ${total} items shown`
               : `${total} item${total === 1 ? "" : "s"}`
-            : "Search, tag & link your notes and documents"
+            : "Browse, tag & link your notes and documents"
         }
       />
       <KnowledgeFilterBar filters={filters} onChange={setFilters} />

@@ -4,8 +4,8 @@
 > **Scope:** Interaction patterns, layout conventions, accessibility, and responsive behavior across the app shell and all features.
 > **Ownership:** TODO — assign a UI/UX owner.
 > **Status:** Draft
-> **Version:** 0.1.0
-> **Last Updated:** 2026-07-20
+> **Version:** 0.2.0
+> **Last Updated:** 2026-08-06 (Phase 09 converted three TODOs into fact — see §3–4)
 > **Depends On:** [01_PRODUCT_PRINCIPLES.md](01_PRODUCT_PRINCIPLES.md)
 > **Supersedes:** —
 
@@ -30,15 +30,15 @@
 
 ## 3. Responsive behavior
 
-- [ ] Every feature must be usable at mobile widths (mobile nav exists for this reason) — TODO: define the minimum supported viewport width.
+- [x] Every feature must be usable at mobile widths (mobile nav exists for this reason). **Minimum supported viewport width: 375px** — frozen as a layout invariant in Phase 09 ([`implementation/Phase-09-Frontend-Reimagine/02_UI.md`](implementation/Phase-09-Frontend-Reimagine/02_UI.md) §0, I-invariants) and verified across all 17 routes, both themes ([`implementation/Phase-09-Frontend-Reimagine/09_IMPLEMENTATION_TASKS.md`](implementation/Phase-09-Frontend-Reimagine/09_IMPLEMENTATION_TASKS.md) T26).
 - [ ] Data-dense views (Vault tables, future Knowledge Hub search results) need an explicit mobile layout, not just a squeezed desktop table.
 
 ## 4. Accessibility
 
 - [ ] Keyboard navigation must reach every interactive element, including the command palette and drag-and-drop board.
 - [ ] Color is never the only signal (e.g. status badges pair color with text/icon).
-- [ ] TODO: Run and document a baseline accessibility audit (axe or equivalent) — none exists yet.
-- [ ] TODO: Define a minimum contrast standard (WCAG AA vs AA+) explicitly rather than by convention.
+- [x] **Baseline accessibility audit run: Phase 09, T27** ([`implementation/Phase-09-Frontend-Reimagine/09_IMPLEMENTATION_TASKS.md`](implementation/Phase-09-Frontend-Reimagine/09_IMPLEMENTATION_TASKS.md) T27) — Forge's first. Found and fixed one WCAG contrast failure, 16 icon-only/swatch controls with no accessible name, and a sidebar landmark/grouping gap. **Caveat, carried forward as a TODO rather than closed:** no automated `axe`-core (or equivalent) tool exists in this project's toolchain yet; T27 substituted live-measured contrast checking plus a manual `aria-label`/landmark sweep. TODO: adopt an actual `axe` integration once a frontend test framework exists (see [08_DEFINITION_OF_DONE.md](08_DEFINITION_OF_DONE.md) and Phase 09's `CURRENT_STATE.md` Known Issue #2).
+- [x] **Minimum contrast standard defined: WCAG 2.1 AA** (4.5:1 normal text, 3:1 large text/≥18px or ≥14px bold), both themes — set and measured against in Phase 09 T27.
 
 ## 5. Empty, loading, and error states
 
@@ -51,7 +51,7 @@ Every list-based feature (Vault, Notes, future Knowledge Hub, Model Playground h
 ## 6. TODO
 
 - [ ] TODO: Produce a written interaction-pattern reference with real screenshots once Phase 01 (Workbench) lands.
-- [ ] TODO: Decide on a motion/animation policy (Framer Motion is a dependency already — when is animation appropriate vs. gratuitous?).
+- [ ] TODO: Decide on a motion/animation policy. **Correction (Phase 09, T25):** Framer Motion is no longer a dependency — it had zero import sites and was removed. All current motion (dialog/sheet open-close, hover, drag) runs on Base UI's built-in CSS-animation state attributes and Tailwind transition utilities, driven by the token layer's motion tokens ([`implementation/Phase-09-Frontend-Reimagine/09_IMPLEMENTATION_TASKS.md`](implementation/Phase-09-Frontend-Reimagine/09_IMPLEMENTATION_TASKS.md) T1/T25). The policy question itself (when animation is appropriate vs. gratuitous) remains open.
 
 ## 7. Cross-references
 

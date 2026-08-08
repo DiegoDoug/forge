@@ -7,9 +7,11 @@ import { Download, Moon, Sun, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/page-header";
+import { Separator } from "@/components/ui/separator";
 import { ToolCard } from "@/components/tool-card";
 import { formatBytes } from "@/lib/format";
 import { authApi } from "@/features/auth/api";
@@ -25,6 +27,7 @@ export default function SettingsPage() {
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [pendingImport, setPendingImport] = useState<BackupBundle | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const themeMutation = useMutation({ mutationFn: settingsApi.updateTheme });
@@ -65,7 +68,7 @@ export default function SettingsPage() {
     reader.onload = () => {
       try {
         const bundle = JSON.parse(reader.result as string) as BackupBundle;
-        importMutation.mutate(bundle);
+        setPendingImport(bundle);
       } catch {
         toast.error("Invalid backup file");
       }
@@ -73,86 +76,119 @@ export default function SettingsPage() {
     reader.readAsText(file);
   }
 
+  function confirmImport() {
+    if (!pendingImport) return;
+    importMutation.mutate(pendingImport);
+    setPendingImport(null);
+  }
+
   return (
     <div>
       <PageHeader title="Settings" description="Theme, master password, backups, and system info" />
 
-      <div className="grid gap-4 p-4 md:grid-cols-2 md:p-6">
-        <ToolCard title="Appearance" description="Dark mode by default">
-          <div className="flex gap-2">
-            <Button variant={theme === "dark" ? "default" : "outline"} size="sm" onClick={() => setThemeAndSync("dark")}>
-              <Moon className="h-3.5 w-3.5" />
-              Dark
-            </Button>
-            <Button variant={theme === "light" ? "default" : "outline"} size="sm" onClick={() => setThemeAndSync("light")}>
-              <Sun className="h-3.5 w-3.5" />
-              Light
-            </Button>
-            <Button variant={theme === "system" ? "default" : "outline"} size="sm" onClick={() => setThemeAndSync("system")}>
-              System
-            </Button>
-          </div>
-        </ToolCard>
-
-        <ToolCard title="Master password" description="Changes take effect immediately for new sessions">
-          <div className="flex flex-col gap-2">
-            <div>
-              <Label htmlFor="current-pw" className="text-xs text-muted-foreground">
-                Current password
-              </Label>
-              <Input id="current-pw" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+      <div className="flex flex-col gap-6 p-4 md:p-6">
+        {/* Reference: informational, non-consequential. */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <ToolCard title="Appearance" description="Dark mode by default">
+            <div className="flex gap-2">
+              <Button variant={theme === "dark" ? "default" : "outline"} size="sm" onClick={() => setThemeAndSync("dark")}>
+                <Moon className="h-3.5 w-3.5" />
+                Dark
+              </Button>
+              <Button variant={theme === "light" ? "default" : "outline"} size="sm" onClick={() => setThemeAndSync("light")}>
+                <Sun className="h-3.5 w-3.5" />
+                Light
+              </Button>
+              <Button variant={theme === "system" ? "default" : "outline"} size="sm" onClick={() => setThemeAndSync("system")}>
+                System
+              </Button>
             </div>
-            <div>
-              <Label htmlFor="new-pw" className="text-xs text-muted-foreground">
-                New password
-              </Label>
-              <Input id="new-pw" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+          </ToolCard>
+
+          <ToolCard title="About" description="System information">
+            <div className="flex flex-col gap-1 text-xs text-muted-foreground">
+              <span>Forge v{aboutQuery.data?.version ?? "…"}</span>
+              <span>Environment: {aboutQuery.data?.environment ?? "…"}</span>
+              {statusQuery.data ? (
+                <span>
+                  Storage: {formatBytes(statusQuery.data.storage.database_bytes)} database ·{" "}
+                  {formatBytes(statusQuery.data.storage.disk_free_bytes)} free
+                </span>
+              ) : null}
             </div>
-            <Button
-              size="sm"
-              className="w-fit"
-              onClick={() => passwordMutation.mutate()}
-              disabled={!currentPassword || newPassword.length < 8 || passwordMutation.isPending}
-            >
-              Update password
-            </Button>
-          </div>
-        </ToolCard>
+          </ToolCard>
+        </div>
 
-        <ToolCard title="Backup" description="Secret values stay encrypted inside the export — it's only useful with your master key">
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={handleExport}>
-              <Download className="h-3.5 w-3.5" />
-              Export backup
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={importMutation.isPending}>
-              <Upload className="h-3.5 w-3.5" />
-              Import backup
-            </Button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="application/json"
-              className="hidden"
-              onChange={(e) => e.target.files?.[0] && handleImportFile(e.target.files[0])}
-            />
-          </div>
-          <p className="text-xs text-muted-foreground">Importing replaces all current secrets, folders, tags, and notes.</p>
-        </ToolCard>
+        <Separator />
 
-        <ToolCard title="About" description="System information">
-          <div className="flex flex-col gap-1 text-xs text-muted-foreground">
-            <span>Forge v{aboutQuery.data?.version ?? "…"}</span>
-            <span>Environment: {aboutQuery.data?.environment ?? "…"}</span>
-            {statusQuery.data ? (
-              <span>
-                Storage: {formatBytes(statusQuery.data.storage.database_bytes)} database ·{" "}
-                {formatBytes(statusQuery.data.storage.disk_free_bytes)} free
-              </span>
-            ) : null}
-          </div>
-        </ToolCard>
+        {/* Consequential: changes auth or destroys existing data. */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <ToolCard title="Master password" description="Changes take effect immediately for new sessions">
+            <div className="flex flex-col gap-2">
+              <div>
+                <Label htmlFor="current-pw" className="text-xs text-muted-foreground">
+                  Current password
+                </Label>
+                <Input id="current-pw" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+              </div>
+              <div>
+                <Label htmlFor="new-pw" className="text-xs text-muted-foreground">
+                  New password
+                </Label>
+                <Input id="new-pw" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+              </div>
+              <Button
+                size="sm"
+                className="w-fit"
+                onClick={() => passwordMutation.mutate()}
+                disabled={!currentPassword || newPassword.length < 8 || passwordMutation.isPending}
+              >
+                Update password
+              </Button>
+            </div>
+          </ToolCard>
+
+          <ToolCard title="Backup" description="Secret values stay encrypted inside the export — it's only useful with your master key">
+            <div className="flex flex-col gap-3">
+              <Button variant="outline" size="sm" className="w-fit" onClick={handleExport}>
+                <Download className="h-3.5 w-3.5" />
+                Export backup
+              </Button>
+              <div className="flex flex-col gap-1.5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-fit"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={importMutation.isPending}
+                >
+                  <Upload className="h-3.5 w-3.5" />
+                  Import backup
+                </Button>
+                <p className="text-xs text-destructive">
+                  Importing replaces all current secrets, folders, tags, and notes.
+                </p>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/json"
+                className="hidden"
+                onChange={(e) => e.target.files?.[0] && handleImportFile(e.target.files[0])}
+              />
+            </div>
+          </ToolCard>
+        </div>
       </div>
+
+      <ConfirmDialog
+        open={!!pendingImport}
+        onOpenChange={(open) => !open && setPendingImport(null)}
+        title="Replace all current data?"
+        description="Importing this backup permanently replaces all current secrets, folders, tags, and notes. This cannot be undone."
+        confirmLabel="Import & replace"
+        onConfirm={confirmImport}
+      />
     </div>
   );
 }

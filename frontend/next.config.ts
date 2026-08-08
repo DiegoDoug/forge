@@ -39,6 +39,16 @@ const nextConfig: NextConfig = {
     return [
       { source: "/api/:path*", destination: `${backendUrl}/api/:path*` },
       { source: "/health", destination: `${backendUrl}/health` },
+      // The backend mounts /system/status at the root, without the /api prefix
+      // (app/api/routes/health.py), so it matched neither rewrite above and was
+      // served by Next.js instead — a 404 with an HTML body, which made the
+      // Settings "About" storage row silently never render. See Phase 09 T0.5b.
+      //
+      // NOTE: this fixes development only. docker/nginx.conf proxies /api/ and
+      // /health but NOT /system/status, so production has the same 404 via a
+      // different path. That is a deployment-config gap raised as a finding, not
+      // patched here — see Phase-09 00_AUDIT.md §3.2 and 03_BACKEND.md §2.2.
+      { source: "/system/status", destination: `${backendUrl}/system/status` },
     ];
   },
 };

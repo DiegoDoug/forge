@@ -4,21 +4,12 @@ import * as React from "react";
 import { RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { useResetLayoutMutation } from "../api";
 
 export const WorkbenchResetButton = React.forwardRef<HTMLButtonElement>(function WorkbenchResetButton(_props, ref) {
+  const [open, setOpen] = React.useState(false);
   const resetLayout = useResetLayoutMutation();
 
   function handleReset() {
@@ -29,23 +20,19 @@ export const WorkbenchResetButton = React.forwardRef<HTMLButtonElement>(function
   }
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger render={<Button ref={ref} variant="outline" size="sm" />}>
+    <>
+      <Button ref={ref} variant="outline" size="sm" onClick={() => setOpen(true)}>
         <RotateCcw className="h-4 w-4" />
         Reset to default
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Reset Workbench to the default layout?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This restores the shipped panel arrangement and pinned tools. Your current customization will be lost.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleReset}>Reset</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      </Button>
+      <ConfirmDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Reset Workbench to the default layout?"
+        description="This restores the shipped panel arrangement and pinned tools. Your current customization will be lost."
+        confirmLabel="Reset"
+        onConfirm={handleReset}
+      />
+    </>
   );
 });

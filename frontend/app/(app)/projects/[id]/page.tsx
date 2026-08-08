@@ -7,8 +7,11 @@ import { Archive, ArchiveRestore, FileText, FolderKanban, KeyRound, Pencil, Stic
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { DataList, DataListRow } from "@/components/data-list";
 import { EmptyState } from "@/components/empty-state";
+import { ErrorState } from "@/components/error-state";
 import { PageHeader } from "@/components/page-header";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDocuments } from "@/features/documents/api";
 import { useNotes } from "@/features/notes/api";
@@ -74,6 +77,15 @@ export default function ProjectDetailPage() {
       <PageHeader
         title={project.name}
         description={project.description || undefined}
+        breadcrumb={
+          <>
+            <Link href="/projects" className="hover:text-foreground hover:underline">
+              Projects
+            </Link>
+            <span aria-hidden="true">/</span>
+            <span className="text-foreground">{project.name}</span>
+          </>
+        }
         actions={
           <>
             <Button variant="outline" size="sm" onClick={() => setEditOpen(true)}>
@@ -84,6 +96,7 @@ export default function ProjectDetailPage() {
               {project.archived ? <ArchiveRestore className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
               {project.archived ? "Unarchive" : "Archive"}
             </Button>
+            <Separator orientation="vertical" className="h-5" />
             <Button variant="outline" size="sm" className="text-destructive" onClick={() => setDeleteOpen(true)}>
               <Trash2 className="h-4 w-4" />
               Delete
@@ -99,6 +112,8 @@ export default function ProjectDetailPage() {
             icon={KeyRound}
             href={`/secrets?project_id=${project.id}`}
             isLoading={secretsQuery.isLoading}
+            isError={secretsQuery.isError}
+            onRetry={() => secretsQuery.refetch()}
             items={(secretsQuery.data ?? []).map((s) => ({ id: s.id, label: s.name }))}
             emptyLabel="No secrets in this project yet."
           />
@@ -107,6 +122,8 @@ export default function ProjectDetailPage() {
             icon={StickyNote}
             href={`/notes?project_id=${project.id}`}
             isLoading={notesQuery.isLoading}
+            isError={notesQuery.isError}
+            onRetry={() => notesQuery.refetch()}
             items={(notesQuery.data ?? []).map((n) => ({ id: n.id, label: n.title || "Untitled" }))}
             emptyLabel="No notes in this project yet."
           />
@@ -115,6 +132,8 @@ export default function ProjectDetailPage() {
             icon={FileText}
             href={`/documents?project_id=${project.id}`}
             isLoading={documentsQuery.isLoading}
+            isError={documentsQuery.isError}
+            onRetry={() => documentsQuery.refetch()}
             items={(documentsQuery.data ?? []).map((d) => ({ id: d.id, label: d.title || "Untitled" }))}
             emptyLabel="No documents in this project yet."
           />
@@ -142,6 +161,8 @@ function ScopedList({
   icon: Icon,
   href,
   isLoading,
+  isError,
+  onRetry,
   items,
   emptyLabel,
 }: {
@@ -149,6 +170,8 @@ function ScopedList({
   icon: React.ComponentType<{ className?: string }>;
   href: string;
   isLoading: boolean;
+  isError?: boolean;
+  onRetry?: () => void;
   items: { id: string; label: string }[];
   emptyLabel: string;
 }) {
@@ -164,21 +187,25 @@ function ScopedList({
           View all
         </Link>
       </div>
-      <div className="flex flex-col divide-y divide-border">
-        {isLoading ? (
-          <div className="p-3">
-            <Skeleton className="h-6 w-full" />
-          </div>
-        ) : items.length === 0 ? (
-          <p className="px-4 py-6 text-center text-xs text-muted-foreground">{emptyLabel}</p>
-        ) : (
-          items.slice(0, 6).map((item) => (
-            <div key={item.id} className="truncate px-4 py-2 text-sm">
-              {item.label}
-            </div>
-          ))
-        )}
-      </div>
+      {isLoading ? (
+        <div className="p-3">
+          <Skeleton className="h-6 w-full" />
+        </div>
+      ) : isError ? (
+        <div className="p-3">
+          <ErrorState description={`Couldn't load ${title.toLowerCase()}.`} onRetry={onRetry} />
+        </div>
+      ) : items.length === 0 ? (
+        <p className="px-4 py-6 text-center text-xs text-muted-foreground">{emptyLabel}</p>
+      ) : (
+        <DataList className="rounded-none border-none">
+          {items.slice(0, 6).map((item) => (
+            <DataListRow key={item.id}>
+              <span className="data-primary truncate">{item.label}</span>
+            </DataListRow>
+          ))}
+        </DataList>
+      )}
     </div>
   );
 }

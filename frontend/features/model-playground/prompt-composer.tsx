@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Send } from "lucide-react";
+import { Loader2, Plus, Send } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -173,8 +173,8 @@ export function PromptComposer({
               size="sm"
               disabled={isSubmitting || !prompt.trim() || selected.length === 0}
             >
-              <Send className="h-3.5 w-3.5" />
-              Run comparison
+              {isSubmitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
+              {isSubmitting ? "Running…" : "Run comparison"}
             </Button>
           </div>
         </form>

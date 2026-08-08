@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import type { WorkbenchPanelDefinition } from "../panel-types";
-import { PanelErrorBoundary } from "./panel-error-boundary";
+import { PanelErrorBoundary } from "@/components/panel-error-boundary";
 
 function PanelErrorFallback({ onRetry }: { onRetry: () => void }) {
   return (
@@ -54,7 +54,7 @@ export function WorkbenchPanelCard({
         className,
       )}
     >
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2 border-b border-border pb-3">
         <div className="flex min-w-0 items-center gap-2">
           {mode === "customize" && (
             <button

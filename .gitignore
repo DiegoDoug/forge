@@ -11,6 +11,7 @@ backend/.tmp-*
 backend/.pytest_cache/
 backend/.dev-data/
 backend/.dev-data-verify/
+backend/.dev-data-phase09/
 
 # Tools (FDK verification framework infrastructure)
 tools/__pycache__/

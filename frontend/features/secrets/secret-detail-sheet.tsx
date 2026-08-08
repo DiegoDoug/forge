@@ -5,18 +5,8 @@ import { useState } from "react";
 import { Eye, EyeOff, History, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/copy-button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -37,6 +27,7 @@ export function SecretDetailSheet({
 }) {
   const [revealed, setRevealed] = useState(false);
   const [showVersions, setShowVersions] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const { deleteSecret } = useSecretsMutations();
 
   const detailQuery = useQuery({
@@ -64,6 +55,7 @@ export function SecretDetailSheet({
     try {
       await deleteSecret.mutateAsync(secretId);
       toast.success("Secret deleted");
+      setDeleteOpen(false);
       onClose();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to delete secret");
@@ -89,31 +81,25 @@ export function SecretDetailSheet({
                   <Button variant="ghost" size="icon-sm" onClick={onEdit}>
                     <Pencil className="h-3.5 w-3.5" />
                   </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger render={<Button variant="ghost" size="icon-sm" className="text-destructive" />}>
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete “{secret.name}”?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This permanently deletes the secret and its version history. This cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          className="bg-destructive text-white hover:bg-destructive/90"
-                          onClick={handleDelete}
-                        >
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    className="text-destructive"
+                    onClick={() => setDeleteOpen(true)}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
                 </div>
               </div>
             </SheetHeader>
+
+            <ConfirmDialog
+              open={deleteOpen}
+              onOpenChange={setDeleteOpen}
+              title={`Delete "${secret.name}"?`}
+              description="This permanently deletes the secret and its version history. This cannot be undone."
+              onConfirm={handleDelete}
+            />
 
             <ScrollArea className="flex-1 px-4">
               <div className="flex flex-col gap-4 pb-6">

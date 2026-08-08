@@ -1,12 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { MessageSquareText, Plus, Search, X } from "lucide-react";
+import { MessageSquareText, Plus, X } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { SearchField } from "@/components/search-field";
 import { formatRelativeTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { PromptListItem } from "./api";
@@ -15,6 +15,7 @@ export function PromptSidebar({
   prompts,
   isLoading,
   isError,
+  onRetry,
   selectedId,
   query,
   onQueryChange,
@@ -27,6 +28,7 @@ export function PromptSidebar({
   prompts: PromptListItem[];
   isLoading: boolean;
   isError: boolean;
+  onRetry: () => void;
   selectedId: string | null;
   query: string;
   onQueryChange: (q: string) => void;
@@ -47,17 +49,9 @@ export function PromptSidebar({
   const visibleTags = showAllTags ? allTags : allTags.slice(0, 6);
 
   return (
-    <aside className={cn("flex w-full shrink-0 flex-col border-r border-border lg:w-72", className)}>
+    <aside className={cn("flex w-full shrink-0 flex-col border-r border-border lg:w-[var(--shell-filter-rail-w)]", className)}>
       <div className="flex items-center gap-2 border-b border-border p-3">
-        <div className="relative flex-1">
-          <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={query}
-            onChange={(e) => onQueryChange(e.target.value)}
-            placeholder="Search prompts…"
-            className="h-8 pl-8 text-sm"
-          />
-        </div>
+        <SearchField value={query} onChange={onQueryChange} placeholder="Search prompts…" className="flex-1" />
         <Button size="icon-sm" title="New prompt" onClick={onNew}>
           <Plus className="h-4 w-4" />
         </Button>
@@ -101,7 +95,12 @@ export function PromptSidebar({
           {isLoading ? (
             <p className="px-2 py-6 text-center text-xs text-muted-foreground">Loading…</p>
           ) : isError ? (
-            <p className="px-2 py-6 text-center text-xs text-destructive">Couldn&apos;t load prompts.</p>
+            <div className="flex flex-col items-center gap-2 px-2 py-6 text-center">
+              <p className="text-xs text-destructive">Couldn&apos;t load prompts.</p>
+              <Button size="xs" variant="outline" onClick={onRetry}>
+                Retry
+              </Button>
+            </div>
           ) : prompts.length === 0 ? (
             <p className="px-2 py-6 text-center text-xs text-muted-foreground">
               {query || activeTag ? "No prompts match — clear filters." : "No prompts yet."}

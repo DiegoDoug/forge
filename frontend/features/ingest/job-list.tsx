@@ -4,57 +4,67 @@ import { CheckCircle2, Download, Eye, FileText, Loader2, XCircle } from "lucide-
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DataList, DataListRow } from "@/components/data-list";
+import { StatusBadge } from "@/components/status-badge";
 import { formatBytes } from "@/lib/format";
 import type { IngestJob } from "./api";
+
+// Uploading is Converter's own inline state (page.tsx, while the create
+// mutation is pending); this is the polling state once a job exists —
+// processing/done/failed at the job level, alongside the per-file status
+// icons already shown per row (02_UI.md §3.10).
+function JobStatusBadge({ status }: { status: IngestJob["status"] }) {
+  if (status === "done") return <StatusBadge tone="success">Complete</StatusBadge>;
+  if (status === "failed") return <StatusBadge tone="danger">Failed</StatusBadge>;
+  return <StatusBadge tone="info" icon={Loader2}>Processing</StatusBadge>;
+}
 
 export function JobList({ job, onPreview }: { job: IngestJob; onPreview: (fileId: string) => void }) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
-        <p className="text-xs text-muted-foreground">
-          {job.files.filter((f) => f.status === "done").length} of {job.files.length} converted
-        </p>
+        <div className="flex items-center gap-2">
+          <JobStatusBadge status={job.status} />
+          <p className="text-xs text-muted-foreground">
+            {job.files.filter((f) => f.status === "done").length} of {job.files.length} converted
+          </p>
+        </div>
         {job.download_all_url ? (
-          <Button variant="outline" size="sm" render={<a href={job.download_all_url} download />}>
+          <Button variant="outline" size="sm" nativeButton={false} render={<a href={job.download_all_url} download />}>
             <Download className="h-3.5 w-3.5" />
             Download all (.zip)
           </Button>
         ) : null}
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border">
-        {job.files.map((file, i) => (
-          <div
-            key={file.id}
-            className={`flex items-center gap-3 px-4 py-2.5 text-sm ${i > 0 ? "border-t border-border" : ""}`}
-          >
+      <DataList>
+        {job.files.map((file) => (
+          <DataListRow key={file.id}>
             <StatusIcon status={file.status} />
-            <span className="flex-1 truncate">{file.name}</span>
+            <span className="data-primary flex-1 truncate">{file.name}</span>
             {file.used_vision ? (
               <Badge variant="secondary" className="shrink-0">
                 vision
               </Badge>
             ) : null}
             {file.status === "error" ? (
-              <span className="shrink-0 text-xs text-destructive">{file.error}</span>
+              <span className="data-meta shrink-0 text-destructive">{file.error}</span>
             ) : file.status === "done" ? (
               <>
-                <span className="shrink-0 text-xs text-muted-foreground">
-                  {file.output_size ? formatBytes(file.output_size) : ""}
-                </span>
+                <span className="data-meta shrink-0">{file.output_size ? formatBytes(file.output_size) : ""}</span>
                 <Button variant="ghost" size="icon-sm" onClick={() => onPreview(file.id)}>
                   <Eye className="h-3.5 w-3.5" />
                 </Button>
                 {file.download_url ? (
-                  <Button variant="ghost" size="icon-sm" render={<a href={file.download_url} download />}>
+                  <Button variant="ghost" size="icon-sm" nativeButton={false} render={<a href={file.download_url} download />}>
                     <Download className="h-3.5 w-3.5" />
                   </Button>
                 ) : null}
               </>
             ) : null}
-          </div>
+          </DataListRow>
         ))}
-      </div>
+      </DataList>
     </div>
   );
 }

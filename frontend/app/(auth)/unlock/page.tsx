@@ -3,7 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Lock } from "lucide-react";
+import { Flame, Lock } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,8 +28,14 @@ export default function UnlockPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 rounded-2xl border border-border bg-card p-8 shadow-xl shadow-black/5">
-      <div className="flex flex-col items-center gap-2 text-center">
+    <div className="flex flex-col gap-6 rounded-2xl border border-border bg-card p-8 shadow-[var(--elevation-2)]">
+      <div className="flex flex-col items-center gap-3 text-center">
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <Flame className="h-4 w-4" />
+          </div>
+          <span className="text-sm font-semibold tracking-tight">Forge</span>
+        </div>
         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
           <Lock className="h-5 w-5" />
         </div>

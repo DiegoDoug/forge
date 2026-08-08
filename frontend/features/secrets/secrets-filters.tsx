@@ -5,6 +5,7 @@ import { Folder as FolderIcon, Plus, Tag as TagIcon, Trash2 } from "lucide-react
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useFolders, useTags, useSecretsMutations } from "./api";
@@ -26,6 +27,14 @@ export function SecretsFilters({
 
   const [newFolder, setNewFolder] = useState("");
   const [newTag, setNewTag] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<{ type: "folder" | "tag"; id: string; name: string } | null>(null);
+
+  function confirmDelete() {
+    if (!deleteTarget) return;
+    if (deleteTarget.type === "folder") deleteFolder.mutate(deleteTarget.id);
+    else deleteTag.mutate(deleteTarget.id);
+    setDeleteTarget(null);
+  }
 
   async function addFolder() {
     if (!newFolder.trim()) return;
@@ -48,7 +57,7 @@ export function SecretsFilters({
   }
 
   return (
-    <div className="flex w-56 shrink-0 flex-col gap-6 border-r border-border p-4">
+    <>
       <div>
         <button
           onClick={() => onFolderChange(null)}
@@ -84,7 +93,8 @@ export function SecretsFilters({
                 variant="ghost"
                 size="icon-xs"
                 className="shrink-0 opacity-0 group-hover:opacity-100"
-                onClick={() => deleteFolder.mutate(folder.id)}
+                aria-label={`Delete folder ${folder.name}`}
+                onClick={() => setDeleteTarget({ type: "folder", id: folder.id, name: folder.name })}
               >
                 <Trash2 className="h-3 w-3" />
               </Button>
@@ -99,7 +109,7 @@ export function SecretsFilters({
             placeholder="New folder"
             className="h-7 text-xs"
           />
-          <Button variant="ghost" size="icon-sm" onClick={addFolder}>
+          <Button variant="ghost" size="icon-sm" aria-label="Add folder" onClick={addFolder}>
             <Plus className="h-3.5 w-3.5" />
           </Button>
         </div>
@@ -128,7 +138,8 @@ export function SecretsFilters({
                 variant="ghost"
                 size="icon-xs"
                 className="shrink-0 opacity-0 group-hover:opacity-100"
-                onClick={() => deleteTag.mutate(tag.id)}
+                aria-label={`Delete tag ${tag.name}`}
+                onClick={() => setDeleteTarget({ type: "tag", id: tag.id, name: tag.name })}
               >
                 <Trash2 className="h-3 w-3" />
               </Button>
@@ -143,11 +154,23 @@ export function SecretsFilters({
             placeholder="New tag"
             className="h-7 text-xs"
           />
-          <Button variant="ghost" size="icon-sm" onClick={addTag}>
+          <Button variant="ghost" size="icon-sm" aria-label="Add tag" onClick={addTag}>
             <Plus className="h-3.5 w-3.5" />
           </Button>
         </div>
       </div>
-    </div>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        title={`Delete "${deleteTarget?.name}"?`}
+        description={
+          deleteTarget?.type === "folder"
+            ? "Secrets in this folder are not deleted — they become unfiled. This cannot be undone."
+            : "This tag is removed from every secret it's attached to. This cannot be undone."
+        }
+        onConfirm={confirmDelete}
+      />
+    </>
   );
 }
