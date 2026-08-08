@@ -1,9 +1,9 @@
 # QA-0002 — Run a real screen-reader pass and an automated `axe` sweep once tooling exists
 
-> **Purpose:** Close out the two accessibility-verification methods [`../08_ACCEPTANCE.md`](../08_ACCEPTANCE.md) AC46 calls for that this phase's toolchain cannot perform.
+> **Purpose:** Close out the two accessibility-verification methods [`../../../implementation/Phase-09-Frontend-Reimagine/08_ACCEPTANCE.md`](../../../implementation/Phase-09-Frontend-Reimagine/08_ACCEPTANCE.md) AC46 calls for that this phase's toolchain cannot perform.
 > **Status:** Open — not yet run
 > **Owner:** TODO — assign a QA owner
-> **Type:** Manual screen-reader session + automated `axe`-core integration (neither exists in this repo's current toolchain — no frontend test runner exists per [`../07_TESTING.md`](../07_TESTING.md) §2, and no `axe`/equivalent package is installed)
+> **Type:** Manual screen-reader session + automated `axe`-core integration (neither exists in this repo's current toolchain — no frontend test runner exists per [`../../../implementation/Phase-09-Frontend-Reimagine/07_TESTING.md`](../../../implementation/Phase-09-Frontend-Reimagine/07_TESTING.md) §2, and no `axe`/equivalent package is installed)
 > **Blocks Phase 09 sign-off:** No. Owner sign-off (2026-08-07) explicitly accepted AC46 as satisfied by its manual equivalent. Tracked here so the gap is neither silently dropped nor falsely checked off, per [`../../../13_PHASE_LIFECYCLE.md`](../../../13_PHASE_LIFECYCLE.md) §3.
 
 ---
@@ -35,7 +35,7 @@ This is real, defect-finding coverage — not a rubber stamp — but it is not e
 
 ## Cross-references
 
-- [../08_ACCEPTANCE.md](../08_ACCEPTANCE.md) AC46 — the criterion this defers
-- [../CURRENT_STATE.md](../CURRENT_STATE.md) Known Issue #2 — no frontend test framework, the structural reason neither method is automatable today
-- [../09_IMPLEMENTATION_TASKS.md](../09_IMPLEMENTATION_TASKS.md) T27 — the manual work this ticket builds on, not replaces
-- [../../Phase-08-Developer-Toolkit/QA/QA-0001-tab-keyboard-activation.md](../../Phase-08-Developer-Toolkit/QA/QA-0001-tab-keyboard-activation.md) — the precedent for "automated session cannot close this, tracked rather than dropped"
+- [../../../implementation/Phase-09-Frontend-Reimagine/08_ACCEPTANCE.md](../../../implementation/Phase-09-Frontend-Reimagine/08_ACCEPTANCE.md) AC46 — the criterion this defers
+- [../../../implementation/Phase-09-Frontend-Reimagine/CURRENT_STATE.md](../../../implementation/Phase-09-Frontend-Reimagine/CURRENT_STATE.md) Known Issue #2 — no frontend test framework, the structural reason neither method is automatable today
+- [../../../implementation/Phase-09-Frontend-Reimagine/09_IMPLEMENTATION_TASKS.md](../../../implementation/Phase-09-Frontend-Reimagine/09_IMPLEMENTATION_TASKS.md) T27 — the manual work this ticket builds on, not replaces
+- [../../Phase-08/QA/QA-0001-tab-keyboard-activation.md](../../Phase-08/QA/QA-0001-tab-keyboard-activation.md) — the precedent for "automated session cannot close this, tracked rather than dropped"

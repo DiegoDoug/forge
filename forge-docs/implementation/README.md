@@ -3,7 +3,7 @@
 > **Purpose:** Index of every FDK implementation phase — the buildable work that realizes the roadmap in [`../02_ROADMAP.md`](../02_ROADMAP.md).
 > **Scope:** Index only. Each phase owns its own full spec in its own folder.
 > **Ownership:** TODO — assign an owner.
-> **Status:** Phases 01–08 🔒 released & frozen (bug fixes only); Phase 09 **Release Candidate** — implementation complete, verified 2026-08-07, awaiting owner sign-off
+> **Status:** Phases 01–09 🔒 released & frozen (bug fixes only)
 > **Version:** 0.6.0
 > **Last Updated:** 2026-08-06
 > **Depends On:** [../02_ROADMAP.md](../02_ROADMAP.md)
@@ -23,7 +23,7 @@
 | 06 | [Projects](Phase-06-Projects/README.md) | 🔒 Released & frozen — `v0.6.0-projects`, bug fixes only from here |
 | 07 | [Knowledge Hub](Phase-07-Knowledge-Hub/README.md) | 🔒 Released & frozen — `v0.7.0-knowledge-hub`, bug fixes only from here |
 | 08 | [Developer Toolkit](Phase-08-Developer-Toolkit/README.md) | 🔒 Released & frozen — `v0.8.0-developer-toolkit`, bug fixes only from here |
-| 09 | [Frontend Reimagine](Phase-09-Frontend-Reimagine/README.md) | **Release Candidate** — all 30 tasks complete 2026-08-06/07; RC verified 2026-08-07; awaiting owner sign-off |
+| 09 | [Frontend Reimagine](Phase-09-Frontend-Reimagine/README.md) | 🔒 **Released & Frozen** — all 30 tasks complete 2026-08-06/07; tagged `v0.9.0-frontend-reimagine` |
 
 ## 2. Shape of every phase folder
 
@@ -48,7 +48,7 @@ As a phase approaches RC/sign-off, it accumulates a few more standard artifacts 
 - **`BUGS/`** — one issue file per finding from manual verification or a post-implementation audit, classified BLOCKER/MAJOR/MINOR per [`../12_BUG_CLASSIFICATION.md`](../12_BUG_CLASSIFICATION.md). See [`../history/Phase-01/BUGS/README.md`](../history/Phase-01/BUGS/README.md) for the pattern.
 - **`POST_IMPLEMENTATION_REVIEW.md`** — the retrospective (What Went Well / What Didn't / Unexpected Problems / Architecture Changes / Performance Notes / Accessibility Notes / Lessons Learned / Recommendations for the next phase). See [`../history/Phase-01/POST_IMPLEMENTATION_REVIEW.md`](../history/Phase-01/POST_IMPLEMENTATION_REVIEW.md) for the pattern.
 
-None of these four block a phase from starting — they're end-state artifacts, not upfront scaffolding. All four move to [`../history/Phase-NN/`](../history/) once the phase freezes (per [`../13_PHASE_LIFECYCLE.md`](../13_PHASE_LIFECYCLE.md) §5) — the links above point at Phase 01's already-archived copies. All of Phases 01–07 have now reached that point and archived their end-of-phase artifacts under [`../history/`](../history/).
+None of these four block a phase from starting — they're end-state artifacts, not upfront scaffolding. All four move to [`../history/Phase-NN/`](../history/) once the phase freezes (per [`../13_PHASE_LIFECYCLE.md`](../13_PHASE_LIFECYCLE.md) §5) — the links above point at Phase 01's already-archived copies. All of Phases 01–09 have now reached that point and archived their end-of-phase artifacts under [`../history/`](../history/).
 
 See [`../11_PROJECT_STRUCTURE.md`](../11_PROJECT_STRUCTURE.md) §5 for how this maps onto the repository as a whole.
 

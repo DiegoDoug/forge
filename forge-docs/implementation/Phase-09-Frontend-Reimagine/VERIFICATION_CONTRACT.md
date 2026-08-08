@@ -121,7 +121,7 @@ From [`../../03_ARCHITECTURE.md`](../../03_ARCHITECTURE.md) §2 and [`../../07_C
 All unconditional, per the template's no-conditionals rule:
 
 - [x] [`CURRENT_STATE.md`](CURRENT_STATE.md) — reflects reality, no stale "In Progress" beyond the owner-sign-off gate itself
-- [x] [`10_RELEASE_NOTES.md`](10_RELEASE_NOTES.md) — finalized at T29, corrected at RC (reduced-motion claim restored, two new partial-coverage limitations added)
+- [x] [`10_RELEASE_NOTES.md`](../../history/Phase-09/10_RELEASE_NOTES.md) — finalized at T29, corrected at RC (reduced-motion claim restored, two new partial-coverage limitations added); archived to `history/Phase-09/` at Freeze per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §5
 - [x] [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) — every criterion checked with cited evidence; re-verified live at RC rather than trusting T29's citations, which surfaced and corrected one documentation error (AC43) and two new honest partial-coverage findings (AC41, AC45)
 - [x] [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) — every task (T0–T30) checked with as-built notes
 - [x] [`../../04_UI_GUIDELINES.md`](../../04_UI_GUIDELINES.md) — §3's minimum-viewport TODO, §4's contrast-standard and audit TODOs, and §6's motion-policy TODO all resolved into fact

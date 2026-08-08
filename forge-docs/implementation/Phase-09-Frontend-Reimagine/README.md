@@ -3,7 +3,7 @@
 > **Purpose:** Entry point for the Frontend Reimagine phase — objective, scope, deliverables, and completion criteria.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** **Release Candidate verified, 2026-08-07. Ready for owner sign-off.** All six milestones (T0–T30) complete — see [`IMPLEMENT.md`](IMPLEMENT.md) and [`CURRENT_STATE.md`](CURRENT_STATE.md). The 🔴 typography BLOCKER is fixed and live-verified. Two non-blocking Should Fix items and two partial-coverage accessibility findings are recorded in [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) §12 for the owner's sign-off decision; none are Phase 09 regressions.
+> **Status:** 🔒 **Released & Frozen (2026-08-07).** The project owner recorded sign-off, explicitly accepting the RC verification's partial-coverage findings (AC41, AC45, AC46) and classifying both design-review Should Fix items (auth-screen gradient: accepted, indefinite; document-title truncation: deferred, first fast-follow). Committed directly to `master` at `43cbcbc957e9bea7efa06be0fba0df4b0d754238`, tagged `v0.9.0-frontend-reimagine`. Per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md), this phase's directory now accepts bug fixes only — no new features, no architectural changes; any further enhancement begins as a new phase or a scoped fix outside this directory.
 > **Last Updated:** 2026-08-07
 
 ---

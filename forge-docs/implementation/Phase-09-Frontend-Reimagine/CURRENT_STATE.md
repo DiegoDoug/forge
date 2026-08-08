@@ -3,16 +3,16 @@
 > **Purpose:** Live snapshot of where this phase actually stands, updated at every checkpoint.
 > **Scope:** This phase only — updated continuously, never left stale.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** **Release Candidate verified, 2026-08-07. Ready for owner sign-off.** T0–T30 all done. One genuine layout bug (`FilterRail` mobile integration on Secrets/Documents) found and fixed at T30. RC verification re-checked every acceptance criterion live rather than trusting prior citations, and corrected one documentation error (AC43/reduced-motion was wrongly marked a gap at T29 — it's fully implemented and now confirmed working). Two new partial-coverage findings surfaced by that re-check (AC41 focus-restore, AC45 form-error uniformity) — both pre-existing, neither a Phase 09 regression, both recorded for owner decision.
+> **Status:** 🔒 **Released & Frozen.** Tagged `v0.9.0-frontend-reimagine`, committed directly to `master` at commit `43cbcbc957e9bea7efa06be0fba0df4b0d754238`, following owner sign-off recorded 2026-08-07. This implementation directory now accepts bug fixes only, per `13_PHASE_LIFECYCLE.md` §4. End-of-phase artifacts (`10_RELEASE_NOTES.md`, `QA/`) moved to [`forge-docs/history/Phase-09/`](../../history/Phase-09/).
 > **Last Updated:** 2026-08-06
 
 ---
 
 ## Current Status
 
-Phase 09 is in **Implementation** ([`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md)). Milestone 0 (T0/T0.5/T0.6) and T1 are complete. Per owner direction (2026-08-06), the session has shifted to implementation velocity: normal tasks proceed without per-task narration or confirmation; full detail lives in `09_IMPLEMENTATION_TASKS.md`'s as-built notes, and this file is updated continuously. Reporting reverts to narrative form at milestone checkpoints, architectural decisions, contract changes, or blocking issues.
+**Released & Frozen** ([`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §4). All 33 tasks (T0, T0.5, T0.6, T1–T30) complete; every criterion in [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) checked with cited evidence; owner sign-off recorded 2026-08-07; tagged `v0.9.0-frontend-reimagine` at commit `43cbcbc957e9bea7efa06be0fba0df4b0d754238` on `master`. This directory now accepts bug fixes only — no new features, no architectural changes. Any further enhancement (e.g. resolving [`QA-0002`](../../history/Phase-09/QA/QA-0002-accessibility-tooling-gap.md) by adding a real frontend test framework, or fixing the deferred document-title truncation) begins as a new phase or a scoped fix outside this directory.
 
-The session produced: a codebase-grounded audit of the entire frontend, the four designer-skills artifacts (brief, IA, tokens, tasks), the full Phase 09 document set, two ADRs, and a roadmap entry.
+The phase produced: a codebase-grounded audit of the entire frontend, the four designer-skills artifacts (brief, IA, tokens, tasks), the full Phase 09 document set, two ADRs, and a roadmap entry — followed by full implementation across all 17 routes and 40 shared primitives, five validation passes (responsive, accessibility, regression, documentation, design review), and Release Candidate verification.
 
 Two defects were found and **verified in a running browser**, not inferred:
 
@@ -35,7 +35,7 @@ Two defects were found and **verified in a running browser**, not inferred:
 
 ## In Progress
 
-- [ ] **Owner sign-off on completion** — the only remaining gate; RC verification (2026-08-07) re-checked every previously-flagged item live rather than leaving them as assumptions. See [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) §12: AC41 partial (dialog focus-trap works, focus-restore-to-trigger does not — pre-existing, not a Phase 09 regression), AC43 now fully satisfied (corrected — wrongly flagged as a gap at T29), AC45 partial (the a11y-wiring mechanism is correct but has one consumer app-wide, not "uniform"), AC46 satisfied by manual equivalent, not literal `axe`.
+None. This phase is Released & Frozen. Owner sign-off was granted 2026-08-07, explicitly accepting the partial-coverage findings (AC41, AC45, AC46) and the two deferred design-review items as documented and non-blocking — see [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) §12.
 
 ## Remaining
 
@@ -230,16 +230,22 @@ No application code was changed. Files created or modified this session:
 - `frontend/components/command-palette/command-palette-provider.tsx` (T28 — Ctrl+K self-collision fix)
 - `frontend/app/(app)/secrets/page.tsx`, `frontend/app/(app)/documents/page.tsx` (T30 — `FilterRail` mobile-layout fix)
 - `.design/frontend-reimagine/DESIGN_REVIEW.md` — new, T30's full findings
-- `forge-docs/implementation/Phase-09-Frontend-Reimagine/09_IMPLEMENTATION_TASKS.md`, `08_ACCEPTANCE.md`, `10_RELEASE_NOTES.md` — T26–T30 checked off with as-built notes and cited evidence; this file
+- `forge-docs/implementation/Phase-09-Frontend-Reimagine/09_IMPLEMENTATION_TASKS.md`, `08_ACCEPTANCE.md` — T26–T30 checked off with as-built notes and cited evidence; this file
+- `forge-docs/history/Phase-09/10_RELEASE_NOTES.md` — T26–T30 checked off with as-built notes and cited evidence; moved here at Freeze
 - `forge-docs/04_UI_GUIDELINES.md`, `forge-docs/05_DESIGN_SYSTEM.md` — TODOs converted to fact (T29)
+
+**Post-release freeze, 2026-08-07:**
+- This document, `README.md`, `08_ACCEPTANCE.md`, and `../../02_ROADMAP.md` updated to Released & Frozen
+- `10_RELEASE_NOTES.md` and `QA/QA-0002-accessibility-tooling-gap.md` (newly filed, backing the "QA ticket filed" claims already in `09_IMPLEMENTATION_TASKS.md` T27 and `10_RELEASE_NOTES.md`) moved to `forge-docs/history/Phase-09/`, internal cross-references repaired for the new relative paths
+- `forge-docs/history/README.md` gained Phase 09's row in its frozen-phase archive index
 
 ## Next Milestone
 
-**None — Milestone 5 is complete and Phase 09 is Ready for Release Candidate.** The only remaining gate is owner sign-off ([`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) §12), which is a decision for the project owner, not implementation work. Two Should Fix items from T30's design review (a pre-existing decorative auth-screen gradient; a document-title input that truncates at 768px) and one Could Improve item (the brief's own responsive table not reflecting the frozen I3 nav-breakpoint invariant) are recorded but do not block RC — see [`.design/frontend-reimagine/DESIGN_REVIEW.md`](../../../.design/frontend-reimagine/DESIGN_REVIEW.md).
+None. This phase is Released & Frozen. Any further work is either a bug fix within this directory (per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §4) or a new phase/scoped follow-up — most concretely: [`QA-0002`](../../history/Phase-09/QA/QA-0002-accessibility-tooling-gap.md) (screen-reader pass + automated `axe` sweep, blocked on a frontend test framework decision), the deferred document-title truncation at 768px (recommended as the first fast-follow), and the two accepted-but-fixable a11y partials (AC41 dialog focus-restore, AC45 form-error wiring uniformity).
 
 ## Next Claude Prompt
 
-> Phase 09 implementation (T0–T30) is complete. If resuming work here, the next step is either (a) owner sign-off and a Release commit, or (b) a follow-up task addressing the two Should Fix / one Could Improve items in `.design/frontend-reimagine/DESIGN_REVIEW.md`, if the owner elects to close them before Release rather than after. Read `CURRENT_STATE.md` in full and `08_ACCEPTANCE.md` §12 first either way.
+> Phase 09 is Released & Frozen — there is no next step here. If asked to touch this phase again, the only in-scope work is a BLOCKER/MAJOR/MINOR bug fix per `13_PHASE_LIFECYCLE.md` §4. Anything larger (adopting a frontend test framework, fixing the document-title truncation, closing the focus-restore or form-wiring gaps) is a new phase or an explicitly-scoped follow-up — read `08_ACCEPTANCE.md` §12 and `QA-0002` first to see exactly what's already tracked before proposing new scope.
 
 ## Session Notes
 
@@ -336,3 +342,15 @@ Locking the session mid-sweep (deliberately, to verify the Lock action itself) c
 Backend suite run in full for the first time this milestone (not just `git diff --stat`): 100% pass, zero failures, pre-existing deprecation warnings only — consistent with the zero-backend-diff constraint holding throughout.
 
 Milestone 5's validation trio (T26–T28) complete. Zero regressions against the T0 baseline. One real pre-existing bug found and fixed (T28's Ctrl+K collision) and six real accessibility defects found and fixed (T27) — both net improvements over baseline, not regressions from it. T29 (this documentation pass) and T30 (`/design-review`) remain before the milestone closes.
+
+**2026-08-07 — Release Candidate verification, owner sign-off, and Release & Freeze (session 3, continued).**
+
+T30 ran against the design brief at all four breakpoints, both themes, hunting the brief's own anti-references specifically. Found and fixed one genuine Must Fix: `FilterRail`'s mobile Sheet-trigger wrapper reserved its own flex column instead of stacking above the content below `lg`, silently narrowing every row on Secrets and Documents at the narrowest supported viewport — invisible to T26's page-overflow-based sweep because `scrollWidth` stayed correct throughout; only measuring the flex children's own geometry surfaced it. Fixed with a one-line wrapper change on both consumers. Two Should Fix items (a pre-existing auth-screen gradient; a document-title input truncating at 768px) were found, documented with full reasoning, and explicitly left for owner decision rather than fixed under a "no redesign" boundary.
+
+RC verification (owner-authorized, proceeding immediately from Milestone 5 approval) re-checked every one of `08_ACCEPTANCE.md`'s 56 criteria against the actual code and live app rather than trusting T29's citations — a deliberate choice given how many of this phase's real findings had already come from checking a prior claim against the primary source instead of propagating it forward. That discipline paid off twice more: it caught a **documentation error** (AC43/reduced-motion had been wrongly marked an unverified gap at T29; live measurement showed a fully working `prefers-reduced-motion` block, corrected everywhere it had been mischaracterized), and it found two **new, real, pre-existing gaps** neither T27 nor any earlier task had exercised — a dialog's focus does not return to its trigger on close (reproduced with two independent close methods, timing artifacts ruled out), and the shared `Field` accessibility component, while correctly built, has exactly one consumer app-wide. Both are Base UI/adoption-completeness conditions that predate this phase, not regressions it introduced. `docker compose build` was also run for the first time this phase (not previously exercised, since `docker/**` being inspect-only had been read as "don't touch," not "don't verify") — both images built clean. A full reconciliation pass then fixed stale "Draft"/"Authorized" status headers across ten Phase 09 documents and both roadmap index files that had never been updated past their pre-implementation state.
+
+The owner granted sign-off 2026-08-07, explicitly accepting the RC verification's findings as documented — including the corrected AC43, the two new partial-coverage items, and both design-review Should Fix items — and explicitly classifying each as accepted/deferred rather than leaving their disposition ambiguous: the auth gradient accepted indefinitely, the document-title truncation deferred as the first fast-follow, and the three accessibility partials recorded as non-blocking. Release proceeded as a direct commit to `master` (`43cbcbc957e9bea7efa06be0fba0df4b0d754238`, 108 files, zero backend/docker diff, no other phase's implementation directory touched — all verified before pushing), tagged `v0.9.0-frontend-reimagine` per the established `v0.<phase>.0-<slug>` convention, and pushed to `origin`. Post-release integrity checks confirmed the remote tag resolves to the pushed commit and the working tree was clean before the freeze commit began.
+
+Freezing surfaced one process gap worth naming: `09_IMPLEMENTATION_TASKS.md` and `10_RELEASE_NOTES.md` both said a "QA ticket" had been filed for the screen-reader pass and the `axe`-automation gap, but no such file had actually been created — the claim was true in substance (the gap was real and tracked in prose) but not backed by the artifact the phrase implied. Rather than freeze that inconsistency into the historical record, `QA-0002` was written now, following Phase 08's `QA-0001` format, and archived directly to `history/Phase-09/QA/` alongside `10_RELEASE_NOTES.md` per `13_PHASE_LIFECYCLE.md` §5 — both moved out of the active implementation directory with their internal cross-references repaired for the new relative paths, matching the Phase 06/07/08 precedent exactly.
+
+Phase 09 is Released & Frozen.

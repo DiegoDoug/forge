@@ -3,8 +3,8 @@
 > **Purpose:** The criteria Phase 09 must satisfy to be considered complete. Each is traceable to a functional requirement in [`01_SPEC.md`](01_SPEC.md) and independently checkable.
 > **Scope:** This phase only.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** **Implementation complete (T0–T30). Ready for Release Candidate.** Evidence recorded below per criterion. Owner sign-off (§12) remains outstanding.
-> **Version:** 0.7.0
+> **Status:** 🔒 **Released & Frozen.** Owner sign-off granted 2026-08-07. Every criterion below carries cited evidence, re-verified live at RC (2026-08-07) rather than trusted from earlier milestone citations.
+> **Version:** 0.8.0
 > **Last Updated:** 2026-08-06
 > **Depends On:** [01_SPEC.md](01_SPEC.md), [07_TESTING.md](07_TESTING.md)
 
@@ -144,7 +144,7 @@ This section is the phase's most important. Each line is verified against the T0
 
 **AC45** ⚠️ *(partial — verified at RC prep, 2026-08-07)* — The shared `Field` component (`frontend/components/field.tsx`, built at T6) correctly wires `aria-describedby` to the error/hint text and sets `aria-invalid` whenever an error is present — the mechanism is real and correct where it's used. **However, it has exactly one consumer app-wide** (`features/secrets/secret-detail-sheet.tsx`, confirmed via grep) — every other form in the app either wires this by hand inconsistently or not at all. AC45's literal text ("Already the convention — enforce it uniformly") is **not met**: the convention exists but is not uniform. Not a Phase 09 regression (no prior phase enforced this either), but not the "done" state this AC describes. Recorded for owner decision — closing it means adopting `Field` (or equivalent hand-wiring) across every remaining form, which is implementation work beyond this RC-verification pass's scope.
 
-**AC46** ⚠️ *(partial)* — No automated `axe`-core (or equivalent) tool exists in this project's toolchain (consistent with Known Issue #2 — no frontend test framework at all). T27 substituted a **manual equivalent**: live-measured contrast via a custom script, and a manual sweep for missing `aria-label`s and landmark/grouping gaps, finding and fixing 6 real defects (§9 above). This satisfies the audit's *spirit* — real defects found and fixed via measurement, not eyeballing — but not its literal instrument. **QA ticket filed** for a proper automated `axe` pass and the screen-reader pass, both requiring tooling this phase does not have, per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §3.
+**AC46** ⚠️ *(partial)* — No automated `axe`-core (or equivalent) tool exists in this project's toolchain (consistent with Known Issue #2 — no frontend test framework at all). T27 substituted a **manual equivalent**: live-measured contrast via a custom script, and a manual sweep for missing `aria-label`s and landmark/grouping gaps, finding and fixing 6 real defects (§9 above). This satisfies the audit's *spirit* — real defects found and fixed via measurement, not eyeballing — but not its literal instrument. **QA ticket filed:** [`QA-0002`](../../history/Phase-09/QA/QA-0002-accessibility-tooling-gap.md) — a proper automated `axe` pass and the screen-reader pass, both requiring tooling this phase does not have, per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §3.
 
 ## 10. Defects closed
 
@@ -168,7 +168,7 @@ This section is the phase's most important. Each line is verified against the T0
 
 **AC52** ✅ — A `/design-review` pass has been run against the design brief. **Evidence:** T30 — [`.design/frontend-reimagine/DESIGN_REVIEW.md`](../../../.design/frontend-reimagine/DESIGN_REVIEW.md), representative screens at 375/768/1440px, both themes. Found and **fixed** one systemic Must Fix (see AC33 correction below); two Should Fix and one Could Improve item recorded, explicitly deferred as non-blocking per the owner's Milestone 5 authorization ("address any actionable issues before RC" — both Should Fix items are polish-level, not actionable blockers, and are recorded for a follow-up decision).
 
-**AC53** ✅ — Documentation is true as of this update (T29/T30): `CURRENT_STATE.md` has no stale "In Progress" beyond the owner-sign-off gate itself; `10_RELEASE_NOTES.md` describes what shipped, corrected against actual evidence rather than the pre-implementation draft; `04_UI_GUIDELINES.md` and `05_DESIGN_SYSTEM.md` updated where this phase converted TODOs into fact.
+**AC53** ✅ — Documentation is true as of Freeze: `CURRENT_STATE.md` has no stale "In Progress"; [`10_RELEASE_NOTES.md`](../../history/Phase-09/10_RELEASE_NOTES.md) (archived to `history/Phase-09/` at Freeze) describes what shipped, corrected against actual evidence rather than the pre-implementation draft; `04_UI_GUIDELINES.md` and `05_DESIGN_SYSTEM.md` updated where this phase converted TODOs into fact.
 
 **Correction to AC31/AC33 above, found at T30:** the responsive sweep recorded under AC31 (T26) did not catch a real defect — `FilterRail`'s mobile trigger button was reserving 78–110px of dead horizontal space on Secrets and Documents at every width below `lg`, found only via T30's live `getBoundingClientRect()` measurement, not by the visual/overflow-scroll check T26 used. **Fixed** during T30 (see `09_IMPLEMENTATION_TASKS.md` T30 and `CURRENT_STATE.md` Known Issue #22). AC31/AC33 are correct as currently stated (zero regressions, no horizontal page scroll) — the bug never caused page-level overflow, only reduced available content width within a still-non-scrolling page, which is exactly why a scroll-width check alone missed it. Recorded here so a reader of AC31 in isolation isn't misled into thinking T26 was exhaustive on its own.
 
@@ -177,14 +177,16 @@ This section is the phase's most important. Each line is verified against the T0
 - [x] **Roadmap ratification** — recorded 2026-08-06.
 - [x] **Specification review** — approved 2026-08-06, with OQ1–OQ4 resolved and two revisions applied (T0.5/T0.6, and the screen dependency graph). See [`01_SPEC.md`](01_SPEC.md) §7.
 - [x] **Implementation authorization** — granted 2026-08-06, as a separate act ([`IMPLEMENT.md`](IMPLEMENT.md)).
-- [ ] **Owner sign-off on completion** — pending; this is the release gate, distinct from the three above. **Outstanding items, all confirmed at RC verification (2026-08-07), each explicitly classified, none blocking RC readiness:**
-  - **AC41 (partial) — recorded, not fixed.** Dialog focus-trap works; focus-restore-to-trigger on close does not (pre-existing Base UI integration behavior, not a Phase 09 regression). A primitive-level fix has app-wide blast radius — recommended as scoped follow-up work, not an RC blocker.
-  - **AC45 (partial) — recorded, not fixed.** The shared `Field` a11y-wiring component is correct but has only one consumer app-wide, not the "uniform" state the AC describes. Closing it means adopting `Field` across remaining forms — implementation work, not an RC blocker.
-  - **AC46 (partial) — accepted as the phase's practical ceiling.** Manual contrast/aria-label equivalent performed; no automated `axe` tool exists in this project's toolchain (no frontend test framework at all — Known Issue #2). Tracked as a QA ticket per `13_PHASE_LIFECYCLE.md` §3, not an RC blocker.
+- [x] **Owner sign-off on completion** — **granted 2026-08-07.** The owner accepted RC verification as-is, including every outstanding item below, and explicitly classified each rather than leaving its disposition ambiguous:
+  - **AC41 (partial) — accepted, recorded, not fixed.** Dialog focus-trap works; focus-restore-to-trigger on close does not (pre-existing Base UI integration behavior, not a Phase 09 regression). A primitive-level fix has app-wide blast radius — tracked as scoped follow-up work, not a release blocker.
+  - **AC45 (partial) — accepted, recorded, not fixed.** The shared `Field` a11y-wiring component is correct but has only one consumer app-wide, not the "uniform" state the AC describes. Closing it means adopting `Field` across remaining forms — implementation work, not a release blocker.
+  - **AC46 (partial) — accepted as the phase's practical ceiling.** Manual contrast/aria-label equivalent performed; no automated `axe` tool exists in this project's toolchain (no frontend test framework at all — Known Issue #2). Tracked in [`QA-0002`](../../history/Phase-09/QA/QA-0002-accessibility-tooling-gap.md) per `13_PHASE_LIFECYCLE.md` §3, not a release blocker.
   - **Design-review Should Fix #1 (auth-screen gradient) — ACCEPTED, deferred indefinitely.** Mild, pre-existing, restrained enough not to undermine the shipped aesthetic. Owner's discretion to schedule removal whenever, or never.
-  - **Design-review Should Fix #2 (document-title truncation at 768px) — DEFERRED, recommended as the first fast-follow.** Degrades gracefully (no data loss, no blocked action); fixing it correctly means touching the document-toolbar's action-cluster layout, beyond RC-verification's scope.
+  - **Design-review Should Fix #2 (document-title truncation at 768px) — DEFERRED, recommended as the first fast-follow.** Degrades gracefully (no data loss, no blocked action); fixing it correctly means touching the document-toolbar's action-cluster layout, beyond this phase's scope.
   - See [`.design/frontend-reimagine/DESIGN_REVIEW.md`](../../../.design/frontend-reimagine/DESIGN_REVIEW.md) for full detail on both design-review items.
   - **AC43 is fully satisfied** (corrected at RC verification — it was wrongly listed as a gap in the T29 pass; live-verified working).
+
+**Phase 09 is Released & Frozen.** Tagged `v0.9.0-frontend-reimagine` at commit `43cbcbc957e9bea7efa06be0fba0df4b0d754238` on `master`.
 
 ## 13. Cross-references
 

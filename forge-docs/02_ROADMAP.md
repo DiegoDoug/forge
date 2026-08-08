@@ -3,7 +3,7 @@
 > **Purpose:** Sequence the vision in [00_VISION.md](00_VISION.md) into ordered, buildable phases.
 > **Scope:** Cross-phase sequencing and dependency ordering. Per-phase detail lives in `implementation/Phase-XX-*/`.
 > **Ownership:** TODO — assign a roadmap owner.
-> **Status:** Phases 01–08 complete and released; Phase 09 implementation complete, Release Candidate verified 2026-08-07, awaiting owner sign-off
+> **Status:** Phases 01–09 complete and released
 > **Version:** 0.13.0
 > **Last Updated:** 2026-08-06
 > **Depends On:** [00_VISION.md](00_VISION.md)
@@ -41,7 +41,7 @@ The following already exist in the application and are **not** re-specified here
 | 06 | [Projects](implementation/Phase-06-Projects/README.md) | New — cross-feature project/workspace grouping (see [ADR-0014](decisions/0014-project-data-model-shape.md)) | ✓ Complete — 🔒 released & frozen as `v0.6.0-projects` |
 | 07 | [Knowledge Hub](implementation/Phase-07-Knowledge-Hub/README.md) | Unifies Notes + Documents + Ingest output into a searchable knowledge base | Released — `v0.7.0-knowledge-hub` |
 | 08 | [Developer Toolkit](implementation/Phase-08-Developer-Toolkit/README.md) | Consolidates Generators + Crypto + Utilities under one umbrella — confirmed correct; implemented as a navigation/presentation consolidation with no backend abstraction, no schema change, and no API change | ✓ Complete — 🔒 released & frozen as `v0.8.0-developer-toolkit` |
-| 09 | [Frontend Reimagine](implementation/Phase-09-Frontend-Reimagine/README.md) | Reimagines the presentation layer across **all** shipped surfaces: design tokens, application shell, grouped navigation ([ADR-0016](decisions/0016-grouped-navigation-and-search-surface-consolidation.md)), component consolidation, responsive layouts, and an accessibility baseline. Touches every frontend surface and **no** backend surface ([ADR-0017](decisions/0017-layered-design-token-architecture.md)) | **Release Candidate** — all 30 tasks (T0–T30) complete 2026-08-06/07; RC verified 2026-08-07; awaiting owner sign-off |
+| 09 | [Frontend Reimagine](implementation/Phase-09-Frontend-Reimagine/README.md) | Reimagines the presentation layer across **all** shipped surfaces: design tokens, application shell, grouped navigation ([ADR-0016](decisions/0016-grouped-navigation-and-search-surface-consolidation.md)), component consolidation, responsive layouts, and an accessibility baseline. Touches every frontend surface and **no** backend surface ([ADR-0017](decisions/0017-layered-design-token-architecture.md)) | ✓ Complete — 🔒 released & frozen as `v0.9.0-frontend-reimagine` |
 
 > **TODO:** The "proposed relationship" column is the Lead Architect's inference from the shipped feature set, not a ratified decision. Confirmed correct for Phase 01 (now released). Confirm or correct the remaining phases with the project owner before each begins.
 

@@ -9,7 +9,7 @@
 > 2. **Specification approval (2026-08-06)** — this document set approved, with OQ1–OQ4 resolved in favour of the recommended answers ([`01_SPEC.md`](01_SPEC.md) §7). Two revisions were requested and applied the same day: the foundation defects were elevated into their own pre-design step (**T0.5**), and a screen dependency graph was added as a required pre-implementation artifact ([`11_SCREEN_GRAPH.md`](11_SCREEN_GRAPH.md)).
 > 3. **Implementation authorization (2026-08-06)** — granted explicitly, as a separate act following the owner's review.
 >
-> Per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md), the phase moved **Specification → Authorized** on 2026-08-06, and **Authorized → Implementation → Release Candidate** as of 2026-08-07 — all 30 tasks complete, RC verified, awaiting owner sign-off. Scope was held to the approved specification throughout — see [`README.md`](README.md) for the delivered-vs-scoped reconciliation and [`CURRENT_STATE.md`](CURRENT_STATE.md) for the full record.
+> Per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md), the phase moved **Specification → Authorized → Implementation → Release Candidate → Released → Frozen**, all on 2026-08-06/07. Owner sign-off granted 2026-08-07; released as `v0.9.0-frontend-reimagine` at commit `43cbcbc957e9bea7efa06be0fba0df4b0d754238`. Scope was held to the approved specification throughout — see [`README.md`](README.md) for the delivered-vs-scoped reconciliation and [`CURRENT_STATE.md`](CURRENT_STATE.md) for the full record.
 >
 > [ADR-0016](../../decisions/0016-grouped-navigation-and-search-surface-consolidation.md) and [ADR-0017](../../decisions/0017-layered-design-token-architecture.md) are **Accepted** as of the same review.
 > **Last Updated:** 2026-08-07

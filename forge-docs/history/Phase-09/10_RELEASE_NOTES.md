@@ -3,17 +3,17 @@
 > **Purpose:** What shipped in this phase, written for someone who uses Forge rather than builds it.
 > **Scope:** This phase only.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** ✅ **Implementation complete. Ready for Release Candidate**, pending owner sign-off. T0–T30 done and verified 2026-08-06/07. See [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) for the full criterion-by-criterion record and [`../../../.design/frontend-reimagine/DESIGN_REVIEW.md`](../../../.design/frontend-reimagine/DESIGN_REVIEW.md) for T30's design-review findings.
-> **Target version:** `v0.9.0-frontend-reimagine` *(proposed — not tagged; tagging happens at Release, not RC)*
-> **Last Updated:** 2026-08-06
+> **Status:** ✅ **Released & Frozen.** Owner sign-off granted 2026-08-07. T0–T30 done and verified 2026-08-06/07. See [`08_ACCEPTANCE.md`](../../implementation/Phase-09-Frontend-Reimagine/08_ACCEPTANCE.md) for the full criterion-by-criterion record and [`../../../.design/frontend-reimagine/DESIGN_REVIEW.md`](../../../.design/frontend-reimagine/DESIGN_REVIEW.md) for T30's design-review findings.
+> **Released version:** `v0.9.0-frontend-reimagine`, tagged on release commit `43cbcbc957e9bea7efa06be0fba0df4b0d754238`
+> **Last Updated:** 2026-08-07
 
 ---
 
 ## 1. Status
 
-All 30 tasks (T0–T28) are complete. Every claim in this document reflects what actually shipped, not a target — corrected against `09_IMPLEMENTATION_TASKS.md`'s as-built notes and `08_ACCEPTANCE.md`'s evidence, not carried forward from the pre-implementation placeholder this document used to be. One claim from the placeholder version was **removed** as unverified (see §3, Changed) rather than left in place unchecked.
+All 30 tasks (T0–T30) are complete and released. Every claim in this document reflects what actually shipped, not a target — corrected against `09_IMPLEMENTATION_TASKS.md`'s as-built notes and `08_ACCEPTANCE.md`'s evidence, not carried forward from the pre-implementation placeholder this document used to be. One claim from the placeholder version was **removed** as unverified, then restored with corrected evidence after RC verification caught the error (see §3, Changed).
 
-Per the repo convention ([`../RELEASE_NOTES_TEMPLATE.md`](../RELEASE_NOTES_TEMPLATE.md)), full **Released** status still requires T30 (`/design-review`) and owner sign-off.
+Per the repo convention ([`../../implementation/RELEASE_NOTES_TEMPLATE.md`](../../implementation/RELEASE_NOTES_TEMPLATE.md)), this document is finalized now that the phase has reached **Released**.
 
 ## 2. Headline
 
@@ -66,18 +66,19 @@ Same capabilities, same routes, same data — a coherent visual language, a navi
 
 ## 5. Known limitations at release
 
-- Forge still has no frontend test framework. Regression safety in this phase rested on a captured baseline, typecheck, lint, build, and disciplined manual verification ([`07_TESTING.md`](07_TESTING.md) §8) — including a full 48-navigation-edge sweep at T28, which is where the Knowledge-shortcut collision above was actually found.
-- No automated accessibility tool (`axe` or equivalent) exists in this project's toolchain. T27 substituted live-measured contrast checking and a manual `aria-label`/landmark sweep, which found and fixed 6 real defects — but this is not equivalent to an automated scan's coverage. A real screen-reader pass and a proper `axe` pass are both tracked as QA tickets, per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §3.
-- **Dialog focus does not return to its trigger on close.** Verified live at RC: opening a dialog correctly traps focus inside it, but closing it (via Escape or its own Close button) leaves focus stranded rather than restoring it to the button that opened it. Pre-existing Base UI integration behavior, not introduced by this phase, but a real, currently-open gap. See [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) AC41.
-- **Form-error `aria-describedby` association exists but isn't uniform.** The shared `Field` component wires it correctly, but only one form in the entire app uses it. See [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) AC45.
+- Forge still has no frontend test framework. Regression safety in this phase rested on a captured baseline, typecheck, lint, build, and disciplined manual verification ([`07_TESTING.md`](../../implementation/Phase-09-Frontend-Reimagine/07_TESTING.md) §8) — including a full 48-navigation-edge sweep at T28, which is where the Knowledge-shortcut collision above was actually found.
+- No automated accessibility tool (`axe` or equivalent) exists in this project's toolchain. T27 substituted live-measured contrast checking and a manual `aria-label`/landmark sweep, which found and fixed 6 real defects — but this is not equivalent to an automated scan's coverage. A real screen-reader pass and a proper `axe` pass are both tracked in [`QA/QA-0002-accessibility-tooling-gap.md`](QA/QA-0002-accessibility-tooling-gap.md), per [`13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §3.
+- **Dialog focus does not return to its trigger on close.** Verified live at RC: opening a dialog correctly traps focus inside it, but closing it (via Escape or its own Close button) leaves focus stranded rather than restoring it to the button that opened it. Pre-existing Base UI integration behavior, not introduced by this phase, but a real, currently-open gap. Accepted at owner sign-off as non-blocking. See [`08_ACCEPTANCE.md`](../../implementation/Phase-09-Frontend-Reimagine/08_ACCEPTANCE.md) AC41.
+- **Form-error `aria-describedby` association exists but isn't uniform.** The shared `Field` component wires it correctly, but only one form in the entire app uses it. Accepted at owner sign-off as non-blocking. See [`08_ACCEPTANCE.md`](../../implementation/Phase-09-Frontend-Reimagine/08_ACCEPTANCE.md) AC45.
 - List-endpoint pagination remains a backend gap; surfaces continue to show an honest truncation notice.
-- `/design-review` (T30) ran and found two non-blocking Should Fix items, left for a follow-up decision rather than fixed in this phase: a pre-existing (not Phase 09-introduced) decorative gradient on the auth screens with no functional purpose, and a document-title input that visibly truncates at 768px because its action toolbar doesn't yet collapse to an overflow menu. See [`../../../.design/frontend-reimagine/DESIGN_REVIEW.md`](../../../.design/frontend-reimagine/DESIGN_REVIEW.md).
+- `/design-review` (T30) ran and found two non-blocking Should Fix items, explicitly classified at owner sign-off rather than fixed in this phase: the auth-screen decorative gradient (**accepted, indefinite**) and the document-title truncation at 768px (**deferred, recommended as the first fast-follow**). See [`../../../.design/frontend-reimagine/DESIGN_REVIEW.md`](../../../.design/frontend-reimagine/DESIGN_REVIEW.md).
 
 ## 6. Upgrade notes
 
-None anticipated — no schema change, no migration, no configuration change, no bookmark breakage. Verified: `git diff --stat backend/ docker/` stayed empty across all 30 tasks.
+None anticipated — no schema change, no migration, no configuration change, no bookmark breakage. Verified: `git diff --stat backend/ docker/` stayed empty across all 30 tasks and again at RC.
 
 ## 7. Cross-references
 
-- [README.md](README.md) · [08_ACCEPTANCE.md](08_ACCEPTANCE.md) · [CURRENT_STATE.md](CURRENT_STATE.md) · [00_AUDIT.md](00_AUDIT.md)
-- [../RELEASE_NOTES_TEMPLATE.md](../RELEASE_NOTES_TEMPLATE.md)
+- [README.md](../../implementation/Phase-09-Frontend-Reimagine/README.md) · [08_ACCEPTANCE.md](../../implementation/Phase-09-Frontend-Reimagine/08_ACCEPTANCE.md) · [CURRENT_STATE.md](../../implementation/Phase-09-Frontend-Reimagine/CURRENT_STATE.md) · [00_AUDIT.md](../../implementation/Phase-09-Frontend-Reimagine/00_AUDIT.md)
+- [QA/QA-0002-accessibility-tooling-gap.md](QA/QA-0002-accessibility-tooling-gap.md)
+- [../../implementation/RELEASE_NOTES_TEMPLATE.md](../../implementation/RELEASE_NOTES_TEMPLATE.md)
