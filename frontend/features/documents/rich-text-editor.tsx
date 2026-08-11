@@ -76,7 +76,7 @@ export function RichTextEditor({
           onInput={emitChange}
           onBlur={emitChange}
           data-placeholder={placeholder}
-          className="forge-document-editor prose prose-sm mx-auto min-h-full max-w-3xl px-10 py-8 text-sm outline-none empty:before:pointer-events-none empty:before:text-muted-foreground empty:before:content-[attr(data-placeholder)]"
+          className="forge-document-editor prose prose-sm dark:prose-invert mx-auto min-h-full max-w-3xl px-10 py-8 text-sm outline-none empty:before:pointer-events-none empty:before:text-muted-foreground empty:before:content-[attr(data-placeholder)]"
         />
       </div>
     </div>
