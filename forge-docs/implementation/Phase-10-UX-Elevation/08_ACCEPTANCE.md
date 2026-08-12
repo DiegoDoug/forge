@@ -3,7 +3,7 @@
 > **Purpose:** What was actually verified for Phase 10, and how. This is the implementation/verification source of truth for the phase — it reflects the release-readiness pass run after implementation, not a pre-agreed `VERIFICATION_CONTRACT.md` (none was written in advance for this phase — see [`README.md`](README.md)'s process note).
 > **Scope:** This phase only.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** Complete — release candidate. No owner sign-off recorded yet; not committed or tagged.
+> **Status:** 🔒 **Released & Frozen.** Committed to `master` at `4f58b64`, tagged `v0.10.0`, 2026-08-12. Owner authorized release after reviewing this record and a categorized diff audit — see `README.md`'s process note for how this differs from Phases 01–09's formal sign-off statement.
 > **Version:** 1.0.0
 > **Last Updated:** 2026-08-12
 > **Depends On:** [`01_SPEC.md`](01_SPEC.md)

@@ -2,10 +2,10 @@
 
 > **Purpose:** The release-facing summary of Phase 10 — what shipped, what to check before upgrading. Not a duplicate of `CURRENT_STATE.md` (the working log) — this is what a user or another engineer reads to understand what changed.
 > **Scope:** This phase only.
-> **Status:** Draft — written at RC, not yet finalized (no owner sign-off, no tag).
-> **Version:** Unreleased — no tag assigned yet, unlike Phases 01–09 which each shipped as `vN.N.0-name`. See `CURRENT_STATE.md` Remaining.
+> **Status:** 🔒 **Released & Frozen.** Committed to `master` at `4f58b64`, tagged `v0.10.0`. Owner authorized this release by directing the commit → tag → freeze sequence after reviewing the release-candidate report and the categorized diff audit (2026-08-12) — no separate formal sign-off document was produced, consistent with this phase's documented departure from the full FDK gate sequence (see [`../../implementation/Phase-10-UX-Elevation/README.md`](../../implementation/Phase-10-UX-Elevation/README.md)).
+> **Version:** `v0.10.0`
 > **Last Updated:** 2026-08-12
-> **Depends On:** [`CURRENT_STATE.md`](CURRENT_STATE.md), [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md)
+> **Depends On:** [`../../implementation/Phase-10-UX-Elevation/CURRENT_STATE.md`](../../implementation/Phase-10-UX-Elevation/CURRENT_STATE.md), [`../../implementation/Phase-10-UX-Elevation/08_ACCEPTANCE.md`](../../implementation/Phase-10-UX-Elevation/08_ACCEPTANCE.md)
 
 ---
 
@@ -30,7 +30,6 @@ None. No database or backend change of any kind.
 
 ## Known Issues
 
-- No formal owner sign-off has been recorded for this phase. See `CURRENT_STATE.md` Known Issues #4.
 - No frontend automated test suite exists in this repository (pre-existing, Phase 09 Known Issue #2) — this phase's regression safety rests on type-check, full-repo lint, production build, and live manual verification, not automated tests.
 - Screen-reader verification was not performed for the screens this phase changed. No new icon-only or unlabeled interactive elements were introduced, but that was not independently confirmed with assistive technology.
 
@@ -41,11 +40,11 @@ None beyond a normal frontend deploy. No environment variables, no data migratio
 ## Deferred Work
 
 - Search's weak discoverability (no sidebar/palette entry) was identified as a real UX gap during this phase's review but deliberately **not** re-litigated here — it's already tracked as a navigation decision in [ADR-0016](../../decisions/0016-grouped-navigation-and-search-surface-consolidation.md), and this phase's scope was screen-level composition, not navigation architecture.
-- No formal `VERIFICATION_CONTRACT.md` was written in advance for this phase (see `README.md` process note); if a future phase wants Phase 10 brought fully into this repository's FDK convention, writing one retroactively — and seeking the roadmap-ratification/authorization gates Phases 01–09 went through — is that phase's work, not a correction owed here.
+- No formal `VERIFICATION_CONTRACT.md` was written in advance for this phase (see the phase README's process note); if a future phase wants Phase 10 brought fully into this repository's FDK convention, writing one retroactively — and seeking the roadmap-ratification/authorization gates Phases 01–09 went through — is that phase's work, not a correction owed here.
 
 ## Cross-references
 
-- [`CURRENT_STATE.md`](CURRENT_STATE.md)
-- [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md)
-- [`01_SPEC.md`](01_SPEC.md)
-- [`../Phase-09-Frontend-Reimagine/README.md`](../Phase-09-Frontend-Reimagine/README.md)
+- [`../../implementation/Phase-10-UX-Elevation/CURRENT_STATE.md`](../../implementation/Phase-10-UX-Elevation/CURRENT_STATE.md)
+- [`../../implementation/Phase-10-UX-Elevation/08_ACCEPTANCE.md`](../../implementation/Phase-10-UX-Elevation/08_ACCEPTANCE.md)
+- [`../../implementation/Phase-10-UX-Elevation/01_SPEC.md`](../../implementation/Phase-10-UX-Elevation/01_SPEC.md)
+- [`../../implementation/Phase-09-Frontend-Reimagine/README.md`](../../implementation/Phase-09-Frontend-Reimagine/README.md)

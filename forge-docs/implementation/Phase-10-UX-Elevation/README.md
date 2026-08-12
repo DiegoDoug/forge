@@ -3,7 +3,7 @@
 > **Purpose:** Entry point for the Phase 10 UX Elevation pass — objective, scope, process note, and deliverables.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
 > **Ownership:** TODO — assign a phase owner.
-> **Status:** Release candidate — implementation and verification complete; not yet committed or tagged. See [`CURRENT_STATE.md`](CURRENT_STATE.md).
+> **Status:** 🔒 **Released & Frozen.** Committed to `master` at `4f58b64`, tagged `v0.10.0`, 2026-08-12. Owner authorized this release by directing the commit → tag → freeze sequence after reviewing the release-candidate report and a categorized diff audit — see §"A note on process" below for what that does and doesn't equate to. Per [`../../13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §4, this directory now accepts bug fixes only — no new features, no architectural changes; further UX work begins as a new phase. End-of-phase release notes moved to [`../../history/Phase-10/10_RELEASE_NOTES.md`](../../history/Phase-10/10_RELEASE_NOTES.md) per §5.
 > **Last Updated:** 2026-08-12
 
 ---
@@ -19,6 +19,7 @@ Phases 01–09 in this directory were each run through this repository's full FD
 3. Implementation proceeded screen-by-screen against that plan, with the plan's own explicit instruction that every proposed redesign was a **hypothesis to validate against the live, running screen — not a locked spec**. Several hypotheses were confirmed as written; at least one was found wrong on inspection and discarded (see [`01_SPEC.md`](01_SPEC.md) §3).
 4. A **release-readiness pass** (type-check, full-repo lint, production build, backend test suite, Docker image builds, diff-scope audit) was run afterward and is recorded in [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md). This is the actual verification source of truth for this phase.
 5. This documentation set — including this file — was **written after implementation and verification were complete**, to backfill the structural convention Phases 01–09 established. It does not describe a discovery/spec/authorization sequence that occurred; it describes what was actually planned, built, decided, and verified.
+6. **Release.** The owner reviewed the release-candidate report and a categorized diff audit (product changes / documentation / `.gitignore` fix / Sheet-header fix, separated explicitly) directly in conversation, then instructed the commit → tag → freeze sequence. That instruction is the authorization this release rests on. It is not the same artifact as Phases 01–09's formal owner-sign-off statement ("APPROVED, Accepted for Release" against a pre-agreed acceptance document) — no such statement was sought or given for Phase 10, and this documentation does not claim one was.
 
 If a future phase wants the full FDK ceremony applied retroactively to this work (a proper `00_AUDIT.md`, a pre-agreed `VERIFICATION_CONTRACT.md`, a ratified roadmap entry predating implementation), that is new work, not a correction of this record.
 
