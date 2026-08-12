@@ -33,12 +33,14 @@ function SortablePanelCard({
   visible,
   mode,
   onVisibilityChange,
+  spanClassName,
 }: {
   panelType: string;
   definition: WorkbenchPanelDefinition;
   visible: boolean;
   mode: "view" | "customize";
   onVisibilityChange: (visible: boolean) => void;
+  spanClassName?: string;
 }) {
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
     id: panelType,
@@ -51,7 +53,7 @@ function SortablePanelCard({
   };
 
   return (
-    <div ref={setNodeRef} style={style}>
+    <div ref={setNodeRef} style={style} className={spanClassName}>
       <WorkbenchPanelCard
         definition={definition}
         visible={visible}
@@ -60,10 +62,17 @@ function SortablePanelCard({
         dragHandleRef={setActivatorNodeRef}
         dragHandleAttributes={attributes}
         dragHandleListeners={listeners}
+        className="h-full"
       />
     </div>
   );
 }
+
+// Pinned Tools is the primary column's launcher panel — giving it the full
+// row width (rather than sharing a row with a narrower panel) avoids an
+// awkward unbalanced gap next to whichever panel would otherwise be its
+// sole row-mate in a 2-column grid (Phase 10 UX elevation).
+const FULL_WIDTH_PRIMARY_PANELS = new Set(["pinned_tools"]);
 
 export function WorkbenchGrid({ mode, onEnterCustomize }: { mode: "view" | "customize"; onEnterCustomize: () => void }) {
   const { data, isLoading, isError, refetch } = useWorkbenchQuery();
@@ -125,41 +134,74 @@ export function WorkbenchGrid({ mode, onEnterCustomize }: { mode: "view" | "cust
     });
   }
 
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-    const oldIndex = savedPanels.findIndex((p) => p.type === active.id);
-    const newIndex = savedPanels.findIndex((p) => p.type === over.id);
-    if (oldIndex === -1 || newIndex === -1) return;
-    const reorderedSaved = arrayMove(savedPanels, oldIndex, newIndex);
-    let i = 0;
-    const nextPanels = data!.layout.panels.map((p) => (registeredByType.has(p.type) ? reorderedSaved[i++] : p));
-    updateLayout.mutate({
-      panels: nextPanels,
-      pinned_tools: data!.layout.pinned_tools.map((t) => t.key),
-    });
+  function columnOf(type: string): "primary" | "rail" {
+    return registeredByType.get(type)?.metadata.column ?? "primary";
   }
 
-  const cards = panelsToRender.map((panel) => (
-    <SortablePanelCard
-      key={panel.type}
-      panelType={panel.type}
-      definition={registeredByType.get(panel.type)!}
-      visible={panel.visible}
-      mode={mode}
-      onVisibilityChange={(visible) => handleVisibilityChange(panel.type, visible)}
-    />
-  ));
+  // Reordering is scoped to within one column (Phase 10 UX elevation): the
+  // primary/rail split is fixed by panel metadata, not draggable, so the
+  // user can't produce a layout where e.g. Recent Activity ends up wider
+  // than Pinned Tools. Each column gets its own DndContext below, so dnd-kit
+  // never offers a cross-column drop target in the first place.
+  function makeDragEndHandler(column: "primary" | "rail") {
+    return function handleDragEnd(event: DragEndEvent) {
+      const { active, over } = event;
+      if (!over || active.id === over.id) return;
+      const columnPanels = panelsToRender.filter((p) => columnOf(p.type) === column);
+      const oldIndex = columnPanels.findIndex((p) => p.type === active.id);
+      const newIndex = columnPanels.findIndex((p) => p.type === over.id);
+      if (oldIndex === -1 || newIndex === -1) return;
+      const reordered = arrayMove(columnPanels, oldIndex, newIndex);
+      let i = 0;
+      const nextPanels = data!.layout.panels.map((p) =>
+        registeredByType.has(p.type) && columnOf(p.type) === column ? reordered[i++] : p,
+      );
+      updateLayout.mutate({
+        panels: nextPanels,
+        pinned_tools: data!.layout.pinned_tools.map((t) => t.key),
+      });
+    };
+  }
 
-  if (mode !== "customize") {
-    return <div className="grid gap-4 p-4 md:grid-cols-2 md:p-6 xl:grid-cols-3">{cards}</div>;
+  function renderCard(panel: (typeof panelsToRender)[number]) {
+    return (
+      <SortablePanelCard
+        key={panel.type}
+        panelType={panel.type}
+        definition={registeredByType.get(panel.type)!}
+        visible={panel.visible}
+        mode={mode}
+        onVisibilityChange={(visible) => handleVisibilityChange(panel.type, visible)}
+        spanClassName={FULL_WIDTH_PRIMARY_PANELS.has(panel.type) ? "sm:col-span-2" : undefined}
+      />
+    );
+  }
+
+  const primaryPanels = panelsToRender.filter((p) => columnOf(p.type) === "primary");
+  const railPanels = panelsToRender.filter((p) => columnOf(p.type) === "rail");
+
+  function renderColumn(panels: typeof panelsToRender, column: "primary" | "rail", gridClassName: string) {
+    const cards = panels.map(renderCard);
+    if (mode !== "customize") {
+      return <div className={gridClassName}>{cards}</div>;
+    }
+    return (
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={makeDragEndHandler(column)}>
+        <SortableContext items={panels.map((p) => p.type)} strategy={rectSortingStrategy}>
+          <div className={gridClassName}>{cards}</div>
+        </SortableContext>
+      </DndContext>
+    );
   }
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <SortableContext items={panelsToRender.map((p) => p.type)} strategy={rectSortingStrategy}>
-        <div className="grid gap-4 p-4 md:grid-cols-2 md:p-6 xl:grid-cols-3">{cards}</div>
-      </SortableContext>
-    </DndContext>
+    <div className="flex flex-col gap-4 p-4 md:p-6 lg:flex-row lg:items-start">
+      <div className="flex-1 lg:w-2/3">
+        {renderColumn(primaryPanels, "primary", "grid gap-4 sm:grid-cols-2")}
+      </div>
+      <div className="flex flex-col gap-4 lg:w-1/3 lg:shrink-0">
+        {renderColumn(railPanels, "rail", "flex flex-col gap-4")}
+      </div>
+    </div>
   );
 }

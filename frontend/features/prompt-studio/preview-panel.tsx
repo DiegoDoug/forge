@@ -44,8 +44,6 @@ export function PreviewPanel({ body, variables }: { body: string; variables: Pro
 
   return (
     <div className="flex flex-col gap-3">
-      <h3 className="text-xs font-medium tracking-wide text-muted-foreground uppercase">Preview</h3>
-
       {variables.length > 0 ? (
         <div className="flex flex-col gap-2">
           {variables.map((variable) => (

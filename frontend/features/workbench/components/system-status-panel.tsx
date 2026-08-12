@@ -50,6 +50,7 @@ registerWorkbenchPanel({
     description: "Disk usage, database size, and version.",
     icon: HardDrive,
     defaultVisible: true,
+    column: "rail",
   },
   component: SystemStatusPanel,
 });

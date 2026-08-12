@@ -37,8 +37,7 @@ export function VariablesPanel({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xs font-medium tracking-wide text-muted-foreground uppercase">Variables</h3>
+      <div className="flex items-center justify-end">
         <Button size="xs" variant="outline" onClick={addVariable} disabled={variables.length >= 50}>
           <Plus className="h-3 w-3" />
           Add variable

@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { PageHeader } from "@/components/page-header";
-import { ProviderList } from "@/features/model-playground/provider-list";
+import { ProviderListSummary } from "@/features/model-playground/provider-list";
 import { RunHistoryList } from "@/features/model-playground/run-history-list";
 import { RunView } from "@/features/model-playground/run-view";
 
@@ -16,7 +16,7 @@ export default function ModelPlaygroundPage() {
 
       <div className="grid grid-cols-1 gap-6 p-4 md:p-6 lg:grid-cols-[1fr_20rem]">
         <div className="flex flex-col gap-4">
-          <ProviderList />
+          <ProviderListSummary />
           <RunView activeRunId={activeRunId} onRunCreated={setActiveRunId} />
         </div>
 

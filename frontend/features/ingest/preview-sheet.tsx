@@ -44,7 +44,10 @@ export function PreviewSheet({
     <Sheet open={Boolean(jobId && fileId)} onOpenChange={(o) => !o && onClose()}>
       <SheetContent side="right" className="w-full sm:max-w-2xl">
         <SheetHeader>
-          <div className="flex items-center justify-between gap-2">
+          {/* pr-12 reserves room for SheetContent's own absolutely-
+              positioned close button (top-3 right-3, size-7) so these
+              header actions don't render underneath it. */}
+          <div className="flex items-center justify-between gap-2 pr-12">
             <SheetTitle className="truncate">{contentQuery.data?.name ?? "Preview"}</SheetTitle>
             <div className="flex shrink-0 gap-1.5">
               {contentQuery.data ? <CopyButton value={contentQuery.data.markdown} label="Markdown copied" size="icon" /> : null}

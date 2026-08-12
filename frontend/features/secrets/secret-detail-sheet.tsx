@@ -70,7 +70,10 @@ export function SecretDetailSheet({
         {secret ? (
           <>
             <SheetHeader>
-              <div className="flex items-start justify-between gap-2">
+              {/* pr-12 reserves room for SheetContent's own absolutely-
+                  positioned close button (top-3 right-3, size-7) so these
+                  header actions don't render underneath it. */}
+              <div className="flex items-start justify-between gap-2 pr-12">
                 <div>
                   <SheetTitle>{secret.name}</SheetTitle>
                   <Badge variant="secondary" className="mt-1">

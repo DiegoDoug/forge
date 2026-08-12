@@ -219,7 +219,7 @@ export default function DocumentsPage() {
               <EmptyState
                 icon={FileText}
                 title="No document selected"
-                description="Create a new document or pick one from the history on the left."
+                description="Create a new document, or pick one from your document list."
                 action={
                   <Button size="sm" onClick={handleNew}>
                     New document

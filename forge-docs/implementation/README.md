@@ -3,9 +3,9 @@
 > **Purpose:** Index of every FDK implementation phase — the buildable work that realizes the roadmap in [`../02_ROADMAP.md`](../02_ROADMAP.md).
 > **Scope:** Index only. Each phase owns its own full spec in its own folder.
 > **Ownership:** TODO — assign an owner.
-> **Status:** Phases 01–09 🔒 released & frozen (bug fixes only)
-> **Version:** 0.6.0
-> **Last Updated:** 2026-08-06
+> **Status:** Phases 01–09 🔒 released & frozen (bug fixes only); Phase 10 is a release candidate (not committed or tagged)
+> **Version:** 0.7.0
+> **Last Updated:** 2026-08-12
 > **Depends On:** [../02_ROADMAP.md](../02_ROADMAP.md)
 > **Supersedes:** —
 
@@ -24,6 +24,7 @@
 | 07 | [Knowledge Hub](Phase-07-Knowledge-Hub/README.md) | 🔒 Released & frozen — `v0.7.0-knowledge-hub`, bug fixes only from here |
 | 08 | [Developer Toolkit](Phase-08-Developer-Toolkit/README.md) | 🔒 Released & frozen — `v0.8.0-developer-toolkit`, bug fixes only from here |
 | 09 | [Frontend Reimagine](Phase-09-Frontend-Reimagine/README.md) | 🔒 **Released & Frozen** — all 30 tasks complete 2026-08-06/07; tagged `v0.9.0-frontend-reimagine` |
+| 10 | [UX Elevation](Phase-10-UX-Elevation/README.md) | Release candidate 2026-08-12 — not committed or tagged. **Ran outside the formal phase lifecycle described in §3 below** — see the phase's own `README.md` process note before assuming its docs were written in the usual order. |
 
 ## 2. Shape of every phase folder
 

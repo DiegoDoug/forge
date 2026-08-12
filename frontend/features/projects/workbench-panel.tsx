@@ -76,6 +76,7 @@ registerWorkbenchPanel({
     description: "Your most recently updated projects.",
     icon: FolderKanban,
     defaultVisible: true,
+    column: "primary",
   },
   component: RecentProjectsPanel,
 });

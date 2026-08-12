@@ -3,9 +3,9 @@
 > **Purpose:** Sequence the vision in [00_VISION.md](00_VISION.md) into ordered, buildable phases.
 > **Scope:** Cross-phase sequencing and dependency ordering. Per-phase detail lives in `implementation/Phase-XX-*/`.
 > **Ownership:** TODO — assign a roadmap owner.
-> **Status:** Phases 01–09 complete and released
-> **Version:** 0.13.0
-> **Last Updated:** 2026-08-06
+> **Status:** Phases 01–09 complete and released; Phase 10 is a release candidate (not committed or tagged)
+> **Version:** 0.14.0
+> **Last Updated:** 2026-08-12
 > **Depends On:** [00_VISION.md](00_VISION.md)
 > **Supersedes:** —
 
@@ -42,8 +42,9 @@ The following already exist in the application and are **not** re-specified here
 | 07 | [Knowledge Hub](implementation/Phase-07-Knowledge-Hub/README.md) | Unifies Notes + Documents + Ingest output into a searchable knowledge base | Released — `v0.7.0-knowledge-hub` |
 | 08 | [Developer Toolkit](implementation/Phase-08-Developer-Toolkit/README.md) | Consolidates Generators + Crypto + Utilities under one umbrella — confirmed correct; implemented as a navigation/presentation consolidation with no backend abstraction, no schema change, and no API change | ✓ Complete — 🔒 released & frozen as `v0.8.0-developer-toolkit` |
 | 09 | [Frontend Reimagine](implementation/Phase-09-Frontend-Reimagine/README.md) | Reimagines the presentation layer across **all** shipped surfaces: design tokens, application shell, grouped navigation ([ADR-0016](decisions/0016-grouped-navigation-and-search-surface-consolidation.md)), component consolidation, responsive layouts, and an accessibility baseline. Touches every frontend surface and **no** backend surface ([ADR-0017](decisions/0017-layered-design-token-architecture.md)) | ✓ Complete — 🔒 released & frozen as `v0.9.0-frontend-reimagine` |
+| 10 | [UX Elevation](implementation/Phase-10-UX-Elevation/README.md) | Operates one layer above Phase 09: screen-level information hierarchy, interaction models, and spatial composition (8 screens redesigned, 8 verified and deliberately left unchanged), plus one cross-cutting Sheet-header bug fix. Touches only frontend feature code, no design tokens or shared-component internals, **no** backend surface. **Ran outside this repo's formal roadmap-ratification/spec-approval/authorization gate sequence** — planned via a lightweight session plan rather than a pre-authorized `01_SPEC.md`; see the phase's own `README.md` process note | Release candidate — not committed or tagged |
 
-> **TODO:** The "proposed relationship" column is the Lead Architect's inference from the shipped feature set, not a ratified decision. Confirmed correct for Phase 01 (now released). Confirm or correct the remaining phases with the project owner before each begins.
+> **TODO:** The "proposed relationship" column is the Lead Architect's inference from the shipped feature set, not a ratified decision. Confirmed correct for Phase 01 (now released). Confirm or correct the remaining phases with the project owner before each begins. Phase 10 is a documented exception to this roadmap's own §1 rule ("not authorized for implementation until `01_SPEC.md` and `08_ACCEPTANCE.md` are filled in and agreed") — its `01_SPEC.md`/`08_ACCEPTANCE.md` were written *after* implementation to backfill this convention, not before it, per explicit owner instruction. See `implementation/Phase-10-UX-Elevation/README.md`.
 
 ## 4. Sequencing rationale (draft)
 

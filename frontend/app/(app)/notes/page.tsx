@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Archive, Plus } from "lucide-react";
 
@@ -23,13 +23,22 @@ export default function NotesPage() {
   const { create } = useNoteMutations();
 
   const notesQuery = useNotes(showArchived, projectId ?? undefined);
-  const searchQuery = useNoteSearch(query);
-
   const isSearching = query.trim().length > 0;
-  const notes = isSearching ? searchQuery.data ?? [] : notesQuery.data ?? [];
-  const boardIsLoading = isSearching ? searchQuery.isLoading : notesQuery.isLoading;
-  const boardIsError = isSearching ? searchQuery.isError : notesQuery.isError;
-  const retryBoard = () => (isSearching ? searchQuery.refetch() : notesQuery.refetch());
+  // Search only supplies *which* notes match — the board itself always
+  // renders from notesQuery so every note keeps its real canvas position;
+  // non-matches are dimmed in NotesBoard rather than removed (see
+  // notes-board.tsx). This preserves the "spatial position is information"
+  // property that a result-set swap would defeat.
+  const searchQuery = useNoteSearch(isSearching ? query : "");
+
+  const notes = notesQuery.data ?? [];
+  const matchIds = useMemo(() => {
+    if (!isSearching || !searchQuery.data) return null;
+    return new Set(searchQuery.data.map((n) => n.id));
+  }, [isSearching, searchQuery.data]);
+  const boardIsLoading = notesQuery.isLoading || (isSearching && searchQuery.isLoading);
+  const boardIsError = notesQuery.isError;
+  const retryBoard = () => notesQuery.refetch();
 
   function handleNewNote() {
     const color = NOTE_COLORS[Math.floor(Math.random() * NOTE_COLORS.length)].hex;
@@ -88,7 +97,7 @@ export default function NotesPage() {
         isLoading={boardIsLoading}
         isError={boardIsError}
         onRetry={retryBoard}
-        isFiltered={isSearching}
+        matchIds={matchIds}
       />
     </div>
   );

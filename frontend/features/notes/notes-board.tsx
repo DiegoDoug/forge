@@ -19,14 +19,17 @@ export function NotesBoard({
   isLoading,
   isError,
   onRetry,
-  isFiltered,
+  matchIds,
 }: {
   notes: Note[];
   highlightId?: string | null;
   isLoading?: boolean;
   isError?: boolean;
   onRetry?: () => void;
-  isFiltered?: boolean;
+  // When set, the board is under a text-search filter: notes NOT in this
+  // set render dimmed rather than being removed, so canvas position keeps
+  // meaning results as "where I put things," not a swapped-in result list.
+  matchIds?: Set<string> | null;
 }) {
   const { update } = useNoteMutations();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -101,32 +104,40 @@ export function NotesBoard({
   if (notes.length === 0) {
     return (
       <div className="flex flex-1 min-h-0 items-center justify-center p-6">
-        {isFiltered ? (
-          <EmptyState
-            icon={SearchX}
-            title="No notes match your search"
-            description="Try a different search term."
-          />
-        ) : (
-          <EmptyState
-            icon={StickyNote}
-            title="No notes yet"
-            description="Create a sticky note and drag it anywhere on the board."
-          />
-        )}
+        <EmptyState
+          icon={StickyNote}
+          title="No notes yet"
+          description="Create a sticky note and drag it anywhere on the board."
+        />
       </div>
     );
   }
 
   const maxX = Math.max(...notes.map((n) => n.pos_x + n.width), 1200);
   const maxY = Math.max(...notes.map((n) => n.pos_y + n.height), 800);
+  const isSearching = matchIds != null;
+  // Compare against the notes actually on this board, not the raw match
+  // count — search ignores the archived/project scope notesQuery applies,
+  // so a match can exist outside what's currently rendered here.
+  const noMatches = isSearching && !notes.some((n) => matchIds!.has(n.id));
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div ref={scrollRef} className="relative flex-1 min-h-0 overflow-auto">
+        {noMatches ? (
+          <div className="pointer-events-none sticky top-3 left-3 z-10 inline-flex items-center gap-1.5 rounded-md border border-border bg-popover px-2.5 py-1 text-xs text-muted-foreground shadow-sm">
+            <SearchX className="h-3.5 w-3.5" aria-hidden="true" />
+            No notes match your search — showing all notes dimmed.
+          </div>
+        ) : null}
         <div className="relative" style={{ width: maxX + 400, height: maxY + 400 }}>
           {notes.map((note) => (
-            <NoteCard key={note.id} note={note} highlighted={note.id === activeHighlight} />
+            <NoteCard
+              key={note.id}
+              note={note}
+              highlighted={note.id === activeHighlight}
+              dimmed={isSearching && !matchIds!.has(note.id)}
+            />
           ))}
         </div>
       </div>

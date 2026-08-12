@@ -76,6 +76,7 @@ registerWorkbenchPanel({
     description: "Your most recently updated notes.",
     icon: StickyNote,
     defaultVisible: true,
+    column: "primary",
   },
   component: RecentNotesPanel,
 });

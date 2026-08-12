@@ -46,9 +46,9 @@ const RecentActivityPanel: ComponentType<WorkbenchPanelProps> = () => {
   }
 
   return (
-    <ul className="flex flex-col divide-y divide-border">
+    <ul className="flex max-h-96 flex-col divide-y divide-border overflow-y-auto">
       {activity.map((entry) => (
-        <li key={entry.id} className="flex items-center justify-between py-2 text-sm">
+        <li key={entry.id} className="flex items-center justify-between gap-2 py-2 text-sm">
           <span className="truncate">{entry.summary}</span>
           <span className="shrink-0 text-xs text-muted-foreground">{formatRelativeTime(entry.created_at)}</span>
         </li>
@@ -64,6 +64,7 @@ registerWorkbenchPanel({
     description: "Actions across every Forge feature.",
     icon: Activity,
     defaultVisible: true,
+    column: "rail",
   },
   component: RecentActivityPanel,
 });

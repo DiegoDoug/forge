@@ -2,11 +2,12 @@
 
 import { Library, SearchX } from "lucide-react";
 
-import { DataList, DataListRow, DataListSkeleton } from "@/components/data-list";
+import { DataList, DataListSkeleton } from "@/components/data-list";
 import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
+import { SectionHeading } from "@/components/section-heading";
 import { Button } from "@/components/ui/button";
-import type { KnowledgeFilters, KnowledgeList } from "./api";
+import type { KnowledgeFilters, KnowledgeItem, KnowledgeList } from "./api";
 import { KnowledgeResultRow } from "./knowledge-result-row";
 
 const RESULT_CAP = 100;
@@ -73,6 +74,14 @@ export function KnowledgeResultList({
     );
   }
 
+  // Grouping by type only pays for itself when both types are actually
+  // mixed in the result set — a single-type filter (or a result set that
+  // happens to be all one type) would just add a redundant heading over
+  // what's already a homogenous list.
+  const documents = items.filter((item) => item.type === "document");
+  const notes = items.filter((item) => item.type === "note");
+  const shouldGroup = filters.type === "all" && documents.length > 0 && notes.length > 0;
+
   return (
     <div className="p-3">
       {/* Announces result-count/truncation changes to assistive tech
@@ -83,17 +92,38 @@ export function KnowledgeResultList({
           : `${items.length} result${items.length === 1 ? "" : "s"}`}
       </div>
 
+      {shouldGroup ? (
+        <div className="flex flex-col gap-4">
+          <KnowledgeGroup label="Documents" count={documents.length} items={documents} />
+          <KnowledgeGroup label="Notes" count={notes.length} items={notes} />
+        </div>
+      ) : (
+        <DataList>
+          {items.map((item) => (
+            <KnowledgeResultRow key={`${item.type}-${item.id}`} item={item} />
+          ))}
+        </DataList>
+      )}
+
+      {data?.truncated ? (
+        <p className="data-meta mt-3 text-center">
+          Showing the first {RESULT_CAP} of {data.total} — narrow your filters to see more.
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function KnowledgeGroup({ label, count, items }: { label: string; count: number; items: KnowledgeItem[] }) {
+  return (
+    <div>
+      <SectionHeading className="mb-1.5 px-1">
+        {label} <span className="text-muted-foreground">({count})</span>
+      </SectionHeading>
       <DataList>
         {items.map((item) => (
           <KnowledgeResultRow key={`${item.type}-${item.id}`} item={item} />
         ))}
-        {data?.truncated ? (
-          <DataListRow className="justify-center hover:bg-transparent">
-            <span className="data-meta text-center">
-              Showing the first {RESULT_CAP} of {data.total} — narrow your filters to see more.
-            </span>
-          </DataListRow>
-        ) : null}
       </DataList>
     </div>
   );

@@ -19,6 +19,16 @@ export interface WorkbenchPanelMetadata {
   defaultVisible: boolean;
   minColumnSpan?: number;
   permissions?: WorkbenchPanelPrecondition[];
+  /**
+   * Which weighted track this panel renders in (Phase 10 UX elevation —
+   * see WorkbenchGrid). "primary" = the dominant column for the panels a
+   * user actually jumps into (pinned tools, recent notes/projects);
+   * "rail" = narrower, lower-frequency-glance panels (activity, quick
+   * actions, system status). Defaults to "primary" when unset so any panel
+   * that predates this field (or a future phase's panel) still renders
+   * somewhere sensible rather than being dropped.
+   */
+  column?: "primary" | "rail";
 }
 
 export interface WorkbenchPanelProps {

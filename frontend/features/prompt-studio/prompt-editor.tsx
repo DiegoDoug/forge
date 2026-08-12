@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { type Prompt, type PromptVariable, usePromptStudioMutations } from "./api";
 import { PreviewPanel } from "./preview-panel";
 import { PromptBodyEditor } from "./prompt-body-editor";
@@ -207,8 +208,12 @@ export function PromptEditor({
       />
 
       <div className="flex flex-col gap-4 p-4">
-        <VariablesPanel variables={variables} onChange={setVariables} />
-
+        {/* Body first and always visible: it's the actual composition
+            surface. Variables/Preview were previously both fully expanded
+            and stacked around it, pushing it below the fold on prompts with
+            a handful of variables (Phase 10 UX elevation) — now they share
+            a tab strip below the body instead of permanently occupying
+            their own vertical space. */}
         <div>
           <div className="mb-1.5 flex items-center justify-between">
             <h3 className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
@@ -247,7 +252,20 @@ export function PromptEditor({
           ) : null}
         </div>
 
-        <PreviewPanel body={body} variables={variables} />
+        <Tabs defaultValue="variables">
+          <TabsList variant="line" className="self-start">
+            <TabsTrigger value="variables">
+              Variables{variables.length > 0 ? ` (${variables.length})` : ""}
+            </TabsTrigger>
+            <TabsTrigger value="preview">Preview</TabsTrigger>
+          </TabsList>
+          <TabsContent value="variables">
+            <VariablesPanel variables={variables} onChange={setVariables} />
+          </TabsContent>
+          <TabsContent value="preview">
+            <PreviewPanel body={body} variables={variables} />
+          </TabsContent>
+        </Tabs>
       </div>
 
       <VersionHistorySheet promptId={prompt.id} open={historyOpen} onOpenChange={setHistoryOpen} />

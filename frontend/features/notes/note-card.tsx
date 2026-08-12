@@ -22,7 +22,7 @@ import { NOTE_COLORS } from "./note-colors";
 const MIN_WIDTH = 200;
 const MIN_HEIGHT = 160;
 
-export function NoteCard({ note, highlighted }: { note: Note; highlighted?: boolean }) {
+export function NoteCard({ note, highlighted, dimmed }: { note: Note; highlighted?: boolean; dimmed?: boolean }) {
   const { attributes, listeners, setNodeRef, isDragging, transform } = useDraggable({ id: note.id });
   const { update, remove } = useNoteMutations();
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -99,6 +99,10 @@ export function NoteCard({ note, highlighted }: { note: Note; highlighted?: bool
         "absolute flex flex-col overflow-hidden rounded-lg text-neutral-900 shadow-md ring-1 ring-black/5",
         isDragging ? "shadow-xl" : "transition duration-150 ease-out",
         highlighted && "ring-2 ring-primary",
+        // Filtering dims non-matching notes in place rather than removing
+        // them, so the board's spatial layout — where the user chose to put
+        // each note — stays intact while searching (Phase 10 UX elevation).
+        dimmed && "opacity-30 saturate-50 hover:opacity-70",
       )}
     >
       <div

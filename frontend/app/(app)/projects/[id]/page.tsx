@@ -114,7 +114,7 @@ export default function ProjectDetailPage() {
             isLoading={secretsQuery.isLoading}
             isError={secretsQuery.isError}
             onRetry={() => secretsQuery.refetch()}
-            items={(secretsQuery.data ?? []).map((s) => ({ id: s.id, label: s.name }))}
+            items={(secretsQuery.data ?? []).map((s) => ({ id: s.id, label: s.name, href: `/secrets?project_id=${project.id}&open=${s.id}` }))}
             emptyLabel="No secrets in this project yet."
           />
           <ScopedList
@@ -124,7 +124,7 @@ export default function ProjectDetailPage() {
             isLoading={notesQuery.isLoading}
             isError={notesQuery.isError}
             onRetry={() => notesQuery.refetch()}
-            items={(notesQuery.data ?? []).map((n) => ({ id: n.id, label: n.title || "Untitled" }))}
+            items={(notesQuery.data ?? []).map((n) => ({ id: n.id, label: n.title || "Untitled", href: `/notes?project_id=${project.id}&open=${n.id}` }))}
             emptyLabel="No notes in this project yet."
           />
           <ScopedList
@@ -134,7 +134,7 @@ export default function ProjectDetailPage() {
             isLoading={documentsQuery.isLoading}
             isError={documentsQuery.isError}
             onRetry={() => documentsQuery.refetch()}
-            items={(documentsQuery.data ?? []).map((d) => ({ id: d.id, label: d.title || "Untitled" }))}
+            items={(documentsQuery.data ?? []).map((d) => ({ id: d.id, label: d.title || "Untitled", href: `/documents?project_id=${project.id}&open=${d.id}` }))}
             emptyLabel="No documents in this project yet."
           />
         </div>
@@ -172,7 +172,7 @@ function ScopedList({
   isLoading: boolean;
   isError?: boolean;
   onRetry?: () => void;
-  items: { id: string; label: string }[];
+  items: { id: string; label: string; href: string }[];
   emptyLabel: string;
 }) {
   return (
@@ -200,7 +200,7 @@ function ScopedList({
       ) : (
         <DataList className="rounded-none border-none">
           {items.slice(0, 6).map((item) => (
-            <DataListRow key={item.id}>
+            <DataListRow key={item.id} href={item.href}>
               <span className="data-primary truncate">{item.label}</span>
             </DataListRow>
           ))}

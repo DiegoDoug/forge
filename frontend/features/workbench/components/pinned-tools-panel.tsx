@@ -182,6 +182,7 @@ registerWorkbenchPanel({
     description: "One-click access to the tools you use most.",
     icon: KeyRound,
     defaultVisible: true,
+    column: "primary",
   },
   component: PinnedToolsPanel,
 });
