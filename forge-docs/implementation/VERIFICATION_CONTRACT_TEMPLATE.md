@@ -15,6 +15,7 @@
 - **Phase objective:** [TODO — one or two sentences, copied from `README.md`'s Objective]
 - **Dependencies:** [TODO — other phases or systems this phase depends on, from `README.md`'s Dependencies section]
 - **Completion definition:** [TODO — copy `README.md`'s Definition of Complete]
+- **Milestone:** [Optional — only for a phase whose single contract file is updated in place across several milestones, e.g. "Milestone 1 — MCP Foundation". Omit entirely for a phase with one contract per whole phase. When present, the Agentic Review Verifier uses the milestone number to locate `reviews/AGENTIC_REVIEW_M<N>.md` rather than the phase-wide default.]
 
 ## 2. Required Tasks
 
@@ -67,6 +68,7 @@
 - [ ] Code Quality
 - [ ] Documentation
 - [ ] UX — [TODO: required / not required — required only if this phase changes user-visible functionality, per [`../15_VERIFICATION_FRAMEWORK.md`](../15_VERIFICATION_FRAMEWORK.md) §4.8]
+- [ ] Agentic Review — [TODO: required / not required. An independent LLM-driven review, not a mechanical check — see [`../15_VERIFICATION_FRAMEWORK.md`](../15_VERIFICATION_FRAMEWORK.md) §10 and `tools/fdk_verification/verifiers/agentic_review.py`. When required, an independent review's verdict must be recorded at `reviews/AGENTIC_REVIEW_M<N>.md` (or `reviews/AGENTIC_REVIEW.md` for a single-contract phase) before this verifier can report PASS — it is never self-declared by the implementing session.]
 
 ## 10. TODO
 

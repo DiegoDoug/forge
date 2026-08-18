@@ -63,7 +63,7 @@ The Orchestrator coordinates; it never evaluates implementation quality itself. 
 - Enforce the retry limit (§7) and the escalation conditions (§8).
 - On PASS: mark the phase's implementation as verified, persist the report (alongside the phase's `CURRENT_STATE.md`, per the checkpoint discipline in [10_CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md)), and begin the next phase's implementation.
 
-## 4. The 8 specialized verifiers
+## 4. The 9 specialized verifiers
 
 Every verifier shares two rules: it evaluates only, and it never modifies production code. Where this repo already has a concrete mechanic for what a verifier checks, the verifier uses it rather than inventing a parallel one.
 
@@ -94,6 +94,15 @@ Deliberately simple: it checks §7 items that are marked `checked` against this 
 
 ### 4.8 UX Verifier (conditional)
 Runs only when the phase's Verification Contract declares user-visible functionality changed. Verifies layout, spacing, responsiveness, loading/empty states, accessibility basics, and dark mode — the same checks already listed in [14_IMPLEMENTATION_PLAYBOOK.md](14_IMPLEMENTATION_PLAYBOOK.md) §5 "Frontend" and may use screenshots where available. Acceptance criteria a verifier structurally cannot check (no real device, no screen reader) are not verifier failures — per [12_BUG_CLASSIFICATION.md](12_BUG_CLASSIFICATION.md) §4, they're unverified claims tracked as `QA/` tickets, same as today.
+
+### 4.9 Agentic Review Verifier (conditional, added Phase 11 Milestone 1)
+The first verifier in this set that is not purely mechanical. Every verifier above evaluates git diff/status, checkbox state, or shell exit codes — none of them can judge whether an implementation is *correct* against a milestone's specification, only whether declared items are checked or a command succeeded. Some phases (Phase 11's milestone-gated implementation being the first) need exactly that independent judgment.
+
+This verifier does not invoke an LLM itself — a Python module running under pytest has no access to the Agent/Workflow tools an orchestrating Claude Code session has. Instead, it requires that an independent review already happened and its verdict was recorded at `<phase folder>/reviews/AGENTIC_REVIEW_M<N>.md` (or `reviews/AGENTIC_REVIEW.md` for a phase with one contract covering the whole phase, no per-milestone split) before it will report PASS. The review itself — spawning a fresh, adversarial reviewer session with no memory of the implementing session's decisions, checking the specification/architecture/security/tests/regressions — is performed by the orchestrating Claude Code session, exactly the way [10_CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md) and `RepairLoop`'s `on_remediation` hook already delegate "the actual work" to "an external mechanism... eventually." See `tools/fdk_verification/verifiers/agentic_review.py`.
+
+**Verdict mapping**: the underlying `VerifierStatus` enum is binary (PASS/FAIL/N-A). A reviewer's "PASS WITH REQUIRED FIXES" verdict — a real, distinct outcome per [`09_CLAUDE_CODE_RULES.md`](09_CLAUDE_CODE_RULES.md)'s review-gate framing — maps to FAIL at the machine-readable status level, with the reviewer's actual verdict text preserved verbatim in the verifier's findings, so "needs fixes, not a hard failure" stays visible in the rendered report even though the gate itself does not advance until a clean PASS is recorded.
+
+Declared required only when a phase's Verification Contract §9 checks it — most phases will leave it unchecked, since most phases don't need a milestone-by-milestone independent judgment call the mechanical verifiers can't already make.
 
 ## 5. The Verification Contract
 

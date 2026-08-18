@@ -51,6 +51,7 @@
 | Document export | `python-docx`, `beautifulsoup4`, `markdownify`, `reportlab` | Documents tab export formats |
 | Optional vision-LLM | `openai`, `pymupdf` | disabled unless configured — see [`../docs/Security.md`](../docs/Security.md) |
 | Model Playground providers | `openai` (reused), `anthropic` | OpenAI + Anthropic SDKs. OpenAI's SDK also serves DeepSeek, Kimi, GLM, Gemini, and the user-configurable Custom provider generically via `base_url` — no dependency added for any of them. Opt-in per configured credential — see [ADR-0012](decisions/0012-model-playground-provider-sdk-selection.md), [ADR-0013](decisions/0013-model-playground-deepseek-and-openai-compatible-providers.md), [`../docs/Security.md`](../docs/Security.md) |
+| MCP server | `mcp` (official Python SDK) | Phase 11 — mounts a Streamable HTTP ASGI app inside the existing FastAPI process (see [ADR-0018](decisions/0018-mcp-server-integrated-not-separate-process.md)). Only active when `FORGE_MCP_ENABLED=true`; disabled by default. |
 
 ## 3. Infrastructure
 

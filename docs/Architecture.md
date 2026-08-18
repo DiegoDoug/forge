@@ -22,7 +22,8 @@ Browser
   ▼
 Nginx (docker/nginx.conf)
   ├── /            → frontend:3000  (Next.js, SSR + client app)
-  └── /api/*       → backend:8000   (FastAPI)
+  ├── /api/*       → backend:8000   (FastAPI)
+  └── /mcp         → backend:8000   (same FastAPI process — Streamable HTTP, Phase 11, off by default)
                         │
                         ▼
                      SQLite (single file, /data/forge.db)
@@ -30,6 +31,8 @@ Nginx (docker/nginx.conf)
                         ▼
                      /data volume (uploads, ingest job scratch space)
 ```
+
+The MCP endpoint is not a separate service — it's an ASGI app mounted inside the same `backend` process, sharing the same database session factory and `services/*` modules as `/api/*` (ADR-0018). This preserves the monolith invariant above rather than exempting Phase 11 from it.
 
 In development there is no Nginx — `next dev` proxies `/api/*` to the
 backend itself via `next.config.ts` rewrites, so the frontend always talks to
@@ -74,6 +77,11 @@ Forge is single-tenant: one master password gates the whole instance.
 encrypts secret values at rest and signs session cookies; the master password
 only decides whether the *current browser* gets a session. See
 [Security.md](Security.md) for the full model.
+
+A second, independent auth scheme (Phase 11, off by default) governs `/mcp`:
+individually-issued, scoped, revocable bearer tokens — never derived from or
+interchangeable with the browser session above. See
+[Security.md](Security.md#mcp-access-phase-11-off-by-default).
 
 ## Converter
 

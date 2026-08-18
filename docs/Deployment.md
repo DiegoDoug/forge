@@ -77,6 +77,37 @@ FORGE_VISION_BASE_URL=            # blank = OpenAI; set for Azure/OpenRouter/loc
 Any failure (bad key, rate limit, timeout) falls back to the normal
 MarkItDown output rather than failing the conversion.
 
+## MCP server for Claude / Claude Code (optional)
+
+Off by default. Exposes a scoped MCP endpoint at `/mcp`, proxied by nginx
+alongside `/api/*` — no new container, no new published port. As of
+Milestone 1 (Phase 11) this is transport/auth foundation only: the
+connection and handshake work, but zero tools are registered yet.
+
+```
+FORGE_MCP_ENABLED=true
+FORGE_MCP_BOOTSTRAP_ENABLED=true
+FORGE_MCP_BOOTSTRAP_TOKEN=           # openssl rand -base64 32
+```
+
+Provision the persistent token Claude actually uses (the bootstrap token
+above is for this one call only — it never works against `/mcp` itself):
+
+```bash
+curl -X POST http://localhost:${FORGE_PORT:-8585}/api/mcp/tokens \
+  -H "Authorization: Bearer $FORGE_MCP_BOOTSTRAP_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Claude Code", "scopes": ["forge:read"]}'
+```
+
+The response's `token` field is shown exactly once — save it, then point
+Claude Code at it: `claude mcp add --transport http forge https://your-host/mcp --header "Authorization: Bearer <token>"`.
+Once you've provisioned the token(s) you need, set
+`FORGE_MCP_BOOTSTRAP_ENABLED=false` and redeploy — this closes provisioning
+entirely without affecting already-issued persistent tokens. See
+[Security.md](Security.md#mcp-access-phase-11-off-by-default) for the full
+auth model.
+
 ## Updating
 
 ```bash

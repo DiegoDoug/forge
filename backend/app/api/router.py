@@ -10,6 +10,7 @@ from app.api.routes import (
     generators,
     ingest,
     knowledge,
+    mcp_tokens,
     model_playground,
     notes,
     project_init,
@@ -41,3 +42,4 @@ api_router.include_router(prompt_studio.router)
 api_router.include_router(model_playground.router)
 api_router.include_router(projects.router)
 api_router.include_router(knowledge.router)
+api_router.include_router(mcp_tokens.router)

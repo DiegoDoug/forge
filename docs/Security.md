@@ -56,6 +56,16 @@ Because it's meant to be a long-lived infrastructure secret (set once in
 master password is the day-to-day credential; `FORGE_MASTER_KEY` is what
 makes stolen data useless without it.
 
+## MCP access (Phase 11, off by default)
+
+A second, independent auth scheme for Claude/Claude Code — never a replacement for, or a way to derive, the browser session above. See [ADR-0019](../forge-docs/decisions/0019-mcp-bearer-token-authentication.md) and [`../forge-docs/implementation/Phase-11-Claude-MCP/`](../forge-docs/implementation/Phase-11-Claude-MCP/) for the full design.
+
+- Disabled unless `FORGE_MCP_ENABLED=true`. Disabled instances mount no `/mcp` route at all — no new attack surface by default.
+- **Bootstrap token** (`FORGE_MCP_BOOTSTRAP_TOKEN`/`_FILE`) authenticates exactly one thing — `POST /api/mcp/tokens`, which provisions a persistent token — and is never accepted by `/mcp` itself. `FORGE_MCP_BOOTSTRAP_ENABLED=false` closes that route entirely; set it once you've provisioned the persistent token(s) you need.
+- **Persistent tokens** (`mcp_tokens` table) are what Claude actually connects with: individually issued, scoped (`forge:read`/`forge:write`/`forge:delete`/`forge:secrets` — the last reserved, unused by any tool as of Milestone 1), hashed at rest (HMAC-SHA256 keyed on `FORGE_MASTER_KEY`, never the plaintext), shown exactly once at creation, and individually revocable (`DELETE /api/mcp/tokens/{id}`) without touching the master password or any browser session.
+- **Structurally excluded from the MCP surface**: Secrets/Vault and `app/services/crypto/`. As of Milestone 1 there are zero MCP tools at all (transport/auth foundation only) — the exclusion is enforced by import-boundary discipline in `app/mcp/` from the start, not retrofitted once tools exist.
+- Every MCP-originated write (from Milestone 2 onward) is recorded in the same `ActivityLog` the UI uses, distinguished only by a `source="mcp"` column — no parallel audit mechanism.
+
 ## Transport security
 
 Forge doesn't terminate TLS itself — see [Deployment.md](Deployment.md).

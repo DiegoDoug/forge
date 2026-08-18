@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import secrets
 import time
 from functools import lru_cache
 
@@ -105,4 +106,24 @@ def verify_session_token(token: str, password_hash: str) -> bool:
         return False
     expected = hmac.new(_session_secret(password_hash), expiry_str.encode("utf-8"), hashlib.sha256).hexdigest()
     return hmac.compare_digest(sig, expected)
+
+
+# --- MCP bearer tokens (Phase 11 / ADR-0019) --------------------------------
+# High-entropy random strings (secrets.token_urlsafe), unlike the
+# low-entropy master password - HMAC-SHA256 keyed on the server's root key is
+# sufficient (no key-stretching needed) and, because it's deterministic, the
+# resulting hash can be looked up by exact equality (mcp_tokens.token_hash is
+# indexed), same as the master password's Argon2id hash is a fixed value to
+# compare against rather than something requiring a full-table scan. Ties
+# every hash to this server's FORGE_MASTER_KEY, the same way session tokens
+# are - a stolen `mcp_tokens` table dump alone, without also knowing
+# FORGE_MASTER_KEY, does not verify against anything.
+
+
+def generate_mcp_token() -> str:
+    return secrets.token_urlsafe(32)
+
+
+def hash_mcp_token(token: str) -> str:
+    return hmac.new(_root_key(), token.encode("utf-8"), hashlib.sha256).hexdigest()
 

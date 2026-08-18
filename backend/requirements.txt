@@ -36,3 +36,7 @@ pymupdf>=1.24,<2
 # Model Playground: provider SDKs (see app/services/model_playground/providers, ADR-0012).
 # openai above is reused directly; anthropic is new.
 anthropic>=0.34,<1
+
+# Phase 11: Claude MCP / Second Brain — official MCP Python SDK, mounted as a
+# Streamable HTTP ASGI app inside this process (see ADR-0018, app/mcp/server.py).
+mcp>=2.0,<3

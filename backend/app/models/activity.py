@@ -28,3 +28,11 @@ class ActivityLog(SQLModel, table=True):
     entity_id: str = Field(max_length=64)
     summary: str = Field(max_length=300)
     created_at: datetime = Field(default_factory=utcnow, index=True)
+    # "ui" (default, every existing call site) vs "mcp" (Phase 11 MCP-originated
+    # writes). Added in Milestone 1 as a column only - no service function
+    # threads a non-default value through yet, since Milestone 1 registers zero
+    # MCP write tools. Wiring `source="mcp"` through notes/documents/projects
+    # services is Milestone 2 scope (01_SPEC.md SS4.5, 09_IMPLEMENTATION_TASKS.md
+    # M2-T0) - deliberately not done here to keep this milestone's diff to
+    # exactly what M1-T2 specifies.
+    source: str = Field(default="ui", max_length=20)

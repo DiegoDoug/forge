@@ -55,6 +55,17 @@ class Settings(BaseSettings):
     ingest_job_ttl_minutes: int = 120
     ingest_workers: int = 2
 
+    # Phase 11 (Claude MCP / Second Brain), Milestone 1. Off by default - the
+    # /mcp ASGI app is only mounted when mcp_enabled is true (app/mcp/server.py).
+    mcp_enabled: bool = False
+    # A true kill switch, checked before any bootstrap-token comparison
+    # (app/mcp/auth.py::require_bootstrap_auth) - the operator sets this false
+    # once at least one persistent McpToken has been provisioned via
+    # POST /api/mcp/tokens, per ADR-0019 SS3.
+    mcp_bootstrap_enabled: bool = True
+    mcp_bootstrap_token: str | None = None
+    mcp_bootstrap_token_file: str | None = None
+
     vision_enabled: bool = False
     vision_api_key: str | None = None
     vision_base_url: str | None = None
@@ -75,6 +86,14 @@ class Settings(BaseSettings):
                 "environment variable or Docker secret before starting Forge."
             )
         return secret
+
+    @property
+    def resolved_mcp_bootstrap_token(self) -> str | None:
+        """None (not an error) when unset - unlike resolved_master_key, the
+        MCP bootstrap credential is optional: an operator who never sets it
+        simply cannot provision an MCP token, which is a valid, safe default
+        (mcp_enabled also defaults false)."""
+        return _read_secret_file(self.mcp_bootstrap_token_file) or self.mcp_bootstrap_token
 
     @property
     def database_path(self) -> Path:

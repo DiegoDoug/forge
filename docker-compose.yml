@@ -9,6 +9,12 @@ services:
       FORGE_VISION_ENABLED: ${FORGE_VISION_ENABLED:-0}
       FORGE_VISION_API_KEY: ${FORGE_VISION_API_KEY:-}
       FORGE_VISION_BASE_URL: ${FORGE_VISION_BASE_URL:-}
+      # Phase 11 (Claude MCP / Second Brain) - off by default. See
+      # forge-docs/implementation/Phase-11-Claude-MCP/01_SPEC.md SS3-SS4 and
+      # .env.example for how to provision a persistent token once enabled.
+      FORGE_MCP_ENABLED: ${FORGE_MCP_ENABLED:-false}
+      FORGE_MCP_BOOTSTRAP_ENABLED: ${FORGE_MCP_BOOTSTRAP_ENABLED:-true}
+      FORGE_MCP_BOOTSTRAP_TOKEN: ${FORGE_MCP_BOOTSTRAP_TOKEN:-}
     volumes:
       - forge-data:/data
     restart: unless-stopped

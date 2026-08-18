@@ -3,9 +3,9 @@
 > **Purpose:** Durable record of every architectural exception, blocking decision, or cross-cutting choice made during FDK-driven development — the things [09_CLAUDE_CODE_RULES.md](../09_CLAUDE_CODE_RULES.md) requires stopping for.
 > **Scope:** Decisions that affect architecture, principles, or cross-phase behavior. Day-to-day implementation choices belong in a phase's own docs, not here.
 > **Ownership:** TODO — assign an owner (recommended: whoever owns [03_ARCHITECTURE.md](../03_ARCHITECTURE.md)).
-> **Status:** Active — 17 decisions recorded (16 accepted, 1 proposed)
-> **Version:** 0.10.0
-> **Last Updated:** 2026-08-06
+> **Status:** Active — 19 decisions recorded (18 accepted, 1 proposed)
+> **Version:** 0.11.0
+> **Last Updated:** 2026-08-18
 > **Depends On:** [../01_PRODUCT_PRINCIPLES.md](../01_PRODUCT_PRINCIPLES.md), [../03_ARCHITECTURE.md](../03_ARCHITECTURE.md)
 > **Supersedes:** —
 
@@ -48,6 +48,8 @@ Add one whenever:
 | [0015](0015-knowledge-hub-reuses-fts5.md) | Knowledge Hub reuses the existing FTS5 indexes; Search stays untouched | Accepted | 2026-08-04 |
 | [0016](0016-grouped-navigation-and-search-surface-consolidation.md) | Grouped navigation, and one job per search surface | Accepted | 2026-08-06 |
 | [0017](0017-layered-design-token-architecture.md) | Layered design tokens, preserving the shadcn semantic contract | Accepted | 2026-08-06 |
+| [0018](0018-mcp-server-integrated-not-separate-process.md) | Forge's MCP server runs in-process inside the FastAPI backend, not as a separate service | Accepted | 2026-08-18 |
+| [0019](0019-mcp-bearer-token-authentication.md) | MCP authentication is a second, independent bearer-token scheme | Accepted | 2026-08-18 |
 
 ## 4. TODO
 

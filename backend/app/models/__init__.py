@@ -5,6 +5,7 @@ from .activity import ActivityLog
 from .app_config import AppConfig
 from .document import Document
 from .knowledge import DocumentTagLink, KnowledgeLink, NoteTagLink
+from .mcp_token import McpToken
 from .model_playground import PlaygroundResult, PlaygroundRun, ProviderCredential
 from .note import Note
 from .project import Project
@@ -19,6 +20,7 @@ __all__ = [
     "Document",
     "DocumentTagLink",
     "KnowledgeLink",
+    "McpToken",
     "Note",
     "NoteTagLink",
     "PlaygroundResult",

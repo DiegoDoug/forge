@@ -7,6 +7,7 @@ every verifier independently constructible, runnable, and testable
 without the Orchestrator or any other verifier.
 """
 
+from .agentic_review import AgenticReviewVerifier
 from .architecture import ArchitectureVerifier
 from .build import BuildVerifier
 from .code_quality import CodeQualityVerifier
@@ -17,6 +18,7 @@ from .tests import TestVerifier
 from .ux import UXVerifier
 
 __all__ = [
+    "AgenticReviewVerifier",
     "ArchitectureVerifier",
     "BuildVerifier",
     "CodeQualityVerifier",
@@ -30,7 +32,7 @@ __all__ = [
 
 
 def default_registry() -> dict[str, object]:
-    """One instance of each of the 8 verifiers, keyed by canonical name.
+    """One instance of each of the 9 verifiers, keyed by canonical name.
 
     A convenience for wiring an Orchestrator — not required, since every
     verifier above is independently constructible and runnable without it.
@@ -44,4 +46,5 @@ def default_registry() -> dict[str, object]:
         "Code Quality": CodeQualityVerifier(),
         "Documentation": DocumentationVerifier(),
         "UX": UXVerifier(),
+        "Agentic Review": AgenticReviewVerifier(),
     }

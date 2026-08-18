@@ -30,6 +30,15 @@ class UnauthorizedError(AppError):
         super().__init__(message, status_code=status.HTTP_401_UNAUTHORIZED, code="unauthorized")
 
 
+class ForbiddenError(AppError):
+    """Authenticated, but lacking a required permission/scope - distinct from
+    UnauthorizedError (no/invalid credential at all). First used by Phase 11's
+    MCP scope enforcement (app/mcp/auth.py::require_scope)."""
+
+    def __init__(self, message: str = "Insufficient permissions"):
+        super().__init__(message, status_code=status.HTTP_403_FORBIDDEN, code="forbidden")
+
+
 class ConflictError(AppError):
     def __init__(self, message: str = "Conflict"):
         super().__init__(message, status_code=status.HTTP_409_CONFLICT, code="conflict")

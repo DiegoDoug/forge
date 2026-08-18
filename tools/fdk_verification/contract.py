@@ -13,10 +13,16 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-# The 8 verifier names from forge-docs/15_VERIFICATION_FRAMEWORK.md §4,
+# The verifier names from forge-docs/15_VERIFICATION_FRAMEWORK.md §4,
 # matching forge-docs/implementation/VERIFICATION_CONTRACT_TEMPLATE.md §9
 # exactly. This is the single source of truth every other module in this
 # package validates verifier names against.
+#
+# "Agentic Review" added for Phase 11 (Claude MCP / Second Brain) Milestone
+# 1 — the first verifier in this set that isn't a purely mechanical check
+# (git diff/status, checkbox parsing, shell exit codes). See
+# verifiers/agentic_review.py for what it actually validates and why it
+# reads a pre-existing review artifact rather than invoking an LLM itself.
 CANONICAL_VERIFIERS: frozenset[str] = frozenset(
     {
         "Specification",
@@ -27,6 +33,7 @@ CANONICAL_VERIFIERS: frozenset[str] = frozenset(
         "Code Quality",
         "Documentation",
         "UX",
+        "Agentic Review",
     }
 )
 
@@ -114,6 +121,13 @@ class VerificationContract:
     documentation_requirements: list[ChecklistItem]
     regression_targets: list[ChecklistItem]
     verifier_declarations: list[ChecklistItem] = field(default_factory=list)
+    # Optional §1 metadata key "Milestone" (e.g. "Milestone 1 — MCP
+    # Foundation") - "" when absent, which every contract predating Phase 11
+    # is, so this is non-breaking. Used by AgenticReviewVerifier to locate
+    # the correct per-milestone review artifact when a phase's single
+    # VERIFICATION_CONTRACT.md is updated in place across several milestones
+    # (09_IMPLEMENTATION_TASKS.md M1-T9/M2-T6/...).
+    milestone: str = ""
     source_path: Path | None = None
 
     @property
@@ -157,6 +171,7 @@ def parse_contract(text: str, *, source_path: Path | None = None) -> Verificatio
         documentation_requirements=_parse_checklist(sections.get(7, "")),
         regression_targets=_parse_checklist(sections.get(8, "")),
         verifier_declarations=_parse_checklist(sections.get(9, "")),
+        milestone=metadata.get("Milestone", ""),
         source_path=source_path,
     )
 
