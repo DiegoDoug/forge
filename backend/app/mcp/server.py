@@ -17,25 +17,35 @@ from starlette.applications import Starlette
 from app.core.config import get_settings
 from app.core.version import VERSION
 from app.mcp.auth import McpBearerAuthMiddleware
+from app.mcp.tools import documents as documents_tools
+from app.mcp.tools import notes as notes_tools
+from app.mcp.tools import projects as projects_tools
 
 MCP_MOUNT_PATH = "/mcp"
 
 _INSTRUCTIONS = (
     "Forge is a self-hosted personal knowledge base (Notes, Documents, "
-    "Projects, Knowledge Hub). This MCP server currently has no tools "
-    "registered - Milestone 1 of Phase 11 (Claude MCP / Second Brain) "
-    "proves only the connection, authentication, and handshake path. "
-    "Knowledge CRUD tools land in Milestone 2."
+    "Projects, Knowledge Hub). Tools: forge_get/create/update/delete_note, "
+    "the same four for documents, and forge_list/get/create/update_project "
+    "(no project delete). Deletes require confirm: true and are permanent - "
+    "there is no trash. Secrets/Settings/Crypto are never reachable through "
+    "this server."
 )
 
 
 def build_mcp_server() -> MCPServer:
-    return MCPServer(
+    server = MCPServer(
         name="forge",
         title="Forge",
         version=VERSION,
         instructions=_INSTRUCTIONS,
     )
+    # Flat, explicit registration list (01_SPEC.md SS7) - not a dynamic
+    # plugin-discovery system; sufficient at this tool count.
+    notes_tools.register(server)
+    documents_tools.register(server)
+    projects_tools.register(server)
+    return server
 
 
 def build_mcp_asgi_app(server: MCPServer | None = None) -> Starlette:

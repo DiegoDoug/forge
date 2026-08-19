@@ -117,9 +117,10 @@
 |---|---|
 | Purpose | Partial update of a note, including archive/pin toggling. |
 | Class / scope | write / `forge:write` |
-| Input | `{ note_id: string, title?, content?, color?, project_id?, pinned?, archived?, z_index? }` — mirrors `NoteUpdateIn`, all fields optional, only supplied fields change (`exclude_unset=True`, matching existing PATCH semantics). |
+| Input | `{ note_id: string, title?, content?, color?, project_id?, pinned?, archived? }` — mirrors `NoteUpdateIn` minus `z_index` (drag-reorder stacking position, the same category of UI-placement concern `forge_create_note` already excludes `pos_x`/`pos_y`/`width`/`height` for — an LLM has no meaningful input for it). Only supplied fields change; a field omitted from the tool call is left untouched, not cleared (v1 limitation: this flat tool-argument surface cannot express "explicitly set this nullable field to null" — see `03_BACKEND.md`'s `filtered_update_kwargs` for the exact mechanism). |
 | Output | Full `NoteOut` of the updated row. |
-| Underlying service | `notes_service.update_note(session, note_id, NoteUpdateIn(...), source="mcp")`. |
+| Underlying service | `notes_service.update_note(session, note_id, NoteUpdateIn(...))` — **no `source` parameter**: `update_note` has never logged to `ActivityLog` for any caller (REST or MCP) — see §"Audit" row below and `01_SPEC.md` §4.5's Milestone 2 correction. |
+| Audit | **None.** Matches existing REST PATCH behavior exactly — `update_note` produces no `ActivityLog` row today for any caller. Not a Phase 11 gap; a pre-existing product characteristic this phase preserves rather than silently changes (`08_ACCEPTANCE.md` §6 open question). |
 | Errors | Unknown `note_id` → not-found. |
 | Idempotent | Yes (same input twice = same end state). |
 | Destructive | No (archiving is reversible via a second update). Confirmation | None. |
@@ -141,7 +142,7 @@
 
 ### `forge_create_document` / `forge_update_document` / `forge_delete_document`
 
-Identical shape to the Notes trio above, substituting `documents_service.create_document(..., source="mcp")` / `update_document(..., source="mcp")` / the same 4-step existence-checked delete sequence (`documents_service.get_document` → `purge_links_for(session, "document", document_id)` → `documents_service.delete_document(session, document_id, source="mcp")`), `DocumentCreateIn`/`DocumentUpdateIn`. `forge_create_document`'s `content` field is HTML (matches the existing rich-text editor content format — Claude-authored content must be valid HTML, not Markdown, or the Documents editor will render it incorrectly; tool description must say this explicitly).
+Identical shape to the Notes trio above, substituting `documents_service.create_document(..., source="mcp")` / `update_document(...)` (**no `source` param — same no-audit-for-updates exception as `forge_update_note`**) / the same 4-step existence-checked delete sequence (`documents_service.get_document` → `purge_links_for(session, "document", document_id)` → `documents_service.delete_document(session, document_id, source="mcp")`), `DocumentCreateIn`/`DocumentUpdateIn`. `forge_create_document`'s `content` field is HTML (matches the existing rich-text editor content format — Claude-authored content must be valid HTML, not Markdown, or the Documents editor will render it incorrectly; tool description must say this explicitly).
 
 ### `forge_list_projects` write counterparts
 
@@ -151,7 +152,7 @@ Identical shape to the Notes trio above, substituting `documents_service.create_
 |---|---|
 | Purpose | Create a project. |
 | Class / scope | write / `forge:write` |
-| Input | `{ name: string, description?: string, color?: string, default_provider?: string, default_model?: string }` — mirrors `ProjectCreateIn`. |
+| Input | `{ name: string, description?: string, color?: string }` — a deliberate subset of `ProjectCreateIn`: **`default_provider`/`default_model` are excluded from write input only** (found during Milestone 2 implementation, clarified after the Milestone 2 Agentic Review flagged the original wording as ambiguous — this is an input-side exclusion, not an output-side one; see the Output row and `forge_get_project`/`forge_list_projects` below, which both still return these fields). Setting a project's default AI provider/model via MCP is tangential to knowledge-substrate CRUD, and validating a caller-supplied value correctly requires pulling in Model Playground's provider/model registry checks (`_check_provider`/`_check_model`) — a cross-feature dependency this tool doesn't need for its actual purpose. Revisit if a real need for MCP-driven AI-default configuration surfaces. |
 | Output | Full project detail (§1 shape). |
 | Underlying service | `projects_service.create_project(session, ProjectCreateIn(...), source="mcp")`. |
 | Idempotent | No. Destructive | No. Confirmation | None. |
@@ -163,7 +164,7 @@ Identical shape to the Notes trio above, substituting `documents_service.create_
 |---|---|
 | Purpose | Update project fields, including `archived`. |
 | Class / scope | write / `forge:write` |
-| Input | `{ project_id, name?, description?, color?, archived?, default_provider?, default_model? }`. |
+| Input | `{ project_id, name?, description?, color?, archived? }` — same `default_provider`/`default_model` write-input-only exclusion as `forge_create_project` above (read tools still return these fields). |
 | Output | Full project detail. |
 | Underlying service | `projects_service.update_project(session, project_id, ProjectUpdateIn(...), source="mcp")`. |
 | Errors | Unknown `project_id` → not-found. |

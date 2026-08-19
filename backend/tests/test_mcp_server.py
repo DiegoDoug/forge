@@ -126,7 +126,16 @@ def test_bootstrap_token_is_never_accepted_by_mcp_itself(mcp_client):
     assert response.status_code == 401
 
 
-def test_valid_persistent_token_completes_the_handshake_with_zero_tools(mcp_client):
+def test_valid_persistent_token_completes_the_handshake_and_lists_tools(mcp_client):
+    """Originally asserted zero tools (Milestone 1's actual state: transport/
+    auth foundation only, no CRUD tools registered yet). Milestone 2 added
+    the 12 Knowledge CRUD tools (app/mcp/tools/notes.py, documents.py,
+    projects.py) - this test now asserts the handshake still works and the
+    real, current tool set is what tools/list reports, rather than re-assert
+    a "zero tools" fact that stopped being true the moment Milestone 2
+    registered its first tool. Full CRUD behavior per tool is covered by
+    test_mcp_tools_crud.py; this test only proves the handshake/listing
+    path itself still works end to end."""
     token = _provision_token(mcp_client)
 
     response = mcp_client.post("/mcp/", json=INITIALIZE_BODY, headers={**MCP_HEADERS, "Authorization": f"Bearer {token}"})
@@ -141,7 +150,21 @@ def test_valid_persistent_token_completes_the_handshake_with_zero_tools(mcp_clie
         headers={**MCP_HEADERS, "Authorization": f"Bearer {token}", "mcp-session-id": session_id},
     )
     assert tools_response.status_code == 200
-    assert tools_response.json()["result"]["tools"] == []
+    names = {t["name"] for t in tools_response.json()["result"]["tools"]}
+    assert names == {
+        "forge_get_note",
+        "forge_create_note",
+        "forge_update_note",
+        "forge_delete_note",
+        "forge_get_document",
+        "forge_create_document",
+        "forge_update_document",
+        "forge_delete_document",
+        "forge_list_projects",
+        "forge_get_project",
+        "forge_create_project",
+        "forge_update_project",
+    }
 
 
 def test_bare_mcp_path_without_trailing_slash_works_with_no_redirect(mcp_client):

@@ -64,7 +64,7 @@ async def get_project(session: AsyncSession, project_id: str) -> tuple[Project, 
     return project, await _counts_for(session, project.id)
 
 
-async def create_project(session: AsyncSession, data: ProjectCreateIn) -> tuple[Project, ProjectCounts]:
+async def create_project(session: AsyncSession, data: ProjectCreateIn, *, source: str = "ui") -> tuple[Project, ProjectCounts]:
     project = Project(
         name=data.name,
         description=data.description,
@@ -74,12 +74,16 @@ async def create_project(session: AsyncSession, data: ProjectCreateIn) -> tuple[
     )
     session.add(project)
     await session.flush()
-    activity.record(session, ActivityAction.created, "project", project.id, f'Created project "{project.name}"')
+    activity.record(
+        session, ActivityAction.created, "project", project.id, f'Created project "{project.name}"', source=source
+    )
     await session.commit()
     return await get_project(session, project.id)
 
 
-async def update_project(session: AsyncSession, project_id: str, data: ProjectUpdateIn) -> tuple[Project, ProjectCounts]:
+async def update_project(
+    session: AsyncSession, project_id: str, data: ProjectUpdateIn, *, source: str = "ui"
+) -> tuple[Project, ProjectCounts]:
     project = await _get_or_404(session, project_id)
 
     if data.name is not None:
@@ -99,7 +103,9 @@ async def update_project(session: AsyncSession, project_id: str, data: ProjectUp
 
     project.updated_at = utcnow()
     session.add(project)
-    activity.record(session, ActivityAction.updated, "project", project.id, f'Updated project "{project.name}"')
+    activity.record(
+        session, ActivityAction.updated, "project", project.id, f'Updated project "{project.name}"', source=source
+    )
     await session.commit()
     return await get_project(session, project.id)
 

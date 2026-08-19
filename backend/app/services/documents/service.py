@@ -52,11 +52,16 @@ async def get_document(session: AsyncSession, document_id: str) -> Document:
     return await _get_or_404(session, document_id)
 
 
-async def create_document(session: AsyncSession, data) -> Document:
+async def create_document(session: AsyncSession, data, *, source: str = "ui") -> Document:
     document = Document(**data.model_dump())
     session.add(document)
     activity.record(
-        session, ActivityAction.created, "document", document.id, f'Created document "{document.title or "Untitled"}"'
+        session,
+        ActivityAction.created,
+        "document",
+        document.id,
+        f'Created document "{document.title or "Untitled"}"',
+        source=source,
     )
     await session.commit()
     await session.refresh(document)
@@ -64,6 +69,11 @@ async def create_document(session: AsyncSession, data) -> Document:
 
 
 async def update_document(session: AsyncSession, document_id: str, data) -> Document:
+    # No activity.record call - matches this function's existing behavior
+    # exactly (only create_document/delete_document log for Documents today).
+    # See notes/service.py::update_note's identical note for the full
+    # reasoning - out of Milestone 2's scope to add new logging behavior to
+    # an existing REST-facing update path.
     document = await _get_or_404(session, document_id)
     for field, value in data.model_dump(exclude_unset=True).items():
         setattr(document, field, value)
@@ -74,9 +84,11 @@ async def update_document(session: AsyncSession, document_id: str, data) -> Docu
     return document
 
 
-async def delete_document(session: AsyncSession, document_id: str) -> None:
+async def delete_document(session: AsyncSession, document_id: str, *, source: str = "ui") -> None:
     document = await _get_or_404(session, document_id)
     title = document.title or "Untitled"
     await session.delete(document)
-    activity.record(session, ActivityAction.deleted, "document", document_id, f'Deleted document "{title}"')
+    activity.record(
+        session, ActivityAction.deleted, "document", document_id, f'Deleted document "{title}"', source=source
+    )
     await session.commit()
