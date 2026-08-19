@@ -3,9 +3,9 @@
 > **Purpose:** The execution contract for this phase — a Claude Code session must read this in full before writing any code for this phase.
 > **Scope:** This phase only. Inherits from, and never overrides, the repo-wide rules in [`../../09_CLAUDE_CODE_RULES.md`](../../09_CLAUDE_CODE_RULES.md).
 > **Ownership:** Project owner.
-> **Status:** ✅ **Milestone 3 (Search, Context & Knowledge Graph) checkpointed and committed — 2026-08-19. Milestone 4 explicitly NOT authorized until the owner opens it.**
+> **Status:** ✅ **Milestone 4 (Claude Memory Workflows) checkpointed and committed — 2026-08-19. Milestone 5 explicitly NOT authorized until the owner opens it.**
 >
-> Ten gates recorded, in order, as separate, explicit acts — none implies the next, exactly as the planning package's own §17 required and as Phase 09's precedent established:
+> Fourteen gates recorded, in order, as separate, explicit acts — none implies the next, exactly as the planning package's own §17 required and as Phase 09's precedent established:
 >
 > 1. **Architecture direction approved (2026-08-18)** — the owner reviewed the full planning package (`01_SPEC.md` through `09_IMPLEMENTATION_TASKS.md`) and approved the architecture direction (Option A: in-process MCP server; bearer-token auth model), after requesting and receiving six amendments (bootstrap-token/persistent-token lifecycle, transactional/existence-checked delete, `forge_context` N+1 and project-scoping fixes, activity-log dedup, mandatory `get_note` service method — see `CURRENT_STATE.md` §4 for the full list).
 > 2. **Milestone 1 implementation authorized (2026-08-18)** — granted explicitly, scoped to Milestone 1 **only**. The owner's own words: *"I would authorize Milestone 1 only. ... Then the new Agentic Review verifier gets its first real test."*
@@ -17,6 +17,10 @@
 > 8. **Milestone 3 implementation complete, mechanical verification green (2026-08-19)** — full backend suite 375/375 (before the repair cycle below), FDK suite 113/113, Docker build succeeded.
 > 9. **Milestone 3 gate PASS (2026-08-19)** — the independent Agentic Review's first pass reached PASS WITH REQUIRED FIXES (zero BLOCKER, three MAJOR, three MINOR — see [`reviews/AGENTIC_REVIEW_M3.md`](reviews/AGENTIC_REVIEW_M3.md)). All six findings were addressed in a repair cycle; the same reviewer independently re-verified every fix by reproducing the original failing scenarios (not by trusting the fix description), and returned a final verdict of **PASS**. Backend suite 377/377 after the repair cycle.
 > 10. **Milestone 3 checkpointed and committed (2026-08-19)** — the owner's own words: *"checkpoint and commit M3, then stop. M4 remains explicitly unauthorized until I open it."* Full record: [`../../history/2026-08-19-phase-11-milestone-3-checkpoint.md`](../../history/2026-08-19-phase-11-milestone-3-checkpoint.md). **Explicitly a stopping point** — the instruction was to stop, not to proceed to Milestone 4. Nothing here authorizes Milestone 4 (M4-T1 onward); that remains a separate, future, explicit act the owner has stated they will initiate themselves.
+> 11. **Milestone 4 authorized (2026-08-19)** — the owner's own words, in chat, as a direct instruction: *"Start milestone 4 implementation."* Granted as its own act, matching the boundary gates 2, 4, and 7's established pattern exactly — not inferred from anything in Milestone 3's checkpoint.
+> 12. **Milestone 4 implementation complete, mechanical verification green (2026-08-19)** — full backend suite 395/395 (up from 377 after Milestone 3's repair cycle; +18 new tests, 0 regressions), Docker build succeeded. FDK suite 103/113 — the 10 failures are pre-existing and environment-specific (a Windows/Git-Bash subprocess-invocation quirk in `BuildVerifier`/`TestVerifier`, confirmed by direct traceback inspection), not caused by this milestone; zero files under `tools/` were touched.
+> 13. **Milestone 4 gate PASS (2026-08-19)** — the independent Agentic Review's first pass reached PASS WITH REQUIRED FIXES (zero BLOCKER, one MAJOR, one MINOR — see [`reviews/AGENTIC_REVIEW_M4.md`](reviews/AGENTIC_REVIEW_M4.md)). The MAJOR (`06_API.md` §5's `forge://projects` Auth cell overclaiming enforced `forge:read`, when the resource structurally cannot enforce it) was fixed with a footnote stating the true, current behavior; the MINOR (generic resource-error messages) was deliberately left as backlog per the reviewer's own non-blocking classification. The same reviewer independently re-verified the fix — re-reading the actual diff and re-running the backend suite, not trusting the fix description — and returned a final verdict of **PASS**. Backend suite remains 395/395 after the repair cycle (docs-only change, no code/test touched).
+> 14. **Milestone 4 checkpointed and committed (2026-08-19)** — the owner's own words: *"checkpoint and commit M4."* Full record: [`../../history/2026-08-19-phase-11-milestone-4-checkpoint.md`](../../history/2026-08-19-phase-11-milestone-4-checkpoint.md). Nothing here authorizes Milestone 5; that remains a separate, future, explicit act.
 >
 > [ADR-0018](../../decisions/0018-mcp-server-integrated-not-separate-process.md) and [ADR-0019](../../decisions/0019-mcp-bearer-token-authentication.md) are **Accepted** as of this review.
 > **Last Updated:** 2026-08-19
@@ -25,7 +29,7 @@
 
 ## Role
 
-You are implementing Phase 11 — Claude MCP / Second Brain, acting as the engineer of record. You are bound by [`../../09_CLAUDE_CODE_RULES.md`](../../09_CLAUDE_CODE_RULES.md) at all times; this document adds phase-specific and milestone-specific detail only. **Milestone 3 is complete, checkpointed, and committed. Milestone 4 — Claude Memory Workflows — is explicitly NOT authorized and stays closed until the owner opens it themselves; do not begin any M4 task, however small, without that separate, explicit act.** Milestones 1–3's rules are kept as historical record below; do not re-execute them, and do not treat their "Autonomy Rules" as governing whatever milestone comes next — each milestone gets its own.
+You are implementing Phase 11 — Claude MCP / Second Brain, acting as the engineer of record. You are bound by [`../../09_CLAUDE_CODE_RULES.md`](../../09_CLAUDE_CODE_RULES.md) at all times; this document adds phase-specific and milestone-specific detail only. **Milestone 4 is complete, checkpointed, and committed. Milestone 5 — Production Hardening & Release — is explicitly NOT authorized and stays closed until the owner opens it themselves; do not begin any M5 task, however small, without that separate, explicit act.** Milestones 1–4's rules are kept as historical record below; do not re-execute them, and do not treat their "Autonomy Rules" as governing whatever milestone comes next — each milestone gets its own.
 
 ## Milestone 1 — MCP Foundation (complete, historical record — do not re-execute)
 
@@ -184,6 +188,57 @@ Add the retrieval and knowledge-graph tools — `forge_search`, `forge_context`,
 9. **Found by the Agentic Review**: all 16 MCP tools (12 from Milestone 2, 4 new) had empty `tools/list` descriptions, including a direct violation of an already-written `06_API.md` requirement (`forge_create_document`'s HTML-not-Markdown warning, specified but never surfaced). Fixed across all five tool modules; verified via a live probe, not just reading the source.
 10. **Found by the Agentic Review**: `forge_context`'s `links` field could reference items outside its own matched `notes`/`documents` set — a dangling ID with no accompanying context in the same response, diverging from `01_SPEC.md` §5.2's literal wording. Fixed by filtering to intra-matched-set edges only; the reviewer independently reproduced the exact original failing scenario and confirmed it no longer reproduces.
 11. **Silently narrowing a repair cycle's own findings into "good enough" without re-verification — did not happen**; the reviewer's second pass caught that `VERIFICATION_CONTRACT.md` itself still contained a stale, inaccurate claim about AC18 mid-repair-cycle, and that was corrected before the final PASS was recorded rather than being waved through.
+
+---
+
+## Milestone 4 — Claude Memory Workflows (complete, checkpointed, committed — historical record, do not re-execute)
+
+### Mission
+
+Add `forge_capture_decision`/`forge_capture_session` (thin wrappers over `forge_create_note`'s own underlying service call, plus a reserved-tag convention — not a new persistence mechanism) and expose two resources, `forge://projects`/`forge://projects/{id}`, for cheap client-side orientation. This is the first milestone where something Claude writes to Forge is framed as *memory for a future Claude session* rather than *knowledge the user asked for* — and the milestone that proves that framing actually works end to end via a genuine cross-session continuity test (AC14). Full contract: `06_API.md` §4 (memory tools), §5 (resources), `01_SPEC.md` §9, `09_IMPLEMENTATION_TASKS.md`'s Milestone 4 table (M4-T1 through M4-T5).
+
+### Read order for a session working this milestone
+
+1. [`../../09_CLAUDE_CODE_RULES.md`](../../09_CLAUDE_CODE_RULES.md)
+2. **This document**, in full — including Milestones 1–3's historical record above, since Milestone 4 builds directly on `app/mcp/auth.py`'s `require_scope`, `_common.py`'s `tool_session`/`current_scope`/`validate_project_id`, and the `MCP → service → model` pattern every prior milestone established
+3. [`CURRENT_STATE.md`](CURRENT_STATE.md)
+4. [`01_SPEC.md`](01_SPEC.md) §9 (session/decision capture — why this is Notes-plus-tags, not a new memory database)
+5. [`06_API.md`](06_API.md) §4 (`forge_capture_decision`/`forge_capture_session`) and §5 (resources) in full
+6. [`09_IMPLEMENTATION_TASKS.md`](09_IMPLEMENTATION_TASKS.md) — Milestone 4's task table and gate criteria
+7. [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md) §4 (AC14, AC15) and the AC10/AC20 carry-forward checks
+8. [`VERIFICATION_CONTRACT.md`](VERIFICATION_CONTRACT.md) before declaring the milestone done
+
+### Execution Rules
+
+- [x] **Scope is locked to `09_IMPLEMENTATION_TASKS.md`'s Milestone 4 table.** M4-T1 through M4-T5. No Milestone 5 work (token-management UI, full authz matrix, production hardening) — confirmed by `git diff --stat` touching only `app/mcp/tools/memory.py` (new), `app/mcp/resources.py` (new), `app/mcp/server.py` (registration), three new test files, `docs/MCP_Usage.md` (new), one corrected sentence in `docs/Deployment.md`, and `forge-docs/`.
+- [x] **`forge_capture_decision`/`forge_capture_session` call `notes_service.create_note`/`knowledge_service.add_tag` — never a new persistence path.** No new table, model, or Alembic migration (`01_SPEC.md` §9's explicit "no new memory database" instruction).
+- [x] **Every read/write tool and resource calls a `services/*` function — never a raw ORM query.** AC20 static check (`test_mcp_tools_static_checks.py`, unchanged, recursively scans all of `app/mcp/**` and therefore already covered `memory.py`/`resources.py` without modification) — passes.
+- [x] **No import of `services/secrets`, `services/crypto`, or `services/settings` anywhere under `app/mcp/`.** Confirmed, same static check.
+- [x] **`forge_capture_decision`/`forge_capture_session`'s scope check uses `require_scope`.** Confirmed by the parametrized scope-enforcement tests in `test_mcp_tools_memory.py`.
+- [x] **AC14 is proven with a genuinely independent second session** — a fresh persistent token AND a fresh `initialize` handshake, not a second call reusing the writer's connection (`test_mcp_memory_continuity.py`).
+- [x] **A real SDK constraint discovered during implementation is documented, not silently built around or silently violated**: `forge://projects` (the static resource) cannot enforce `forge:read` scope the way `forge://projects/{id}` (a template resource) and every tool do — this MCP SDK version has no per-request context hook for a static resource's read function. Full detail in `VERIFICATION_CONTRACT.md` §6 and `app/mcp/resources.py`'s module docstring; flagged explicitly for the Agentic Review's independent judgment rather than resolved unilaterally.
+- [x] `CURRENT_STATE.md` updated.
+
+### Autonomy Rules
+
+**Satisfied.** No Milestone 5 task was touched; `AuthDep`/`require_auth`/`McpBearerAuthMiddleware`/`app/mcp/auth.py` and every Milestone 1–3 tool module remained unmodified throughout (confirmed via `git diff --stat`, both before and after the repair cycle). The repair cycle touched exactly one file (`06_API.md`, a documentation correction) — independently confirmed by the same reviewer as staying within Milestone 4 scope, no Milestone 5 work smuggled in. The milestone was not declared complete until the independent Agentic Review returned PASS (after one repair cycle addressing a real MAJOR finding).
+
+### Quality Gates — all satisfied, PASS
+
+1. [x] Every M4-T1..T5 task complete.
+2. [x] Full mechanical verification contract green — 7/7 applicable verifiers (Specification, Architecture, Build, Test, Regression, Code Quality, Documentation; UX not applicable). Backend suite 395/395; FDK suite 103/113 with all 10 failures pre-existing/environment-specific (see `VERIFICATION_CONTRACT.md` §5); Docker build succeeded.
+3. [x] Independent Agentic Review — **PASS** (after one repair cycle; see [`reviews/AGENTIC_REVIEW_M4.md`](reviews/AGENTIC_REVIEW_M4.md)). First pass found zero BLOCKER, one MAJOR, one MINOR; the MAJOR fixed and independently re-verified by the same reviewer via fresh reproduction (re-reading the actual diff, re-running the backend suite), not by trusting the fix description; the MINOR correctly left as backlog per the reviewer's own explicit non-blocking classification.
+4. [x] Repair cycle stayed within Milestone 4 scope — confirmed by the reviewer's own file-scope check (`git status --porcelain`/`git diff --stat` showed exactly one file changed beyond the review's original baseline: `06_API.md`).
+5. [x] Checkpointed at [`../../history/2026-08-19-phase-11-milestone-4-checkpoint.md`](../../history/2026-08-19-phase-11-milestone-4-checkpoint.md), committed. Did not release, merge, tag, or freeze. Did not begin Milestone 5 — that remains a separate, future, explicit act.
+
+### The specific ways this milestone could go wrong (for reference — tracked against the actual implementation)
+
+1. Treating "thin wrapper over forge_create_note" as license to skip `require_scope`/`validate_project_id` since "it's just a note" — **did not happen**; `_capture()` in `memory.py` runs the identical scope-check-then-validate-then-service-call sequence every other write tool does.
+2. Building a parallel retrieval mechanism for captured memory instead of relying on `forge_search`/`forge_context` finding it naturally — **did not happen**; no new query function, no new tool searches only `ai-decision`/`ai-session`-tagged notes. `test_forge_capture_decision_and_session_are_found_by_forge_search` and both `test_mcp_memory_continuity.py` tests prove the ordinary path already works; the Agentic Review independently reproduced this with an even stronger probe (a second, independently-rebuilt app/engine instance) and it still held.
+3. Silently building a workaround for the `forge://projects` static-resource scope-enforcement SDK limitation that technically "passes" but doesn't actually enforce anything (e.g. checking a header that isn't really there, or claiming scope enforcement in a docstring without a matching implementation) — **did not happen**; the limitation is documented as a limitation, with the actual (weaker) security property stated plainly and a test suite that doesn't claim more than what's true.
+4. Trusting `06_API.md`'s "Full NoteOut... including the applied tag" output claim without checking `NoteOut`'s real fields — **did not happen**; caught by reading `schemas/notes.py` before writing the tool handler, same discipline Milestone 2/3's Agentic Review had to enforce after the fact for other findings. Independently confirmed correct by the Agentic Review.
+5. Self-graded review — **did not happen**; the Agentic Review was run by an independently-spawned agent with no memory of implementation decisions, and it found a real MAJOR finding (the `06_API.md` contract-accuracy gap) a self-review would very plausibly have missed, since three other documents describing the same limitation had already been corrected.
+6. **Not anticipated by this list, found anyway**: `06_API.md` §5's resource contract table stated `forge:read` was enforced on `forge://projects` when it structurally cannot be — a real contract-vs-implementation mismatch, exactly the "contract inconsistencies" failure class `09_IMPLEMENTATION_TASKS.md` §0 names. Worth remembering for Milestone 5: when a limitation is discovered mid-implementation and documented in several places, checking that *every* relevant document was updated (not just the ones touched while writing the fix) needs to be a deliberate step, not assumed.
 
 ---
 

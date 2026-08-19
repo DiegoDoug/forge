@@ -231,8 +231,10 @@ Identical shape to the Notes trio above, substituting `documents_service.create_
 
 | Resource | Source of truth | Auth | Update semantics | Auto-discovery |
 |---|---|---|---|---|
-| `forge://projects` | `projects_service.list_projects(archived=False)` | `forge:read` | Live query on each read, not cached/subscribed. | Yes — small, bounded list. |
+| `forge://projects` | `projects_service.list_projects(archived=False)` | Connection-level bearer auth only — **not** scope-checked[^1] | Live query on each read, not cached/subscribed. | Yes — small, bounded list. |
 | `forge://projects/{id}` | `projects_service.get_project(id)` | `forge:read` | Live query on each read. | On demand once an ID is known (from the list resource or a tool call). |
+
+[^1]: **Milestone 4 finding, confirmed by the Agentic Review**: `forge://projects` is a static resource (no URI variable), and the installed MCP SDK (`mcp` 2.0.0) has no per-request `Context` hook for a static resource's read function — `MCPServer.resource()`'s own decorator explicitly rejects a `Context` parameter on a static resource, and `FunctionResource.fn` is invoked with zero arguments on every read regardless of caller, for every resource of this shape. `forge:read` scope enforcement is therefore structurally impossible for this one resource in this SDK version (`forge://projects/{id}`, a template resource, has no such limitation and enforces `forge:read` normally, like every tool). Any validly-authenticated MCP token can read this resource's data (project name/description/color/counts — `secret_count` is still excluded) regardless of its granted scopes; the connection itself still requires a valid, non-revoked token (`McpBearerAuthMiddleware`). Judged an acceptable narrow exception given the low sensitivity of the exposed fields and this phase's "one operator, one master key" threat model (`01_SPEC.md` §2) — not a BLOCKER. Full detail: `app/mcp/resources.py`'s module docstring, `VERIFICATION_CONTRACT.md` §6/§10, `reviews/AGENTIC_REVIEW_M4.md`.
 
 ## 6. Prompts
 

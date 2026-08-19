@@ -80,9 +80,11 @@ MarkItDown output rather than failing the conversion.
 ## MCP server for Claude / Claude Code (optional)
 
 Off by default. Exposes a scoped MCP endpoint at `/mcp`, proxied by nginx
-alongside `/api/*` — no new container, no new published port. As of
-Milestone 1 (Phase 11) this is transport/auth foundation only: the
-connection and handshake work, but zero tools are registered yet.
+alongside `/api/*` — no new container, no new published port. Claude can
+search, retrieve, create/update/delete Notes/Documents/Projects, shape the
+knowledge graph, and persist memory across sessions — see
+[MCP_Usage.md](MCP_Usage.md) for the full tool/resource list and worked
+examples.
 
 ```
 FORGE_MCP_ENABLED=true

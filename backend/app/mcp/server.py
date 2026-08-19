@@ -16,9 +16,11 @@ from starlette.applications import Starlette
 
 from app.core.config import get_settings
 from app.core.version import VERSION
+from app.mcp import resources as resources_module
 from app.mcp.auth import McpBearerAuthMiddleware
 from app.mcp.tools import documents as documents_tools
 from app.mcp.tools import knowledge as knowledge_tools
+from app.mcp.tools import memory as memory_tools
 from app.mcp.tools import notes as notes_tools
 from app.mcp.tools import projects as projects_tools
 from app.mcp.tools import search as search_tools
@@ -29,10 +31,15 @@ _INSTRUCTIONS = (
     "Forge is a self-hosted personal knowledge base (Notes, Documents, "
     "Projects, Knowledge Hub). Tools: forge_get/create/update/delete_note, "
     "the same four for documents, forge_list/get/create/update_project "
-    "(no project delete), forge_search/forge_context for retrieval, and "
-    "forge_link_items/forge_unlink_items for the knowledge graph. Deletes "
-    "require confirm: true and are permanent - there is no trash. "
-    "Secrets/Settings/Crypto are never reachable through this server."
+    "(no project delete), forge_search/forge_context for retrieval, "
+    "forge_link_items/forge_unlink_items for the knowledge graph, and "
+    "forge_capture_decision/forge_capture_session for persisting memory "
+    "across sessions (both are Notes tagged ai-decision/ai-session - find "
+    "them again later via forge_search/forge_context, no special tool "
+    "needed). Resources: forge://projects (list), forge://projects/{id} "
+    "(detail). Deletes require confirm: true and are permanent - there is "
+    "no trash. Secrets/Settings/Crypto are never reachable through this "
+    "server."
 )
 
 
@@ -50,6 +57,8 @@ def build_mcp_server() -> MCPServer:
     projects_tools.register(server)
     search_tools.register(server)
     knowledge_tools.register(server)
+    memory_tools.register(server)
+    resources_module.register(server)
     return server
 
 
