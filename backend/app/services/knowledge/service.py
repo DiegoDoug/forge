@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 
+from sqlalchemy import or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
@@ -87,7 +88,12 @@ async def _candidate_documents(session: AsyncSession, q: str) -> list[Document]:
     return list(result.scalars().all())
 
 
-async def _tags_for(session: AsyncSession, item_type: str, item_ids: list[str]) -> dict[str, list[Tag]]:
+async def tags_for_items(session: AsyncSession, item_type: str, item_ids: list[str]) -> dict[str, list[Tag]]:
+    """Batch tag lookup for a whole result set - one query per item type,
+    not one per item. Public (promoted from a list_knowledge-only private
+    helper in Phase 11 Milestone 3): forge_context (app/mcp/tools/search.py)
+    reuses this exact query rather than duplicating it, per the
+    service-layer-reuse principle every MCP tool follows."""
     if not item_ids:
         return {}
     link_model, id_field = _link_model_for(item_type)
@@ -122,7 +128,7 @@ async def list_knowledge(
         notes = await _candidate_notes(session, q)
         if project_id:
             notes = [n for n in notes if n.project_id == project_id]
-        note_tags = await _tags_for(session, "note", [n.id for n in notes])
+        note_tags = await tags_for_items(session, "note", [n.id for n in notes])
         for note in notes:
             tags = note_tags.get(note.id, [])
             if tag_ids and not set(tag_ids).issubset({t.id for t in tags}):
@@ -143,7 +149,7 @@ async def list_knowledge(
         documents = await _candidate_documents(session, q)
         if project_id:
             documents = [d for d in documents if d.project_id == project_id]
-        document_tags = await _tags_for(session, "document", [d.id for d in documents])
+        document_tags = await tags_for_items(session, "document", [d.id for d in documents])
         for document in documents:
             tags = document_tags.get(document.id, [])
             if tag_ids and not set(tag_ids).issubset({t.id for t in tags}):
@@ -315,6 +321,75 @@ async def list_links(session: AsyncSession, item_type: str, item_id: str) -> lis
             )
         )
     return views
+
+
+async def list_links_for_items(
+    session: AsyncSession, items: list[tuple[str, str]]
+) -> dict[tuple[str, str], list[KnowledgeLinkView]]:
+    """Batch link retrieval for a whole result set - one query for the
+    links themselves, plus at most one query per referenced item type for
+    "other side" titles, regardless of how many items are passed in.
+    Avoids the N+1 pattern calling list_links once per matched item would
+    cause (up to ~100 individual queries for a single forge_context
+    invocation with 50 notes + 50 documents) - 01_SPEC.md SS5.2,
+    03_BACKEND.md SS2.1, Phase 11 AC13b. Internal service capability used
+    only by forge_context in this phase; does not change GET /api/knowledge
+    or any REST response shape.
+
+    Each returned KnowledgeLinkView is oriented relative to its own key in
+    ``items`` (same convention as list_links), so a link between two
+    matched items appears once in each item's list, from that item's own
+    point of view - matching what N calls to list_links would have
+    returned, just retrieved in one query instead of N."""
+    result: dict[tuple[str, str], list[KnowledgeLinkView]] = {item: [] for item in items}
+    if not items:
+        return result
+
+    by_type: dict[str, list[str]] = {}
+    for item_type, item_id in items:
+        by_type.setdefault(item_type, []).append(item_id)
+
+    conditions = []
+    for item_type, ids in by_type.items():
+        conditions.append((KnowledgeLink.source_type == item_type) & KnowledgeLink.source_id.in_(ids))
+        conditions.append((KnowledgeLink.target_type == item_type) & KnowledgeLink.target_id.in_(ids))
+    links_result = await session.execute(select(KnowledgeLink).where(or_(*conditions)))
+    links = list(links_result.scalars().all())
+    if not links:
+        return result
+
+    other_refs: dict[str, set[str]] = {}
+    for link in links:
+        other_refs.setdefault(link.source_type, set()).add(link.source_id)
+        other_refs.setdefault(link.target_type, set()).add(link.target_id)
+    titles: dict[tuple[str, str], str] = {}
+    for other_type, ids in other_refs.items():
+        if other_type not in ("note", "document"):
+            continue
+        model = Note if other_type == "note" else Document
+        rows = await session.execute(select(model.id, model.title).where(model.id.in_(ids)))
+        for row_id, row_title in rows.all():
+            titles[(other_type, row_id)] = row_title or "Untitled"
+
+    item_set = set(items)
+    seen_by_item: dict[tuple[str, str], set[str]] = {item: set() for item in items}
+    for link in links:
+        source_key = (link.source_type, link.source_id)
+        target_key = (link.target_type, link.target_id)
+        for owner_key, other_key in ((source_key, target_key), (target_key, source_key)):
+            if owner_key not in item_set or link.id in seen_by_item[owner_key]:
+                continue
+            seen_by_item[owner_key].add(link.id)
+            result[owner_key].append(
+                KnowledgeLinkView(
+                    link_id=link.id,
+                    other_type=other_key[0],
+                    other_id=other_key[1],
+                    other_title=titles.get(other_key, "Untitled"),
+                    created_at=link.created_at,
+                )
+            )
+    return result
 
 
 async def delete_link(session: AsyncSession, link_id: str) -> None:

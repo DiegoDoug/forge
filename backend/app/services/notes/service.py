@@ -27,20 +27,28 @@ async def list_notes(session: AsyncSession, *, archived: bool = False, project_i
     return list(result.scalars().all())
 
 
-async def search_notes(session: AsyncSession, query: str) -> list[Note]:
+async def search_notes(session: AsyncSession, query: str, *, project_id: str | None = None) -> list[Note]:
     """FTS5 full-text search over note title/content, joined back to the
     live rows via SQLite's implicit rowid (the external-content FTS5 index
-    is kept in sync by triggers created in the initial migration)."""
+    is kept in sync by triggers created in the initial migration).
+
+    ``project_id``, when given, is applied inside this query (before the
+    LIMIT), not as a post-filter on the returned rows - a project with more
+    than 50 matching notes would otherwise lose relevant results to the cap
+    before project-filtering ever ran (01_SPEC.md SS5.2, Phase 11 M3-T0a)."""
     if not query.strip():
         return []
-    rows = await session.execute(
-        text(
-            "SELECT notes.* FROM notes "
-            "JOIN notes_fts ON notes.rowid = notes_fts.rowid "
-            "WHERE notes_fts MATCH :query ORDER BY rank LIMIT 50"
-        ),
-        {"query": f'"{query}"*'},
+    sql = (
+        "SELECT notes.* FROM notes "
+        "JOIN notes_fts ON notes.rowid = notes_fts.rowid "
+        "WHERE notes_fts MATCH :query"
     )
+    params: dict[str, str] = {"query": f'"{query}"*'}
+    if project_id is not None:
+        sql += " AND notes.project_id = :project_id"
+        params["project_id"] = project_id
+    sql += " ORDER BY rank LIMIT 50"
+    rows = await session.execute(text(sql), params)
     ids = [row.id for row in rows]
     if not ids:
         return []

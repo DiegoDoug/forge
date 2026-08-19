@@ -130,11 +130,14 @@ def test_valid_persistent_token_completes_the_handshake_and_lists_tools(mcp_clie
     """Originally asserted zero tools (Milestone 1's actual state: transport/
     auth foundation only, no CRUD tools registered yet). Milestone 2 added
     the 12 Knowledge CRUD tools (app/mcp/tools/notes.py, documents.py,
-    projects.py) - this test now asserts the handshake still works and the
-    real, current tool set is what tools/list reports, rather than re-assert
-    a "zero tools" fact that stopped being true the moment Milestone 2
-    registered its first tool. Full CRUD behavior per tool is covered by
-    test_mcp_tools_crud.py; this test only proves the handshake/listing
+    projects.py); Milestone 3 added forge_search/forge_context
+    (app/mcp/tools/search.py) and forge_link_items/forge_unlink_items
+    (app/mcp/tools/knowledge.py) - this test now asserts the handshake still
+    works and the real, current tool set is what tools/list reports, rather
+    than re-assert a stale fact each milestone that registers a new tool.
+    Full CRUD/search/knowledge-graph behavior per tool is covered by
+    test_mcp_tools_crud.py / test_mcp_tools_search_context.py /
+    test_mcp_tools_knowledge.py; this test only proves the handshake/listing
     path itself still works end to end."""
     token = _provision_token(mcp_client)
 
@@ -164,6 +167,10 @@ def test_valid_persistent_token_completes_the_handshake_and_lists_tools(mcp_clie
         "forge_get_project",
         "forge_create_project",
         "forge_update_project",
+        "forge_search",
+        "forge_context",
+        "forge_link_items",
+        "forge_unlink_items",
     }
 
 

@@ -25,7 +25,7 @@
 | Output | Summarized list: `[{ id, type, title, snippet, project_id, updated_at }]`, capped at 50 per type (matches the existing FTS query's `LIMIT 50`). |
 | Underlying service | `notes_service.search_notes(session, query, project_id=...)`, `documents_service.search_documents(session, query, project_id=...)` — called directly, **not** `search_service.global_search` (§5.1 of `01_SPEC.md` — excludes Secrets structurally). `project_id`, when given, is applied inside the FTS query itself (before the `LIMIT 50` cap), not as a post-filter — see `01_SPEC.md` §5.2. |
 | Underlying REST API | None directly — analogous to `GET /api/search` but deliberately narrower (no Secrets). |
-| Validation | `query` non-empty, ≤200 chars (guards against pathological FTS phrase-prefix input). |
+| Validation | `query` non-empty, ≤200 chars (guards against pathological FTS phrase-prefix input). **Implementation clarification (Milestone 3)**: `project_id`, if given, is validated the same way `forge_create_note`/`forge_create_document` already validate it (`_common.py::validate_project_id`) — an unknown `project_id` fails with a clean not-found error rather than silently returning zero (correctly-scoped-looking, but actually just empty) results. `06_API.md`'s original draft only stated this requirement for `forge_context`; applied here too for consistency across every `project_id`-accepting tool, not because AC13 specifically names `forge_search`. |
 | Errors | Empty `query` → validation error. No results → empty array, not an error. |
 | Idempotent | Yes (read-only). |
 | Destructive | No. |
@@ -183,10 +183,11 @@ Identical shape to the Notes trio above, substituting `documents_service.create_
 | Class / scope | write / `forge:write` |
 | Input | `{ source_type: "note"\|"document", source_id: string, target_type: "note"\|"document", target_id: string }` |
 | Output | The created `KnowledgeLinkView` (`{id, source_type, source_id, target_type, target_id, created_at}`). |
-| Underlying service | `knowledge_service.create_link(session, source_type, source_id, target_type, target_id)` — service already normalizes pair order, so A→B and B→A resolve to the same row; re-linking an existing pair should surface that as "already linked," not a duplicate-row error leaking implementation detail. |
+| Underlying service | `knowledge_service.create_link(session, source_type, source_id, target_type, target_id)` — service already normalizes pair order, so A→B and B→A resolve to the same row; re-linking an existing pair should surface that as "already linked," not a duplicate-row error leaking implementation detail. **Implementation clarification (Milestone 3, found by re-reading the actual service code rather than assuming)**: `create_link` itself does **not** return the existing link on a duplicate — it raises `AppError(code="knowledge_link_duplicate", status_code=409)` to protect the REST API's own unique-constraint UX. The MCP tool handler (`app/mcp/tools/knowledge.py`) catches exactly that error code and re-fetches the existing link via `list_links` instead of propagating it, so the *tool's* documented idempotency contract (this row) is satisfied even though the *service's* own contract is "raise on duplicate." This is the same class of "spec described the desired behavior; the underlying function needed a thin translation to actually produce it" gap Milestone 2 found for `update_note`'s audit logging. |
 | Errors | Either ID not found → not-found error naming which side. Self-link (`source_id == target_id` and same type) → validation error. |
 | Idempotent | Effectively yes (re-linking returns the existing link, per the service's normalization). |
 | Destructive | No. Confirmation | None. |
+| Audit | **None** (found by the Milestone 3 Agentic Review, MAJOR — not documented until now). `knowledge_service.create_link`/`delete_link` have never called `activity.record(...)` for any caller, REST or MCP — matching the pre-existing REST behavior of `POST/DELETE /api/knowledge/{item_type}/{item_id}/links`, which also produces no `ActivityLog` row today. This is the same class of exception `01_SPEC.md` §4.5 already documents for `update_note`/`update_document`: preserving existing, pre-Phase-11 behavior rather than silently introducing new logging as a side effect of adding an MCP tool. Tracked as an open question in `08_ACCEPTANCE.md` §6, not a gap this milestone silently accepted. |
 
 ### `forge_unlink_items`
 
@@ -200,6 +201,7 @@ Identical shape to the Notes trio above, substituting `documents_service.create_
 | Errors | Unknown `link_id` → not-found. |
 | Idempotent | No (second call → not-found, matches delete semantics generally). |
 | Destructive | Low-risk (removes an association, not content) — no `confirm` field required, unlike item deletion. |
+| Audit | **None** — see `forge_link_items`'s identical Audit row above; same finding, same reasoning, applies symmetrically to unlink. |
 
 ## 4. Memory workflow tools (Milestone 4)
 

@@ -34,7 +34,7 @@ from app.services.projects import service as projects_service
 from app.services.projects.service import ProjectCounts
 
 
-def _to_mcp_out(project: Project, counts: ProjectCounts) -> dict:
+def project_to_mcp_out(project: Project, counts: ProjectCounts) -> dict:
     return {
         "id": project.id,
         "name": project.name,
@@ -51,23 +51,26 @@ def _to_mcp_out(project: Project, counts: ProjectCounts) -> dict:
 
 
 def register(server: MCPServer) -> None:
-    @server.tool(name="forge_list_projects")
+    @server.tool(
+        name="forge_list_projects",
+        description="List projects (with note/document counts) for orientation and navigation.",
+    )
     async def forge_list_projects(ctx: Context, archived: bool = False) -> list[dict]:
         async with tool_session() as session:
             scope = await current_scope(ctx, session)
             require_scope(scope, "forge:read")
             projects = await projects_service.list_projects(session, archived=archived)
-            return [_to_mcp_out(p, c) for p, c in projects]
+            return [project_to_mcp_out(p, c) for p, c in projects]
 
-    @server.tool(name="forge_get_project")
+    @server.tool(name="forge_get_project", description="Get one project's detail, including note/document counts.")
     async def forge_get_project(ctx: Context, project_id: str) -> dict:
         async with tool_session() as session:
             scope = await current_scope(ctx, session)
             require_scope(scope, "forge:read")
             project, counts = await projects_service.get_project(session, project_id)
-            return _to_mcp_out(project, counts)
+            return project_to_mcp_out(project, counts)
 
-    @server.tool(name="forge_create_project")
+    @server.tool(name="forge_create_project", description="Create a project - a label Notes/Documents can be scoped to.")
     async def forge_create_project(
         ctx: Context,
         name: str,
@@ -79,9 +82,16 @@ def register(server: MCPServer) -> None:
             require_scope(scope, "forge:write")
             data = ProjectCreateIn(**filtered_update_kwargs(name=name, description=description, color=color))
             project, counts = await projects_service.create_project(session, data, source="mcp")
-            return _to_mcp_out(project, counts)
+            return project_to_mcp_out(project, counts)
 
-    @server.tool(name="forge_update_project")
+    @server.tool(
+        name="forge_update_project",
+        description=(
+            "Partially update a project's name/description/color/archived state "
+            "- only the fields you supply change. There is no forge_delete_project; "
+            "archive instead."
+        ),
+    )
     async def forge_update_project(
         ctx: Context,
         project_id: str,
@@ -97,4 +107,4 @@ def register(server: MCPServer) -> None:
                 **filtered_update_kwargs(name=name, description=description, color=color, archived=archived)
             )
             project, counts = await projects_service.update_project(session, project_id, data, source="mcp")
-            return _to_mcp_out(project, counts)
+            return project_to_mcp_out(project, counts)

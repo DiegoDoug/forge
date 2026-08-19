@@ -19,7 +19,7 @@ from app.services.knowledge import service as knowledge_service
 
 
 def register(server: MCPServer) -> None:
-    @server.tool(name="forge_get_document")
+    @server.tool(name="forge_get_document", description="Get the full content of one document by id.")
     async def forge_get_document(ctx: Context, document_id: str) -> DocumentOut:
         async with tool_session() as session:
             scope = await current_scope(ctx, session)
@@ -27,7 +27,15 @@ def register(server: MCPServer) -> None:
             document = await documents_service.get_document(session, document_id)
             return DocumentOut.model_validate(document)
 
-    @server.tool(name="forge_create_document")
+    @server.tool(
+        name="forge_create_document",
+        description=(
+            "Create a document, optionally scoped to a project. content must be "
+            "valid HTML (the Documents editor's storage format) - not Markdown. "
+            "Plain text is also valid HTML (no markup required), but Markdown "
+            "syntax will render literally, not formatted."
+        ),
+    )
     async def forge_create_document(
         ctx: Context,
         title: str,
@@ -45,7 +53,14 @@ def register(server: MCPServer) -> None:
             document = await documents_service.create_document(session, data, source="mcp")
             return DocumentOut.model_validate(document)
 
-    @server.tool(name="forge_update_document")
+    @server.tool(
+        name="forge_update_document",
+        description=(
+            "Partially update a document - only the fields you supply change, "
+            "everything else is left untouched. content, if supplied, must be "
+            "valid HTML, not Markdown (see forge_create_document)."
+        ),
+    )
     async def forge_update_document(
         ctx: Context,
         document_id: str,
@@ -65,7 +80,14 @@ def register(server: MCPServer) -> None:
             document = await documents_service.update_document(session, document_id, data)
             return DocumentOut.model_validate(document)
 
-    @server.tool(name="forge_delete_document")
+    @server.tool(
+        name="forge_delete_document",
+        description=(
+            "Permanently delete a document - irreversible, there is no trash. "
+            "Requires confirm: true (a literal boolean, never inferred from "
+            "conversation) or the call fails validation and nothing is deleted."
+        ),
+    )
     async def forge_delete_document(ctx: Context, document_id: str, confirm: StrictBool) -> dict:
         # StrictBool is load-bearing - see forge_delete_note's identical
         # comment in notes.py for why a plain `bool` silently accepted

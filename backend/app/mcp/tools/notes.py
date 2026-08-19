@@ -18,7 +18,7 @@ from app.services.notes import service as notes_service
 
 
 def register(server: MCPServer) -> None:
-    @server.tool(name="forge_get_note")
+    @server.tool(name="forge_get_note", description="Get the full content of one note by id.")
     async def forge_get_note(ctx: Context, note_id: str) -> NoteOut:
         async with tool_session() as session:
             scope = await current_scope(ctx, session)
@@ -26,7 +26,10 @@ def register(server: MCPServer) -> None:
             note = await notes_service.get_note(session, note_id)
             return NoteOut.model_validate(note)
 
-    @server.tool(name="forge_create_note")
+    @server.tool(
+        name="forge_create_note",
+        description="Create a note, optionally scoped to a project. content is plain text (not HTML/Markdown).",
+    )
     async def forge_create_note(
         ctx: Context,
         title: str,
@@ -42,7 +45,14 @@ def register(server: MCPServer) -> None:
             note = await notes_service.create_note(session, data, source="mcp")
             return NoteOut.model_validate(note)
 
-    @server.tool(name="forge_update_note")
+    @server.tool(
+        name="forge_update_note",
+        description=(
+            "Partially update a note - only the fields you supply change, "
+            "everything else is left untouched. Set archived: true to soft-remove "
+            "a note without deleting it."
+        ),
+    )
     async def forge_update_note(
         ctx: Context,
         note_id: str,
@@ -65,7 +75,16 @@ def register(server: MCPServer) -> None:
             note = await notes_service.update_note(session, note_id, data)
             return NoteOut.model_validate(note)
 
-    @server.tool(name="forge_delete_note")
+    @server.tool(
+        name="forge_delete_note",
+        description=(
+            "Permanently delete a note - irreversible, there is no trash. "
+            "Requires confirm: true (a literal boolean, never inferred from "
+            "conversation) or the call fails validation and nothing is deleted. "
+            "Prefer forge_update_note with archived: true if you just want to "
+            "hide the note, not destroy it."
+        ),
+    )
     async def forge_delete_note(ctx: Context, note_id: str, confirm: StrictBool) -> dict:
         # StrictBool (not bool) is load-bearing, not decorative: a plain
         # `bool` type hint lets Pydantic's lax validation coerce "true",

@@ -18,18 +18,21 @@ from app.core.config import get_settings
 from app.core.version import VERSION
 from app.mcp.auth import McpBearerAuthMiddleware
 from app.mcp.tools import documents as documents_tools
+from app.mcp.tools import knowledge as knowledge_tools
 from app.mcp.tools import notes as notes_tools
 from app.mcp.tools import projects as projects_tools
+from app.mcp.tools import search as search_tools
 
 MCP_MOUNT_PATH = "/mcp"
 
 _INSTRUCTIONS = (
     "Forge is a self-hosted personal knowledge base (Notes, Documents, "
     "Projects, Knowledge Hub). Tools: forge_get/create/update/delete_note, "
-    "the same four for documents, and forge_list/get/create/update_project "
-    "(no project delete). Deletes require confirm: true and are permanent - "
-    "there is no trash. Secrets/Settings/Crypto are never reachable through "
-    "this server."
+    "the same four for documents, forge_list/get/create/update_project "
+    "(no project delete), forge_search/forge_context for retrieval, and "
+    "forge_link_items/forge_unlink_items for the knowledge graph. Deletes "
+    "require confirm: true and are permanent - there is no trash. "
+    "Secrets/Settings/Crypto are never reachable through this server."
 )
 
 
@@ -45,6 +48,8 @@ def build_mcp_server() -> MCPServer:
     notes_tools.register(server)
     documents_tools.register(server)
     projects_tools.register(server)
+    search_tools.register(server)
+    knowledge_tools.register(server)
     return server
 
 

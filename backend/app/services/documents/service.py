@@ -27,19 +27,24 @@ async def list_documents(session: AsyncSession, *, project_id: str | None = None
     return list(result.scalars().all())
 
 
-async def search_documents(session: AsyncSession, query: str) -> list[Document]:
+async def search_documents(session: AsyncSession, query: str, *, project_id: str | None = None) -> list[Document]:
     """FTS5 full-text search over document title/content, mirroring the
-    notes search implementation."""
+    notes search implementation. ``project_id`` is query-scoped, not a
+    post-filter - see notes_service.search_notes's identical note
+    (01_SPEC.md SS5.2, Phase 11 M3-T0a)."""
     if not query.strip():
         return []
-    rows = await session.execute(
-        text(
-            "SELECT documents.* FROM documents "
-            "JOIN documents_fts ON documents.rowid = documents_fts.rowid "
-            "WHERE documents_fts MATCH :query ORDER BY rank LIMIT 50"
-        ),
-        {"query": f'"{query}"*'},
+    sql = (
+        "SELECT documents.* FROM documents "
+        "JOIN documents_fts ON documents.rowid = documents_fts.rowid "
+        "WHERE documents_fts MATCH :query"
     )
+    params: dict[str, str] = {"query": f'"{query}"*'}
+    if project_id is not None:
+        sql += " AND documents.project_id = :project_id"
+        params["project_id"] = project_id
+    sql += " ORDER BY rank LIMIT 50"
+    rows = await session.execute(text(sql), params)
     ids = [row.id for row in rows]
     if not ids:
         return []

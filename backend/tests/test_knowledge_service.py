@@ -338,6 +338,71 @@ async def test_delete_link_removes_from_both_sides(db_session):
     assert len(result.scalars().all()) == 2
 
 
+# --- list_links_for_items: batch retrieval (Milestone 3, AC13b) -----------
+
+
+async def test_list_links_for_items_orients_each_result_relative_to_its_own_key(db_session):
+    n1 = await _make_note(db_session, title="A")
+    d1 = await _make_document(db_session, title="B")
+    n2 = await _make_note(db_session, title="C")
+
+    await knowledge_service.create_link(db_session, "note", n1.id, "document", d1.id)
+
+    result = await knowledge_service.list_links_for_items(db_session, [("note", n1.id), ("document", d1.id), ("note", n2.id)])
+    assert len(result[("note", n1.id)]) == 1
+    assert result[("note", n1.id)][0].other_type == "document"
+    assert result[("note", n1.id)][0].other_id == d1.id
+
+    assert len(result[("document", d1.id)]) == 1
+    assert result[("document", d1.id)][0].other_type == "note"
+    assert result[("document", d1.id)][0].other_id == n1.id
+
+    assert result[("note", n2.id)] == []
+
+
+async def test_list_links_for_items_empty_input_returns_empty_dict(db_session):
+    assert await knowledge_service.list_links_for_items(db_session, []) == {}
+
+
+async def test_list_links_for_items_issues_a_bounded_query_count_regardless_of_item_count(db_session):
+    """AC13b - one query for the links themselves, plus at most one query
+    per referenced item type for titles - not one query per matched item.
+    Verified by query-count assertion at 50+50 matched items, not merely by
+    correct output (07_TESTING.md SS2, 03_BACKEND.md SS2.1)."""
+    from sqlalchemy import event
+
+    notes = [await _make_note(db_session, title=f"n{i}") for i in range(50)]
+    documents = [await _make_document(db_session, title=f"d{i}") for i in range(50)]
+    for note, document in zip(notes, documents):
+        await knowledge_service.create_link(db_session, "note", note.id, "document", document.id)
+
+    items = [("note", n.id) for n in notes] + [("document", d.id) for d in documents]
+
+    query_count = 0
+
+    def _count(*args, **kwargs):
+        nonlocal query_count
+        query_count += 1
+
+    sync_engine = db_session.bind.sync_engine
+    event.listen(sync_engine, "before_cursor_execute", _count)
+    try:
+        result = await knowledge_service.list_links_for_items(db_session, items)
+    finally:
+        event.remove(sync_engine, "before_cursor_execute", _count)
+
+    # 1 query for the links themselves + at most 1 per referenced item type
+    # (note, document) for titles = at most 3, regardless of the 100 items
+    # passed in - not the ~100 individual queries list_links would cause if
+    # called once per item.
+    assert query_count <= 3, f"expected a bounded, small query count (<=3), got {query_count}"
+    for note, document in zip(notes, documents):
+        assert len(result[("note", note.id)]) == 1
+        assert result[("note", note.id)][0].other_id == document.id
+        assert len(result[("document", document.id)]) == 1
+        assert result[("document", document.id)][0].other_id == note.id
+
+
 async def test_purge_links_for_removes_orphans_from_either_side(db_session):
     n1 = await _make_note(db_session)
     n2 = await _make_note(db_session)
