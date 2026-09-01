@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { ToolCard } from "@/components/tool-card";
 import { formatBytes } from "@/lib/format";
 import { authApi } from "@/features/auth/api";
+import { McpTokensCard } from "@/features/mcp-tokens/mcp-tokens-card";
 import { settingsApi, type BackupBundle } from "@/features/settings/api";
 
 export default function SettingsPage() {
@@ -178,6 +179,13 @@ export default function SettingsPage() {
               />
             </div>
           </ToolCard>
+        </div>
+
+        <Separator />
+
+        {/* Claude / MCP: scoped, revocable credential management. */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <McpTokensCard />
         </div>
       </div>
 

@@ -144,19 +144,40 @@ def test_forge_search_rejects_query_over_200_chars(env):
     assert "query" in error.lower()
 
 
-def test_forge_search_never_returns_secret_data(env):
+async def test_forge_search_never_returns_secret_data(env):
     """AC12 - forge_search must never surface Secret names/metadata, unlike
     search_service.global_search (which this tool deliberately does not
-    call). Adversarial: a Secret whose name matches the query term must not
-    leak into the output even though a plaintext-search-everything
-    implementation would have found it."""
+    call). Adversarial: a real Secret whose name matches the query term must
+    not leak into the output even though a plaintext-search-everything
+    implementation would have found it.
+
+    Found by the Milestone 5 Agentic RC Review (MAJOR): this test previously
+    never created a Secret at all - it only asserted shape on Note results,
+    so it would have stayed green even if forge_search regressed to calling
+    search_service.global_search (the exact failure 01_SPEC.md SS5.1 warns
+    against), since there would have been no Secret to leak. Inserted
+    directly via the DB session (bypassing the vault-crypto/setup flow
+    entirely, matching test_knowledge_service.py's own pattern for a
+    Secret fixture) - forge_search's exclusion is structural (it never
+    imports services.secrets), so a real ciphertext value isn't needed to
+    prove the exclusion holds."""
+    from app.database.session import get_sessionmaker
+    from app.models.secrets import Secret
+
+    sessionmaker = get_sessionmaker()
+    async with sessionmaker() as session:
+        session.add(Secret(name="unique-narwhal secret", encrypted_value=b"opaque-ciphertext-not-a-real-secret"))
+        await session.commit()
+
     token, sid = _connect(env, ["forge:read", "forge:write"])
     _call_tool(env, sid, token, "forge_create_note", {"title": "unrelated", "content": "unique-narwhal note"}, 2)
 
     results = _call_tool(env, sid, token, "forge_search", {"query": "unique-narwhal"}, 3)
+    assert results, "expected the note to match - a query that matches nothing would make this test vacuous"
     for r in results:
         assert r["type"] in ("note", "document")
         assert "secret" not in r
+        assert "unique-narwhal secret" not in str(r)
 
 
 def test_forge_search_invalid_project_id_errors(env):

@@ -4,8 +4,8 @@
 > **Scope:** How Claude Code should read this documentation system, what it may do autonomously, and what requires a stop-and-ask. Per-phase execution contracts live in each phase's `IMPLEMENT.md` and inherit from this document.
 > **Ownership:** TODO — assign an owner (recommended: whoever directs Claude Code sessions day-to-day).
 > **Status:** Draft
-> **Version:** 0.2.0
-> **Last Updated:** 2026-07-25
+> **Version:** 0.3.0
+> **Last Updated:** 2026-08-20
 > **Depends On:** [08_DEFINITION_OF_DONE.md](08_DEFINITION_OF_DONE.md), [10_CHECKPOINT_PROTOCOL.md](10_CHECKPOINT_PROTOCOL.md), [15_VERIFICATION_FRAMEWORK.md](15_VERIFICATION_FRAMEWORK.md)
 > **Supersedes:** —
 
@@ -47,6 +47,17 @@ This mirrors [01_PRODUCT_PRINCIPLES.md](01_PRODUCT_PRINCIPLES.md) §1.8.
 - Any schema change that isn't a straightforward additive migration.
 - Any decision that would need an entry in [`decisions/README.md`](decisions/README.md) — architectural exceptions, new cross-cutting systems, anything violating a principle in [01_PRODUCT_PRINCIPLES.md](01_PRODUCT_PRINCIPLES.md).
 - Starting a phase whose dependencies (per its `README.md` Dependencies section) aren't marked complete.
+- **Deleting or resetting any local database/data directory or Docker named volume** (`backend/.dev-data*`, `forge-data`/`<project>_forge-data`, or equivalent) that this session did not itself create earlier in the same task — even one that looks empty, unused, or disposable-by-convention. See §3.1 below for why this is a hard rule, not a judgment call.
+
+### 3.1 Local dev-state and Docker volumes are never assumed disposable
+
+**Found the hard way during Phase 11, Milestone 5 (2026-08-20):** a session preparing a live-verification run deleted `backend/.dev-data/` to get a clean state, without first checking whether it held real accumulated data. It happened to survive (the file was locked by a still-running process, and its actual contents turned out to be a single empty note from Phase 01) — but the reasoning that led to attempting the deletion was wrong, not merely lucky: "it's a gitignored `.dev-data*` directory, other sibling directories with similar names are clearly disposable verification sandboxes, so this one probably is too." That inference does not hold. A directory being gitignored means it isn't *tracked*, not that it isn't *real* — the operator's own months of manual cross-phase testing lives in exactly this kind of directory, and "looks like scratch space" is not the same as "confirmed to be scratch space."
+
+**The rule, going forward:**
+1. Never delete, truncate, or reset a local database file, data directory, or Docker named volume unless this session created it earlier in the same task (e.g., an isolated verification sandbox this session itself just spun up and will itself tear down).
+2. Before touching anything else that looks like it might be dev/test state — a `.dev-data*` directory, a Docker volume, a `docker ps -a`/`docker volume ls` result predating this session — inspect it first (row counts, file timestamps, `docker inspect`) and form an actual conclusion about whether it holds real accumulated state, rather than inferring disposability from a naming convention or directory location.
+3. When a task needs a clean environment (a fresh DB, an empty volume) and an existing one is in the way, default to creating a **new, separately-named** one (a different `FORGE_DATA_DIR`, a different Docker Compose project name via `-p`) instead of clearing the existing one — this is strictly safer and was, in fact, the approach that correctly protected the pre-existing `forge`-named Docker Compose project/volume later in that same Milestone 5 session, once the lesson had already been learned the hard way with the plain directory.
+4. If a reset of existing state is genuinely necessary (not just convenient), stop and ask — this falls under "Must ask first" above, not "may do without asking."
 
 ## 4. Quality gates
 

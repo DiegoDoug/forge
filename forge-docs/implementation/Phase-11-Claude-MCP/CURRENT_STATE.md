@@ -1,21 +1,21 @@
 # Phase 11 — Current State
 
 > **Purpose:** Living snapshot of where this phase actually is.
-> **Last Updated:** 2026-08-19
+> **Last Updated:** 2026-08-20
 
 ---
 
 ## 1. Lifecycle stage
 
-**Implementation — Milestones 1–4 complete, checkpointed, and committed (`6854971`, `4cf1bd2`, Milestone 3's commit, and Milestone 4's commit). Milestone 5 explicitly NOT authorized — stays closed until the owner opens it.** Per `../../13_PHASE_LIFECYCLE.md`, the phase moved Specification → Authorized → Implementation on 2026-08-18.
+**Implementation — Milestones 1–5 all complete, each independently gated PASS. Milestones 1–4 are checkpointed and committed (`6854971`, `4cf1bd2`, Milestone 3's commit, and Milestone 4's commit at `936c13c`); Milestone 5 is implemented and gated PASS but not yet checkpointed or committed.** Per `../../13_PHASE_LIFECYCLE.md`, the phase moved Specification → Authorized → Implementation on 2026-08-18. **The mandatory human review gate is now complete — the owner reviewed and approved the phase in full, item by item, in chat on 2026-08-20 (full record in `IMPLEMENT.md`).** Phase 11 is clear for the owner's own release authorization; this session still does not perform any release/merge/tag/freeze action itself, regardless of how many gates passed.
 
-Milestones 1–3's full history (authorization → implementation → Agentic Review → repair cycle where applicable → checkpoint/commit) is unchanged from before and is not repeated here — see `IMPLEMENT.md`'s gates 1–10 and §5 below for the abbreviated record, or the full checkpoints/reviews linked in §7.
+Milestones 1–4's full history (authorization → implementation → Agentic Review → repair cycle where applicable → checkpoint/commit) is unchanged from before and is not repeated here — see `IMPLEMENT.md`'s gates 1–14 for the full record, or the checkpoints/reviews linked in §8.
 
-The owner then instructed, in chat, on 2026-08-19: *"Start milestone 4 implementation"* — read as the separate, explicit authorization `IMPLEMENT.md`'s gate structure requires before any Milestone 4 task begins, matching the exact precedent Milestones 1–3 each required (gate 11 in `IMPLEMENT.md`). M4-T1 through M4-T5 were implemented; the full backend test suite (395/395) and Docker build were green (gate 12).
+The owner then instructed, in chat, on 2026-08-20: *"Finish Phase 11"* — read, together with the owner's answer to a clarifying question about the one genuinely open decision Milestone 5 needed (a Settings-page UI for token management, not a CLI script), as the separate, explicit authorization to begin and complete Milestone 5, the phase's final milestone (gate 15). M5-T1 through M5-T6 were implemented: the token-management UI (frontend-only — no backend change was needed), the full authorization matrix (`test_mcp_authz_matrix.py`), the audit-completeness pass (`test_mcp_audit_completeness.py`), a full regression run (backend 469/469, frontend `tsc`/`eslint` clean), a real, isolated `docker compose up --build` production-path verification, and the release-artifact drafts (`10_RELEASE_NOTES.md`, this file, `VERIFICATION_CONTRACT.md`) — gate 16.
 
-The independent Agentic Review's first pass reached **PASS WITH REQUIRED FIXES** (zero BLOCKER, one MAJOR, one MINOR). The MAJOR — `06_API.md` §5's resource table overclaiming enforced `forge:read` on the static `forge://projects` resource, when the resource structurally cannot enforce it (a genuine MCP SDK limitation, independently confirmed by reading the installed SDK's source) — was fixed with a footnote stating the true, current behavior. The MINOR (generic resource-error messages) was deliberately left as backlog, per the reviewer's own explicit non-blocking classification. The same reviewer independently re-verified the fix — re-reading the actual diff and re-running the backend suite fresh, not trusting the fix description — before returning a final verdict of **PASS** (gate 13). Full record: `reviews/AGENTIC_REVIEW_M4.md`.
+**The independent Agentic RC Review — the final milestone gate for the whole phase — ran and reached PASS (gate 17)**, after a narrow repair cycle: first pass found zero BLOCKER, one MAJOR (the AC10/AC12 Secrets-exclusion regression test never actually created a Secret — a real, live-proven-safe but test-integrity gap, independently found by reading the test body rather than trusting five documents' "adversarial" claims about it), and three MINOR (a stale FDK test-count claim, no MCP-specific structured logging, an unrelated orphaned `handout.md`). The MAJOR and one MINOR were fixed and independently re-verified — the reviewer re-derived *why* the fix actually catches the specific regression class it targets, not merely that a Secret now exists in the test — before returning a final verdict of **PASS**. Full record: `reviews/AGENTIC_REVIEW_M5.md`.
 
-The owner then instructed, in chat, on 2026-08-19: *"checkpoint and commit M4."* Checkpointed at `forge-docs/history/2026-08-19-phase-11-milestone-4-checkpoint.md` and committed (gate 14). **This session takes no further action on this phase without a new, explicit instruction** — in particular, no Milestone 5 task, however small, until the owner separately opens it.
+**This session has not checkpointed, committed, declared the phase release-ready, or taken any release/merge/tag/freeze action.** Per this phase's own explicit rule (`IMPLEMENT.md`'s mandatory human review gate, `09_CLAUDE_CODE_RULES.md` §3/§7, `13_PHASE_LIFECYCLE.md`), that step belongs to the project owner alone.
 
 ## 2. What exists right now
 
@@ -50,18 +50,33 @@ The owner then instructed, in chat, on 2026-08-19: *"checkpoint and commit M4."*
 - FDK suite: **103/113** — the 10 failures are pre-existing and environment-specific (a Windows/Git-Bash subprocess-invocation quirk in `BuildVerifier`/`TestVerifier`, root-caused by direct traceback inspection: `/bin/bash: ... python.exe: command not found`), not caused by anything this milestone touched (`git status --porcelain` confirms zero files under `tools/` changed). Same 113-test total as Milestone 3's "113/113".
 - Docker build check (`docker build ./backend`) succeeded.
 
-## 3. What does NOT exist yet (correctly, per Milestone 4's scope boundary)
+**Milestone 5 implementation** (new, 2026-08-20, Agentic RC Review PASS — not yet checkpointed or committed):
+- `frontend/features/mcp-tokens/api.ts`, `mcp-tokens-card.tsx` (new) — the token-management UI, resolving `01_SPEC.md` §4.6/`08_ACCEPTANCE.md` §6's open question per the owner's explicit choice (a Settings-page UI, not a CLI script). Wired into `frontend/app/(app)/settings/page.tsx` as a new full-width `ToolCard`. Zero backend changes — `POST/GET/DELETE /api/mcp/tokens` already accepted `AuthDep` (browser session) per Milestone 1's own design. Manually verified end-to-end against a live dev instance: list → create (shows the raw token exactly once, with copy-to-clipboard) → revoke (named confirm dialog) → list updates correctly, active/revoked sections both correct.
+- `backend/tests/test_mcp_authz_matrix.py` (new, ~57 tests) — every one of the 18 tools × correctly-scoped/wrongly-scoped/zero-scope token, plus a DB-level check that wrongly-scoped write/delete calls stage zero mutations, plus an invalid/revoked-token cross-reference. All passed against the unmodified Milestone 1–4 codebase — this file adds coverage, it did not require any `app/mcp/**` change to pass.
+- `backend/tests/test_mcp_audit_completeness.py` (new, ~17 tests) — every one of the 12 mutating tools produces exactly its documented `ActivityLog` behavior (create/delete tools log once with `source="mcp"`; the three documented no-log exceptions hold); every one of the 6 read tools confirmed to write nothing. Same story — pure verification, no `app/mcp/**` change needed.
+- `docs/Security.md`, `docs/API.md`, `.env.example` — three more instances of the same "as of Milestone 1, zero MCP tools" staleness class first found and fixed in `docs/Deployment.md` during Milestone 4, found and fixed here.
+- `README.md` — full pass; had never been updated since Specification (all checkboxes unchecked) despite four complete, committed milestones.
+- `backend/tests/test_mcp_tools_search_context.py::test_forge_search_never_returns_secret_data` — **repair-cycle fix, Agentic RC Review MAJOR finding**: this Milestone-3-era test had never actually created a `Secret` row despite its docstring and five documents describing it as adversarial. Fixed by inserting a real `Secret` directly via the DB session and asserting it never appears in `forge_search`'s output by content, not just by shape — see §6 below.
+- Backend suite: **469/469** (up from 395 after Milestone 4; +74 new tests, 0 regressions). Frontend `tsc --noEmit`/`eslint .`: clean, full repo.
+- Docker/nginx production verification: a full, isolated `docker compose -p forge-m5-verify --env-file <disposable> up --build` run — health check, first-run setup, bootstrap token rejected by `/mcp` itself (re-confirmed), persistent token provisioned, full `initialize` → `tools/list` (18/18) → `resources/list` (`forge://projects` present, auto-discoverable) handshake through nginx, frontend served, bare `/mcp` path handled without a redirect trap. Run under an isolated project name/volume, never touching the pre-existing local `forge` project/volume this machine already had from the operator's own prior deployment testing (discovered, not disturbed); torn down cleanly afterward.
+- `10_RELEASE_NOTES.md` (new, draft) — the phase's release-facing summary, marked explicitly not-yet-released pending the human review gate.
+- `VERIFICATION_CONTRACT.md` updated in place for the Milestone 5 gate.
 
-- `02_UI.md`, `05_COMPONENTS.md` — still deliberately omitted.
-- A token-management UI, the full authorization matrix test, production Docker/nginx verification, release artifacts — Milestone 5 scope, still unauthorized.
+## 3. What does NOT exist yet (correctly, per Milestone 5's scope boundary)
+
+- `02_UI.md`, `05_COMPONENTS.md` — still deliberately omitted (this phase never needed them; Milestone 5's one small UI addition reused 100% pre-existing components/patterns).
+- A checkpoint/commit for Milestone 5 — the gate has reached PASS, but checkpoint/commit is a separate, explicit act not yet taken.
+- The mandatory human review gate — not yet requested of the owner; this phase may not self-certify it.
+- Any release/merge/tag action, or the move of `10_RELEASE_NOTES.md` to `../../history/Phase-11/` — all deliberately withheld pending the human review gate.
 - `forge-docs/02_ROADMAP.md` update — still deliberately deferred to the Released/Frozen stage.
-- No new Alembic migration this milestone — no new table/column was needed (`01_SPEC.md` §9's explicit "no new memory database" instruction; memory capture is Notes plus the pre-existing tags mechanism).
+- No new Alembic migration this milestone — no schema change was needed.
+- The remaining `08_ACCEPTANCE.md` §6 open questions (audit-logging asymmetries for Note/Document updates and knowledge-link mutations, whether reads should log, OAuth, `forge_delete_project`) — genuinely still open, not resolved by this milestone, and not this session's to resolve unilaterally.
 
 ## 4. Immediate next step
 
-**Milestone 4 is checkpointed and committed, per explicit owner instruction (*"checkpoint and commit M4."*). Stopped here — Milestone 5 is not authorized** and this session takes no further action on this phase without a new, explicit instruction.
+**The mandatory human review gate is complete** — the owner reviewed all ten `IMPLEMENT.md` checklist items in chat on 2026-08-20 and approved the phase, with `forge:secrets` kept explicitly unimplemented, the `forge://projects` resource limitation explicitly recorded as a reviewed condition, and two conditions the owner required before full sign-off (AC14's cross-session loop confirmed genuinely live-verified; a procedural safeguard added for the Docker-verification near-miss — see `IMPLEMENT.md`'s human review gate section for the full record). The owner separately required `08_ACCEPTANCE.md`'s 20 criteria be checked against actual artifacts rather than the RC summary — done, each with a specific citation.
 
-**Next:** owner authorizes Milestone 5 (Production Hardening & Release) as a separate, explicit act whenever ready — not before.
+**Phase 11 is clear for the owner's own release authorization.** This session still does not perform any release/merge/tag/freeze action itself — that remains the owner's own explicit act, separate from everything above, matching this repo's standing rule that no automated process may perform it regardless of how many gates passed. Milestone 5 also remains uncheckpointed/uncommitted pending a separate, explicit owner instruction (matching Milestones 1–4's own precedent).
 
 ## 5. Known findings from Milestone 4 (kept here as institutional memory, not just in the review artifact)
 
@@ -72,19 +87,36 @@ The owner then instructed, in chat, on 2026-08-19: *"checkpoint and commit M4."*
 5. **AC14's "independent session" is built as a fresh persistent token AND a fresh `initialize` handshake**, not a second call on a reused connection. The Agentic Review independently reproduced this with an even stronger probe — a second, fully independently-constructed app/engine instance, not just a second token on the same app object — and cross-session continuity still held.
 6. **One MINOR finding, deliberately left unfixed**: resource-read errors surface as a generic, unclassified SDK-level `-32603` error rather than a clean not-found message — traced to the MCP SDK's own blanket exception-wrapping, not this milestone's code. The Agentic Review classified this as backlog-appropriate and non-blocking; fixing it was deliberately out of scope for the repair cycle, which addressed only the one MAJOR finding the review actually required.
 
-## 6. Recommended next prompt (for whoever picks this up)
+## 6. Known findings from Milestone 5 (kept here as institutional memory, not just in the review artifact)
 
-"Milestone 4 is checkpointed and committed; Milestone 5 is explicitly not authorized and stays closed until the owner opens it. Review `forge-docs/implementation/Phase-11-Claude-MCP/CURRENT_STATE.md` and `reviews/AGENTIC_REVIEW_M4.md`, then authorize Milestone 5 (Production Hardening & Release) explicitly when ready — not implied by anything above."
+1. **`README.md` had never been updated since Specification** — every scope/deliverable/milestone/definition-of-complete checkbox was still unchecked, and the status line still said "NOT yet Authorized, NOT started," despite four complete, independently-gated, committed milestones. Found and fixed this milestone; worth noting as a process gap (this file, `IMPLEMENT.md`, and `VERIFICATION_CONTRACT.md` were kept current every milestone — `README.md` was not, because no milestone's own execution rules named it as something to update).
+2. **Three more instances of the "as of Milestone 1, zero MCP tools" staleness class** were found this milestone (`docs/Security.md`, `docs/API.md`, `.env.example`) — the same pattern `docs/Deployment.md` had during Milestone 4. All corrected. Worth a final sweep by the RC Review for any remaining instance this session didn't catch.
+3. **The token-management UI required zero backend changes**, confirmed by reading `app/api/routes/mcp_tokens.py` before writing any frontend code — `POST/GET/DELETE /api/mcp/tokens` already accepted `AuthDep` per Milestone 1's own design, a deliberate "either bootstrap token or browser session" dual-auth decision made specifically so a UI could be added later without backend rework.
+4. **This machine already had a `forge`-named Docker Compose project (containers + a `forge_forge-data` volume)** from what appears to be the operator's own prior deployment testing, discovered while preparing Milestone 5's Docker verification. Nothing under it was read, modified, or removed — verification ran under an isolated `forge-m5-verify` project name/volume throughout, confirmed via `docker volume ls` before and after, and the isolated volume/images were fully torn down at the end.
+5. **The authorization-matrix and audit-completeness test files added zero new coverage gaps to close** — both passed on their first run against the completely unmodified Milestone 1–4 codebase, confirming (not discovering) that scope enforcement and audit logging were already correct everywhere. This is the intended outcome of a "prove the full matrix in one place" milestone, not a sign the tests are weak — see each file's own docstring for what specifically each one checks.
+6. **The Agentic RC Review's whole-phase scope paid off**: its one MAJOR finding — `test_forge_search_never_returns_secret_data` (a Milestone-3-era test) had never actually created a `Secret`, despite its own docstring and four other documents (`AGENTIC_REVIEW_M3.md`, `VERIFICATION_CONTRACT.md`, `CURRENT_STATE.md`, `08_ACCEPTANCE.md`) describing it as adversarial — survived Milestone 3's own Agentic Review, Milestone 5's "full regression + security suite" pass, and this session's own review of the same file, undetected until the final whole-phase audit read the test body itself rather than trusting five accumulated claims about it. The live product was never actually vulnerable (the reviewer proved this independently with a real Secret before flagging the test), but the finding is a reminder that a test's docstring claiming "adversarial" is not itself evidence.
+7. **The FDK tools/tests suite's documented 10-failure count (Windows/Git-Bash subprocess quirk, carried in this file and `VERIFICATION_CONTRACT.md` since Milestone 4) no longer reproduces** — the RC Review got 113/113 clean across three separate runs. Corrected in `VERIFICATION_CONTRACT.md`; the underlying environment-state change was not further root-caused (out of scope — FDK tooling, not Forge product code).
+8. **The Docker-verification near-miss (item 4 above) became a permanent, repo-wide process safeguard, not just a one-time close call** — the owner required this explicitly as a condition of the human review gate. Added: `../../09_CLAUDE_CODE_RULES.md` §3/§3.1, a new rule (not scoped to Phase 11) requiring explicit confirmation before any session deletes or resets a local database/data directory or Docker named volume it did not itself create in the same task, plus a documented "create an isolated new one instead" default — the same approach this session actually used correctly for the Docker verification itself, once the lesson had already been learned the hard way.
 
-## 7. Cross-references
+## 7. Human review gate outcome (2026-08-20)
+
+The owner completed the mandatory human review gate in chat — full item-by-item record in `IMPLEMENT.md`'s "The mandatory human review gate" section. Summary: architecture, auth model, scopes, tool surface, data exposure (including the `forge://projects` limitation, reviewed verbatim), `confirm: true` for v1, Claude workflow, and deployment model were all approved; `forge:secrets` stays explicitly unimplemented; the RC review's one MAJOR finding was accepted as resolved. Two conditions were required and satisfied: AC14's cross-session loop confirmed genuinely live-verified (three independent levels of rigor), and a procedural safeguard added for the Docker-verification near-miss (§6 item 8). `08_ACCEPTANCE.md`'s 20 criteria were checked individually against actual test/review evidence at the owner's explicit request, not inferred from a summary. **Phase 11 is clear for the owner's own release authorization** — this session does not perform that step itself.
+
+## 8. Recommended next prompt (for whoever picks this up)
+
+"The mandatory human review gate is complete (2026-08-20) — Phase 11 is clear for release. Review `forge-docs/implementation/Phase-11-Claude-MCP/IMPLEMENT.md`'s human review gate section and `08_ACCEPTANCE.md` for the full record, then proceed with release authorization (or direct this session to checkpoint/commit Milestone 5 first, if that hasn't happened yet) as your own explicit act — this session does not take that step on its own."
+
+## 9. Cross-references
 
 - [README.md](README.md)
 - [IMPLEMENT.md](IMPLEMENT.md)
 - [VERIFICATION_CONTRACT.md](VERIFICATION_CONTRACT.md)
+- [10_RELEASE_NOTES.md](10_RELEASE_NOTES.md)
 - [reviews/AGENTIC_REVIEW_M1.md](reviews/AGENTIC_REVIEW_M1.md)
 - [reviews/AGENTIC_REVIEW_M2.md](reviews/AGENTIC_REVIEW_M2.md)
 - [reviews/AGENTIC_REVIEW_M3.md](reviews/AGENTIC_REVIEW_M3.md)
 - [reviews/AGENTIC_REVIEW_M4.md](reviews/AGENTIC_REVIEW_M4.md)
+- [reviews/AGENTIC_REVIEW_M5.md](reviews/AGENTIC_REVIEW_M5.md)
 - [09_IMPLEMENTATION_TASKS.md](09_IMPLEMENTATION_TASKS.md)
 - [../../history/2026-08-18-phase-11-milestone-1-checkpoint.md](../../history/2026-08-18-phase-11-milestone-1-checkpoint.md)
 - [../../history/2026-08-18-phase-11-milestone-2-checkpoint.md](../../history/2026-08-18-phase-11-milestone-2-checkpoint.md)

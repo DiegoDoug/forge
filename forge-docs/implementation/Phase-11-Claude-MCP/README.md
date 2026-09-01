@@ -3,8 +3,8 @@
 > **Purpose:** Entry point for Phase 11 — objective, scope, deliverables, and completion criteria.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
 > **Ownership:** Project owner — this entire phase requires explicit owner Authorization before implementation begins (see §3 "Before starting a phase" in `../README.md`), and explicit owner sign-off after Milestone 5's automated RC review, per §17 of the planning brief this phase was scoped from.
-> **Status:** 📝 **Specification — produced by a one-shot planning session, NOT yet Authorized, NOT started.** No application code has been written or modified for this phase. See `CURRENT_STATE.md`.
-> **Last Updated:** 2026-08-18
+> **Status:** ✅ **Implementation and the mandatory human review gate are both complete — Phase 11 is clear for the owner's own release authorization.** This phase still does not self-release, self-merge, self-tag, or self-freeze — that remains the owner's own explicit act. See `CURRENT_STATE.md` and `IMPLEMENT.md`'s human review gate record.
+> **Last Updated:** 2026-08-20
 
 ---
 
@@ -22,23 +22,23 @@ MCP is an **interface to Forge's existing application capabilities, not a second
 
 **In scope:**
 
-- [ ] An MCP server, mounted in-process inside the existing FastAPI backend (see `01_SPEC.md` §1 for the architecture decision and rejected alternative).
-- [ ] Streamable HTTP transport, reachable through the existing nginx reverse proxy alongside the REST API.
-- [ ] A new bearer-token authentication path, independent of the browser session cookie, with `forge:read` / `forge:write` / `forge:delete` scopes (see `01_SPEC.md` §4).
-- [ ] A small, semantic MCP tool surface over Notes, Documents, Projects, and Knowledge Hub linking/tagging — full contract in `06_API.md`.
-- [ ] `forge_context`, a Claude-oriented aggregate retrieval tool built on the existing FTS5 search and Knowledge Hub query layer — no new search index, no embeddings/vector search.
-- [ ] Session/decision capture, implemented as ordinary Notes with a reserved tag convention — no new persistence model.
-- [ ] Reuse of the existing `ActivityLog` service for an MCP-originated audit trail, with an added `source` distinction.
-- [ ] Five implementation milestones, each gated by an independent automated review, and a mandatory human review gate after the final milestone's RC review — before any release/freeze action.
+- [x] An MCP server, mounted in-process inside the existing FastAPI backend (see `01_SPEC.md` §1 for the architecture decision and rejected alternative).
+- [x] Streamable HTTP transport, reachable through the existing nginx reverse proxy alongside the REST API.
+- [x] A new bearer-token authentication path, independent of the browser session cookie, with `forge:read` / `forge:write` / `forge:delete` scopes (see `01_SPEC.md` §4).
+- [x] A small, semantic MCP tool surface over Notes, Documents, Projects, and Knowledge Hub linking/tagging — 18 tools total, full contract in `06_API.md`.
+- [x] `forge_context`, a Claude-oriented aggregate retrieval tool built on the existing FTS5 search and Knowledge Hub query layer — no new search index, no embeddings/vector search.
+- [x] Session/decision capture, implemented as ordinary Notes with a reserved tag convention — no new persistence model.
+- [x] Reuse of the existing `ActivityLog` service for an MCP-originated audit trail, with an added `source` distinction.
+- [x] Five implementation milestones, each gated by an independent automated review, and a mandatory human review gate after the final milestone's RC review — before any release/freeze action.
 
 **Out of scope (see `01_SPEC.md` §2 for the full list with reasoning):**
 
-- [ ] The Secrets/vault service and anything crypto-adjacent to it (`forge:secrets` scope is *defined* but implemented by nothing in this phase).
-- [ ] Settings, backup/import/export, and master-password operations.
-- [ ] Embeddings or vector search — the existing SQLite FTS5 index is sufficient for this phase's retrieval needs.
-- [ ] A new "memory database" — session/decision capture reuses Notes.
-- [ ] OAuth 2.0 for MCP auth — a static, revocable bearer token fits Forge's single-tenant, self-hosted deployment model; OAuth is flagged as a possible future hardening step, not built here.
-- [ ] Any frontend surface beyond a minimal token-management view, which is itself deferred to Milestone 5 as an open question (see `01_SPEC.md` §4.6) rather than committed scope.
+- [x] The Secrets/vault service and anything crypto-adjacent to it (`forge:secrets` scope is *defined* but implemented by nothing in this phase) — confirmed, held for all five milestones by a recursive static import-boundary check.
+- [x] Settings, backup/import/export, and master-password operations.
+- [x] Embeddings or vector search — the existing SQLite FTS5 index is sufficient for this phase's retrieval needs.
+- [x] A new "memory database" — session/decision capture reuses Notes.
+- [x] OAuth 2.0 for MCP auth — a static, revocable bearer token fits Forge's single-tenant, self-hosted deployment model; OAuth is flagged as a possible future hardening step, not built here.
+- [x] A frontend surface beyond token management — a Settings-page UI for issuing/revoking MCP tokens was built in Milestone 5 (the owner's resolution of the `01_SPEC.md` §4.6 open question); no other new frontend surface exists.
 
 ## Relationship to the shipped application
 
@@ -48,15 +48,15 @@ Related backend: `backend/app/services/notes/`, `backend/app/services/documents/
 
 ## Deliverables
 
-- [ ] `backend/app/mcp/` — new package: server bootstrap, tool handlers, resource handlers, MCP-specific auth dependency.
-- [ ] `backend/app/models/mcp_token.py` — one additive model (`McpToken`).
-- [ ] `backend/alembic/versions/00XX_mcp_tokens.py` — one additive migration.
-- [ ] `backend/app/core/config.py` additions — `mcp_enabled`, `mcp_bootstrap_token` / `_file`.
-- [ ] `backend/app/services/mcp/` — token issuance/verification/revocation service, scope checks.
-- [ ] `docker/nginx.conf` change — proxy `/mcp` to the backend (documented in `03_BACKEND.md` §5, not applied during this planning session).
-- [ ] `backend/tests/test_mcp_*.py` — unit, integration, security, and MCP-contract tests per `07_TESTING.md`.
-- [ ] A new FDK verifier (or documented extension) supporting an "Agentic Review" gate — see `09_IMPLEMENTATION_TASKS.md` Milestone 1 and the Verification Strategy note in `08_ACCEPTANCE.md` §5.
-- [ ] Documentation: this folder's full doc set, plus updates to `docs/API.md`, `docs/Architecture.md`, `docs/Security.md`, `docs/Deployment.md`, `forge-docs/02_ROADMAP.md` §3 (Phase 11 row), and a new ADR (see `01_SPEC.md` §7).
+- [x] `backend/app/mcp/` — server bootstrap, 5 tool modules (18 tools total), 1 resource module, MCP-specific auth dependency.
+- [x] `backend/app/models/mcp_token.py` — one additive model (`McpToken`).
+- [x] `backend/alembic/versions/` — one additive migration (`mcp_tokens` table + `activity_log.source` column). No further migrations needed through Milestone 5.
+- [x] `backend/app/core/config.py` additions — `mcp_enabled`, `mcp_bootstrap_enabled`, `mcp_bootstrap_token` / `_file`.
+- [x] `backend/app/services/mcp/` — token issuance/verification/revocation/listing service, scope checks (`app/mcp/auth.py::require_scope`).
+- [x] `docker/nginx.conf` change — `/mcp` proxied to the backend; verified end-to-end (handshake, tools/list, resources/list) against a real `docker compose up --build` stack in Milestone 5.
+- [x] `backend/tests/test_mcp_*.py` — unit, integration, security, authorization-matrix, and audit-completeness tests (469 backend tests total, 0 failures).
+- [x] A new FDK verifier (`tools/fdk_verification/verifiers/agentic_review.py`) supporting the "Agentic Review" gate — used at every one of the five milestone gates.
+- [x] Documentation: this folder's full doc set, plus `docs/Security.md`, `docs/Deployment.md`, `docs/API.md`, `docs/MCP_Usage.md` (new), `.env.example`, and ADR-0018/ADR-0019 (accepted). `forge-docs/02_ROADMAP.md` §3's Phase 11 row remains deliberately deferred to the Released/Frozen stage, per this repo's own convention (an unauthorized-for-release phase doesn't get a roadmap row yet). `docs/Architecture.md` was reviewed and found already accurate — its `/mcp` description is architecture-level (mount point, shared process) and was never milestone/tool-count-specific, so nothing there had gone stale.
 
 ## Dependencies
 
@@ -68,11 +68,11 @@ No other phase is a dependency. Phase 05 (Model Playground)'s provider/credentia
 
 ## Milestones
 
-- [ ] **Milestone 1 — MCP Foundation.** Server, transport, auth/scopes, config, health/handshake, Docker wiring. No CRUD tools yet. Gate: independent Agentic Review — architecture, security, transport, auth, Docker, regressions.
-- [ ] **Milestone 2 — Knowledge CRUD.** `forge_get/create/update/delete_note`, same for documents, `forge_list/get/create/update_project`. Gate: Agentic Review — tool contracts, service-layer reuse, authorization, data integrity, regressions.
-- [ ] **Milestone 3 — Search, Context & Knowledge Graph.** `forge_search`, `forge_context`, `forge_link_items`, `forge_unlink_items`. Gate: Agentic Review — retrieval correctness, ranking, information leakage, tool ergonomics.
-- [ ] **Milestone 4 — Claude Memory Workflows.** `forge_capture_session`/`forge_capture_decision`, resource exposure (`forge://projects`, `forge://projects/{id}`), multi-session continuity documentation. Gate: Agentic Review — persistence correctness, cross-session retrieval, auditability.
-- [ ] **Milestone 5 — Production Hardening & Release.** Token lifecycle (rotation/revocation), full authorization matrix, audit logging completeness, Docker production wiring, full regression + security test pass, release artifacts. Gate: final Agentic RC Review, then the mandatory **human review gate** (§17 of the planning brief) before any release/merge/tag action.
+- [x] **Milestone 1 — MCP Foundation.** Server, transport, auth/scopes, config, health/handshake, Docker wiring. No CRUD tools yet. Gate: independent Agentic Review — **PASS** (one repair cycle; a real BLOCKER found and fixed). Checkpointed, committed at `6854971`.
+- [x] **Milestone 2 — Knowledge CRUD.** `forge_get/create/update/delete_note`, same for documents, `forge_list/get/create/update_project`. Gate: Agentic Review — **PASS** (one repair cycle; a real BLOCKER — a `confirm` boolean-coercion bypass — found and fixed). Checkpointed, committed at `4cf1bd2`.
+- [x] **Milestone 3 — Search, Context & Knowledge Graph.** `forge_search`, `forge_context`, `forge_link_items`, `forge_unlink_items`. Gate: Agentic Review — **PASS** (one repair cycle; 3 MAJOR + 3 MINOR found and fixed). Checkpointed, committed.
+- [x] **Milestone 4 — Claude Memory Workflows.** `forge_capture_session`/`forge_capture_decision`, resource exposure (`forge://projects`, `forge://projects/{id}`), multi-session continuity test (AC14). Gate: Agentic Review — **PASS** (one repair cycle; 1 MAJOR + 1 MINOR found, MAJOR fixed). Checkpointed, committed at `936c13c`.
+- [x] **Milestone 5 — Production Hardening & Release.** Token-management Settings UI (owner-resolved open question), full authorization matrix (18 tools × 3 scopes × correct/wrong/zero, 469 backend tests total), audit-logging completeness pass, Docker production wiring verified against a real `docker compose up --build` stack, release artifacts. Gate: final Agentic RC Review — **PASS** (one repair cycle; a real MAJOR — a Secrets-exclusion regression test that never created a Secret — found and fixed; see `reviews/AGENTIC_REVIEW_M5.md`). The mandatory **human review gate** (§17 of the planning brief, checklist in `IMPLEMENT.md`) is the one remaining step, not self-certified by this session.
 
 > Each milestone completion is a checkpoint trigger — see `../../10_CHECKPOINT_PROTOCOL.md` §1. Each milestone's Agentic Review gate must reach PASS before the next milestone starts; see `09_IMPLEMENTATION_TASKS.md` for exact gate criteria per milestone.
 
@@ -92,11 +92,11 @@ No other phase is a dependency. Phase 05 (Model Playground)'s provider/credentia
 
 ## Definition of Complete
 
-- [ ] All deliverables above are shipped and meet `../../08_DEFINITION_OF_DONE.md`.
-- [ ] `08_ACCEPTANCE.md` criteria are fully checked off and independently verified per `VERIFICATION_CONTRACT.md`.
-- [ ] `CURRENT_STATE.md` reflects reality with no stale "In Progress" items.
-- [ ] All five milestone Agentic Review gates reached PASS (not PASS-WITH-REQUIRED-FIXES left unresolved).
-- [ ] The human review gate (post-Milestone-5) is explicitly signed off by the project owner — this phase may not self-release.
+- [x] All deliverables above are shipped and meet `../../08_DEFINITION_OF_DONE.md`.
+- [x] `08_ACCEPTANCE.md` criteria are fully checked off and independently verified per `VERIFICATION_CONTRACT.md`.
+- [x] `CURRENT_STATE.md` reflects reality with no stale "In Progress" items.
+- [x] All five milestone Agentic Review gates reached PASS (not PASS-WITH-REQUIRED-FIXES left unresolved) — confirmed for all five, including Milestone 5's whole-phase RC review (see `reviews/AGENTIC_REVIEW_M5.md`).
+- [x] The human review gate (post-Milestone-5) is explicitly signed off by the project owner — **complete, 2026-08-20**, item by item, in chat. Full record in `IMPLEMENT.md`. Phase 11 is clear for release; this phase still does not self-release — that remains the owner's own act.
 
 ## Cross-references
 
