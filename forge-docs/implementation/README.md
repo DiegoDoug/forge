@@ -3,9 +3,9 @@
 > **Purpose:** Index of every FDK implementation phase — the buildable work that realizes the roadmap in [`../02_ROADMAP.md`](../02_ROADMAP.md).
 > **Scope:** Index only. Each phase owns its own full spec in its own folder.
 > **Ownership:** TODO — assign an owner.
-> **Status:** Phases 01–10 🔒 released & frozen (bug fixes only) — Phase 10 released outside the formal phase lifecycle, see its own `README.md`
-> **Version:** 0.7.0
-> **Last Updated:** 2026-08-12
+> **Status:** Phases 01–11 🔒 released & frozen (bug fixes only) — Phase 10 released outside the formal phase lifecycle, see its own `README.md`
+> **Version:** 0.8.0
+> **Last Updated:** 2026-08-20
 > **Depends On:** [../02_ROADMAP.md](../02_ROADMAP.md)
 > **Supersedes:** —
 
@@ -25,6 +25,7 @@
 | 08 | [Developer Toolkit](Phase-08-Developer-Toolkit/README.md) | 🔒 Released & frozen — `v0.8.0-developer-toolkit`, bug fixes only from here |
 | 09 | [Frontend Reimagine](Phase-09-Frontend-Reimagine/README.md) | 🔒 **Released & Frozen** — all 30 tasks complete 2026-08-06/07; tagged `v0.9.0-frontend-reimagine` |
 | 10 | [UX Elevation](Phase-10-UX-Elevation/README.md) | 🔒 **Released & Frozen** — committed `4f58b64`, tagged `v0.10.0`, 2026-08-12. **Ran outside the formal phase lifecycle described in §3 below** — see the phase's own `README.md` process note before assuming its docs were written in the usual order. |
+| 11 | [Claude MCP / Second Brain](Phase-11-Claude-MCP/README.md) | 🔒 **Released & Frozen** — committed `8d8ddd8`, tagged `v0.11.0`, 2026-08-20. Five milestones, each independently gated by an Agentic Review; the fifth's review audited the whole phase and required one fix before PASS. Mandatory human review gate completed by the owner before release. |
 
 ## 2. Shape of every phase folder
 

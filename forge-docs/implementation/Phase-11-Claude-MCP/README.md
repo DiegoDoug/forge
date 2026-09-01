@@ -3,7 +3,7 @@
 > **Purpose:** Entry point for Phase 11 — objective, scope, deliverables, and completion criteria.
 > **Scope:** This phase only. Cross-phase sequencing lives in the roadmap.
 > **Ownership:** Project owner — this entire phase requires explicit owner Authorization before implementation begins (see §3 "Before starting a phase" in `../README.md`), and explicit owner sign-off after Milestone 5's automated RC review, per §17 of the planning brief this phase was scoped from.
-> **Status:** ✅ **Implementation and the mandatory human review gate are both complete — Phase 11 is clear for the owner's own release authorization.** This phase still does not self-release, self-merge, self-tag, or self-freeze — that remains the owner's own explicit act. See `CURRENT_STATE.md` and `IMPLEMENT.md`'s human review gate record.
+> **Status:** 🔒 **Released & Frozen.** Committed to `master` at `8d8ddd8`, tagged `v0.11.0`, 2026-08-20. The owner completed the mandatory human review gate item by item in chat, then granted explicit release authorization — see `IMPLEMENT.md`'s human review gate record. Per `../../13_PHASE_LIFECYCLE.md` §4, this directory now accepts bug fixes only. End-of-phase release notes moved to [`../../history/Phase-11/10_RELEASE_NOTES.md`](../../history/Phase-11/10_RELEASE_NOTES.md).
 > **Last Updated:** 2026-08-20
 
 ---

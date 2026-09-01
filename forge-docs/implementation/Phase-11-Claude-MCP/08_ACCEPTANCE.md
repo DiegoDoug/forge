@@ -1,7 +1,7 @@
 # Phase 11 — Acceptance Criteria
 
 > **Purpose:** Objective, checkable acceptance criteria for Phase 11.
-> **Status:** All 20 criteria checked off below, 2026-08-20, against actual test/review evidence at the human review gate's own request — not inferred from a summary. Each line cites the specific test(s)/live-probe(s) that satisfy it. Awaiting owner sign-off as part of the mandatory human review gate (`IMPLEMENT.md`).
+> **Status:** 🔒 **Released & Frozen.** Committed to `master` at `8d8ddd8`, tagged `v0.11.0`, 2026-08-20. All 20 criteria below were checked off individually against actual test/review evidence at the human review gate's own request — not inferred from a summary — before the owner signed off. See `IMPLEMENT.md`'s "mandatory human review gate" section for the full record.
 > **Last Updated:** 2026-08-20
 
 ---

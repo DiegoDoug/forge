@@ -2,10 +2,10 @@
 
 > **Purpose:** The release-facing summary of Phase 11 — what shipped, what to check before upgrading. Not a duplicate of `CURRENT_STATE.md` (the working log) — this is what a user or another engineer reads to understand what changed.
 > **Scope:** This phase only.
-> **Status:** 📝 **Draft — not yet released.** All five milestones are complete and independently gated PASS (Milestone 5's Agentic RC Review result recorded in `VERIFICATION_CONTRACT.md`/`reviews/AGENTIC_REVIEW_M5.md`), and the mandatory human review gate (`IMPLEMENT.md`'s checklist) is now complete — the owner reviewed and approved the phase item by item in chat, 2026-08-20. Phase 11 is clear for release; this phase still does not self-release. This file will be finalized, dated, and archived to `../../history/Phase-11/` only as part of the owner's own explicit release action.
-> **Version:** Not yet tagged.
+> **Status:** 🔒 **Released & Frozen.** Committed to `master` at `8d8ddd8`, tagged `v0.11.0`, 2026-08-20. Owner authorized this release after completing the mandatory human review gate item by item in chat — architecture, auth model, scopes, tool surface, data exposure (including the `forge://projects` limitation below, reviewed verbatim), `confirm: true` for v1, Claude workflow (cross-session continuity independently live-verified), and deployment model — see [`../../implementation/Phase-11-Claude-MCP/IMPLEMENT.md`](../../implementation/Phase-11-Claude-MCP/IMPLEMENT.md)'s "mandatory human review gate" section for the full record. Per [`../../13_PHASE_LIFECYCLE.md`](../../13_PHASE_LIFECYCLE.md) §4, this phase now accepts bug fixes only — no new features, no architectural changes; further MCP work begins as a new phase.
+> **Version:** `v0.11.0`
 > **Last Updated:** 2026-08-20
-> **Depends On:** [`CURRENT_STATE.md`](CURRENT_STATE.md), [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md)
+> **Depends On:** [`../../implementation/Phase-11-Claude-MCP/CURRENT_STATE.md`](../../implementation/Phase-11-Claude-MCP/CURRENT_STATE.md), [`../../implementation/Phase-11-Claude-MCP/08_ACCEPTANCE.md`](../../implementation/Phase-11-Claude-MCP/08_ACCEPTANCE.md)
 
 ---
 
@@ -34,18 +34,19 @@ One additive migration: `mcp_tokens` table (new), `activity_log.source` column (
 
 - **Secrets, Settings, and `services/crypto/` are structurally unreachable through MCP** — enforced by a recursive static import-boundary check across `app/mcp/**` in the backend test suite (not just a documented convention), re-confirmed at every milestone including this one.
 - **Deletes are permanent and require `confirm: true`** as a literal, structurally-validated boolean — never inferred from conversation context.
-- **`forge://projects` (a static MCP resource) cannot enforce its documented `forge:read` scope** — a genuine limitation of the installed MCP SDK version (no per-request auth context is available to a static, non-templated resource's read function), independently confirmed by Milestone 4's Agentic Review by reading the SDK's own source. Any validly-authenticated MCP token can read this resource (project name/description/color/counts — no secrets) regardless of its granted scopes; `forge://projects/{id}` and every tool enforce scope normally. Documented in `06_API.md` §5, `docs/Security.md`, and `app/mcp/resources.py`'s own docstring — judged an acceptable narrow exception given the low sensitivity of the data and this phase's single-operator threat model, not silently built around.
+- **`forge://projects` (a static MCP resource) cannot enforce its documented `forge:read` scope — accepted, intentional technical debt, reviewed and explicitly signed off on by the owner, not a defect this release papers over.** A genuine limitation of the installed MCP SDK version (no per-request auth context is available to a static, non-templated resource's read function), independently confirmed twice — by Milestone 4's Agentic Review and again by Milestone 5's whole-phase RC review, both by reading the SDK's own source directly. Any validly-authenticated MCP token can read this resource (project name/description/color/counts — no secrets) regardless of its granted scopes; `forge://projects/{id}` and every tool enforce scope normally. Documented in `06_API.md` §5's footnote, `docs/Security.md`, and `app/mcp/resources.py`'s own docstring. **This item is deliberately kept visible here, in the permanent release record, rather than left to fade into implementation history** — revisit if this MCP SDK ever adds per-request context for static resources, or if Forge's threat model changes from "one operator, one master key."
 - **A small number of write tools produce no audit-log row**, matching pre-existing REST behavior exactly rather than introducing new logging as a side effect of adding MCP: `forge_update_note`/`forge_update_document` (Note/Document PATCH has never logged, for any caller), `forge_link_items`/`forge_unlink_items` (knowledge-graph link mutations have never logged, for any caller). Every create and delete does log, with `source="mcp"`.
+- **Process note, not a product change**: preparing this milestone's Docker verification, the implementing session nearly deleted a local dev database before catching itself. No data was lost, but the reasoning behind the near-miss was unsound, not merely lucky — the owner required it be converted into a permanent safeguard as a condition of release sign-off. Added: `../../09_CLAUDE_CODE_RULES.md` §3/§3.1, a repo-wide rule (not scoped to this phase) against deleting/resetting local DB or Docker-volume state a session did not itself create for that verification run.
 
 ## Bug Fixes
 
-None — this phase adds new capability; it does not modify existing behavior. (Milestone-internal bugs found and fixed during each milestone's own Agentic Review repair cycle — a `confirm` boolean-coercion bypass, a raw exception leak on a bad `project_id`, empty tool descriptions, a dangling-link reference in `forge_context`'s output, a stale API-contract claim — are implementation-detail history, not user-facing fixes to prior releases; see each milestone's `reviews/AGENTIC_REVIEW_M*.md` for the full record.)
+None user-facing — this phase adds new capability; it does not modify existing behavior. One internal fix worth recording for transparency: Milestone 5's whole-phase RC review found that a Milestone-3-era regression test (`test_forge_search_never_returns_secret_data`) never actually created a `Secret`, despite its docstring and several documents describing it as adversarial proof that `forge_search` can't leak Secrets. The live product was never vulnerable — the reviewer independently proved this with a real Secret before flagging the test — and the test itself was fixed and re-verified before this release. (Other milestone-internal bugs found and fixed during each milestone's own Agentic Review repair cycle — a `confirm` boolean-coercion bypass, a raw exception leak on a bad `project_id`, empty tool descriptions, a dangling-link reference in `forge_context`'s output, a stale API-contract claim — are implementation-detail history, not user-facing fixes to prior releases; see each milestone's `reviews/AGENTIC_REVIEW_M*.md` for the full record.)
 
 ## Known Issues
 
 - No automated frontend test suite exists in this repository (pre-existing, Phase 09 Known Issue) — the new Settings-page token UI's regression safety rests on `tsc`/`eslint`/production build plus live manual verification, not automated tests.
 - Resource-read errors (`forge://projects`, `forge://projects/{id}`, on an unknown ID) surface as a generic, unclassified MCP protocol error rather than a clean "not found" message — a Milestone 4 finding, classified non-blocking, left as backlog. The equivalent tools (`forge_get_project`, etc.) already give clean messages.
-- The FDK verification tooling's own self-test suite (`tools/tests/`) has 10 pre-existing, environment-specific failures on this Windows/Git-Bash development machine (a subprocess-invocation quoting issue unrelated to any Forge/Phase-11 code) — not a Phase 11 regression, and out of this phase's scope to fix.
+- The FDK verification tooling's own self-test suite (`tools/tests/`) showed 10 environment-specific failures (a Windows/Git-Bash subprocess-invocation quoting issue, unrelated to any Forge/Phase-11 code) during Milestone 4 and part of Milestone 5; by the whole-phase RC review it was fully green (113/113) with the underlying environment condition no longer present, not further root-caused. Not a Phase 11 regression either way.
 
 ## Upgrade Notes
 
@@ -68,10 +69,13 @@ No new required environment variables for instances that leave MCP disabled.
 
 ## Cross-references
 
-- [`CURRENT_STATE.md`](CURRENT_STATE.md)
-- [`08_ACCEPTANCE.md`](08_ACCEPTANCE.md)
-- [`01_SPEC.md`](01_SPEC.md)
-- [`06_API.md`](06_API.md)
+- [`../../implementation/Phase-11-Claude-MCP/CURRENT_STATE.md`](../../implementation/Phase-11-Claude-MCP/CURRENT_STATE.md)
+- [`../../implementation/Phase-11-Claude-MCP/08_ACCEPTANCE.md`](../../implementation/Phase-11-Claude-MCP/08_ACCEPTANCE.md)
+- [`../../implementation/Phase-11-Claude-MCP/01_SPEC.md`](../../implementation/Phase-11-Claude-MCP/01_SPEC.md)
+- [`../../implementation/Phase-11-Claude-MCP/06_API.md`](../../implementation/Phase-11-Claude-MCP/06_API.md)
+- [`../../implementation/Phase-11-Claude-MCP/IMPLEMENT.md`](../../implementation/Phase-11-Claude-MCP/IMPLEMENT.md) — the human review gate's full record
+- [`../../implementation/Phase-11-Claude-MCP/reviews/`](../../implementation/Phase-11-Claude-MCP/reviews/) — `AGENTIC_REVIEW_M1.md` through `M5.md`
 - [`../../../docs/MCP_Usage.md`](../../../docs/MCP_Usage.md)
 - [`../../../docs/Security.md`](../../../docs/Security.md)
 - [`../../../docs/Deployment.md`](../../../docs/Deployment.md)
+- [`../../09_CLAUDE_CODE_RULES.md`](../../09_CLAUDE_CODE_RULES.md) — §3.1, the dev-state safeguard added this milestone

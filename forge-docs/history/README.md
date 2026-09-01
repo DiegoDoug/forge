@@ -3,9 +3,9 @@
 > **Purpose:** Durable, append-only log of every checkpoint produced under [10_CHECKPOINT_PROTOCOL.md](../10_CHECKPOINT_PROTOCOL.md), so state survives even after a phase's `CURRENT_STATE.md` is overwritten by its next update. Also holds each frozen phase's archived end-of-phase artifacts (`Phase-NN/`) — see §2.1.
 > **Scope:** Checkpoint records and frozen-phase archives. Architectural decisions belong in [`../decisions/`](../decisions/README.md), not here.
 > **Ownership:** TODO — assign an owner.
-> **Status:** 17 checkpoints/reports logged across Phases 01–07; post-freeze archives added for `Phase-01/`, `Phase-02/`, `Phase-03/`, `Phase-04/`, `Phase-05/`, `Phase-06/`, `Phase-07/`, `Phase-08/`, `Phase-09/`, `Phase-10/`
-> **Version:** 0.10.0
-> **Last Updated:** 2026-08-12
+> **Status:** 17 checkpoints/reports logged across Phases 01–07; post-freeze archives added for `Phase-01/`, `Phase-02/`, `Phase-03/`, `Phase-04/`, `Phase-05/`, `Phase-06/`, `Phase-07/`, `Phase-08/`, `Phase-09/`, `Phase-10/`, `Phase-11/`
+> **Version:** 0.11.0
+> **Last Updated:** 2026-08-20
 > **Depends On:** [../10_CHECKPOINT_PROTOCOL.md](../10_CHECKPOINT_PROTOCOL.md), [../13_PHASE_LIFECYCLE.md](../13_PHASE_LIFECYCLE.md)
 > **Supersedes:** —
 
@@ -57,6 +57,7 @@ Per [`../13_PHASE_LIFECYCLE.md`](../13_PHASE_LIFECYCLE.md) §5, once a phase rea
 | 08 — Developer Toolkit | [Phase-08/](Phase-08/) | `v0.8.0-developer-toolkit` |
 | 09 — Frontend Reimagine | [Phase-09/](Phase-09/) | `v0.9.0-frontend-reimagine` |
 | 10 — UX Elevation | [Phase-10/](Phase-10/) | `v0.10.0` — ran outside the formal FDK gate sequence, see [`../implementation/Phase-10-UX-Elevation/README.md`](../implementation/Phase-10-UX-Elevation/README.md) |
+| 11 — Claude MCP / Second Brain | [Phase-11/](Phase-11/) | `v0.11.0` — 5 milestones, each independently Agentic-Review-gated; mandatory human review gate completed by the owner before release, see [`../implementation/Phase-11-Claude-MCP/IMPLEMENT.md`](../implementation/Phase-11-Claude-MCP/IMPLEMENT.md) |
 
 ## 3. TODO
 
