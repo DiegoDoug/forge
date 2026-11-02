@@ -14,6 +14,7 @@ export interface Project {
   secret_count: number;
   note_count: number;
   document_count: number;
+  prompt_count: number;
   created_at: string;
   updated_at: string;
 }
@@ -26,6 +27,7 @@ export interface ProjectSummary {
   secret_count: number;
   note_count: number;
   document_count: number;
+  prompt_count: number;
   updated_at: string;
 }
 

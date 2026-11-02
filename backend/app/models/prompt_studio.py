@@ -15,6 +15,7 @@ class Prompt(SQLModel, table=True):
     id: str = Field(default_factory=new_id, primary_key=True)
     name: str = Field(index=True, max_length=200)
     description: str | None = Field(default=None, max_length=1000)
+    project_id: str | None = Field(default=None, foreign_key="projects.id", index=True)
     body: str = Field(max_length=20000)
     variables_json: str = Field(default="[]")
     tags_json: str = Field(default="[]")

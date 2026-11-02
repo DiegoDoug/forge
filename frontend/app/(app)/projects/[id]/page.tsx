@@ -3,7 +3,17 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Archive, ArchiveRestore, FileText, FolderKanban, KeyRound, Pencil, StickyNote, Trash2 } from "lucide-react";
+import {
+  Archive,
+  ArchiveRestore,
+  FileText,
+  FolderKanban,
+  KeyRound,
+  MessageSquareText,
+  Pencil,
+  StickyNote,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -15,6 +25,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDocuments } from "@/features/documents/api";
 import { useNotes } from "@/features/notes/api";
+import { usePrompts } from "@/features/prompt-studio/api";
 import { useSecrets } from "@/features/secrets/api";
 import { useProject, useProjectMutations } from "@/features/projects/api";
 import { ProjectAiConfig } from "@/features/projects/project-ai-config";
@@ -35,6 +46,7 @@ export default function ProjectDetailPage() {
   const secretsQuery = useSecrets({ project_id: projectId });
   const notesQuery = useNotes(false, projectId);
   const documentsQuery = useDocuments(projectId);
+  const promptsQuery = usePrompts(undefined, undefined, projectId);
 
   if (projectQuery.isLoading) {
     return (
@@ -136,6 +148,16 @@ export default function ProjectDetailPage() {
             onRetry={() => documentsQuery.refetch()}
             items={(documentsQuery.data ?? []).map((d) => ({ id: d.id, label: d.title || "Untitled", href: `/documents?project_id=${project.id}&open=${d.id}` }))}
             emptyLabel="No documents in this project yet."
+          />
+          <ScopedList
+            title="Prompts"
+            icon={MessageSquareText}
+            href={`/prompt-studio?project_id=${project.id}`}
+            isLoading={promptsQuery.isLoading}
+            isError={promptsQuery.isError}
+            onRetry={() => promptsQuery.refetch()}
+            items={(promptsQuery.data?.items ?? []).map((p) => ({ id: p.id, label: p.name || "Untitled", href: `/prompt-studio?open=${p.id}` }))}
+            emptyLabel="No prompts in this project yet."
           />
         </div>
 

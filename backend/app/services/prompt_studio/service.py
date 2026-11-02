@@ -33,6 +33,7 @@ async def create(session: AsyncSession, data: PromptCreate) -> Prompt:
     prompt = Prompt(
         name=data.name,
         description=data.description,
+        project_id=data.project_id,
         body=data.body,
         variables_json=_dump_variables(data.variables),
         tags_json=_dump_tags(data.tags),
@@ -60,11 +61,18 @@ async def get(session: AsyncSession, prompt_id: str) -> Prompt:
     return await _get_prompt_or_404(session, prompt_id)
 
 
-async def list_prompts(session: AsyncSession, search: str | None = None, tag: str | None = None) -> list[Prompt]:
+async def list_prompts(
+    session: AsyncSession,
+    search: str | None = None,
+    tag: str | None = None,
+    project_id: str | None = None,
+) -> list[Prompt]:
     query = select(Prompt).order_by(Prompt.updated_at.desc())
     if search:
         like = f"%{search}%"
         query = query.where((Prompt.name.ilike(like)) | (Prompt.description.ilike(like)))
+    if project_id:
+        query = query.where(Prompt.project_id == project_id)
     result = await session.execute(query)
     prompts = list(result.scalars().all())
     if tag:
@@ -84,6 +92,10 @@ async def update_metadata(session: AsyncSession, prompt_id: str, data: PromptUpd
         prompt.description = data.description
     if data.tags is not None:
         prompt.tags_json = _dump_tags(data.tags)
+    if data.clear_project:
+        prompt.project_id = None
+    elif data.project_id is not None:
+        prompt.project_id = data.project_id
     prompt.updated_at = utcnow()
 
     session.add(prompt)
@@ -146,6 +158,7 @@ async def duplicate(session: AsyncSession, prompt_id: str) -> Prompt:
     new_prompt = Prompt(
         name=f"{source.name} (copy)",
         description=source.description,
+        project_id=source.project_id,
         body=source.body,
         variables_json=source.variables_json,
         tags_json=source.tags_json,

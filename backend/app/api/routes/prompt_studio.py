@@ -25,6 +25,7 @@ def _to_prompt_out(prompt: Prompt) -> PromptOut:
         id=prompt.id,
         name=prompt.name,
         description=prompt.description,
+        project_id=prompt.project_id,
         body=prompt.body,
         variables=json.loads(prompt.variables_json),
         tags=json.loads(prompt.tags_json),
@@ -41,6 +42,7 @@ def _to_prompt_list_out(prompts: list[Prompt]) -> PromptListOut:
                 "id": p.id,
                 "name": p.name,
                 "description": p.description,
+                "project_id": p.project_id,
                 "tags": json.loads(p.tags_json),
                 "version_number": p.version_number,
                 "updated_at": p.updated_at,
@@ -71,8 +73,10 @@ def _to_version_list_out(versions: list[PromptVersion]) -> PromptVersionListOut:
 
 
 @router.get("", response_model=PromptListOut)
-async def list_prompts(session: SessionDep, search: str | None = None, tag: str | None = None) -> PromptListOut:
-    prompts = await service.list_prompts(session, search=search, tag=tag)
+async def list_prompts(
+    session: SessionDep, search: str | None = None, tag: str | None = None, project_id: str | None = None
+) -> PromptListOut:
+    prompts = await service.list_prompts(session, search=search, tag=tag, project_id=project_id)
     return _to_prompt_list_out(prompts)
 
 

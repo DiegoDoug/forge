@@ -16,6 +16,7 @@ export interface Prompt {
   id: string;
   name: string;
   description: string | null;
+  project_id: string | null;
   body: string;
   variables: PromptVariable[];
   tags: string[];
@@ -28,6 +29,7 @@ export interface PromptListItem {
   id: string;
   name: string;
   description: string | null;
+  project_id: string | null;
   tags: string[];
   version_number: number;
   updated_at: string;
@@ -52,6 +54,7 @@ export interface PromptVersionListItem {
 export interface PromptCreateInput {
   name: string;
   description?: string | null;
+  project_id?: string | null;
   body: string;
   variables?: PromptVariable[];
   tags?: string[];
@@ -61,6 +64,10 @@ export interface PromptUpdateMetaInput {
   name?: string;
   description?: string | null;
   tags?: string[];
+  /** Set to attach the prompt to a project. Ignored when `clear_project` is true. */
+  project_id?: string | null;
+  /** Set true to detach the prompt from its project. */
+  clear_project?: boolean;
 }
 
 export interface PromptUpdateContentInput {
@@ -68,7 +75,7 @@ export interface PromptUpdateContentInput {
   variables: PromptVariable[];
 }
 
-function buildQuery(params: Record<string, string | undefined>): string {
+function buildQuery(params: Record<string, string | undefined | null>): string {
   const search = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
     if (value) search.set(key, value);
@@ -78,8 +85,8 @@ function buildQuery(params: Record<string, string | undefined>): string {
 }
 
 export const promptStudioApi = {
-  list: (search?: string, tag?: string) =>
-    api.get<{ items: PromptListItem[] }>(`/api/prompts${buildQuery({ search, tag })}`),
+  list: (search?: string, tag?: string, projectId?: string | null) =>
+    api.get<{ items: PromptListItem[] }>(`/api/prompts${buildQuery({ search, tag, project_id: projectId })}`),
   get: (id: string) => api.get<Prompt>(`/api/prompts/${id}`),
   create: (input: PromptCreateInput) => api.post<Prompt>("/api/prompts", input),
   updateMeta: (id: string, input: PromptUpdateMetaInput) => api.patch<Prompt>(`/api/prompts/${id}`, input),
@@ -92,10 +99,10 @@ export const promptStudioApi = {
     api.post<Prompt>(`/api/prompts/${id}/versions/${versionId}/restore`),
 };
 
-export function usePrompts(search?: string, tag?: string) {
+export function usePrompts(search?: string, tag?: string, projectId?: string | null) {
   return useQuery({
-    queryKey: ["prompt-studio", "list", search ?? "", tag ?? ""],
-    queryFn: () => promptStudioApi.list(search, tag),
+    queryKey: ["prompt-studio", "list", search ?? "", tag ?? "", projectId ?? ""],
+    queryFn: () => promptStudioApi.list(search, tag, projectId),
   });
 }
 

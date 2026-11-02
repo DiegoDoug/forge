@@ -65,6 +65,7 @@ class ProjectOut(BaseModel):
     secret_count: int
     note_count: int
     document_count: int
+    prompt_count: int
     created_at: datetime
     updated_at: datetime
 
@@ -77,6 +78,7 @@ class ProjectSummaryOut(BaseModel):
     secret_count: int
     note_count: int
     document_count: int
+    prompt_count: int
     updated_at: datetime
 
 
