@@ -20,8 +20,9 @@ export default function PromptStudioPage() {
 
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [projectId, setProjectId] = useState<string | null>(searchParams.get("project_id"));
 
-  const listQuery = usePrompts(query || undefined, activeTag || undefined);
+  const listQuery = usePrompts(query || undefined, activeTag || undefined, projectId);
   const promptQuery = usePrompt(selectedId);
   const { create } = usePromptStudioMutations();
 
@@ -34,7 +35,11 @@ export default function PromptStudioPage() {
       // body must be non-empty (schemas/prompt_studio.py PromptCreate.body has
       // min_length=1) - a single space is the least presumptuous non-empty
       // default; the user immediately overwrites it in the body editor.
-      const created = await create.mutateAsync({ name: "Untitled prompt", body: " " });
+      const created = await create.mutateAsync({
+        name: "Untitled prompt",
+        body: " ",
+        project_id: projectId ?? undefined,
+      });
       router.push(`/prompt-studio?open=${created.id}`);
     } catch {
       toast.error("Couldn't create a new prompt.");
@@ -65,6 +70,8 @@ export default function PromptStudioPage() {
           onQueryChange={setQuery}
           activeTag={activeTag}
           onTagChange={setActiveTag}
+          projectId={projectId}
+          onProjectChange={setProjectId}
           onSelect={selectPrompt}
           onNew={handleNew}
           className={cn(selectedId && "hidden lg:flex")}

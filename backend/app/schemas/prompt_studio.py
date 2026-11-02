@@ -53,6 +53,7 @@ def _validate_tags(tags: list[str]) -> list[str]:
 class PromptCreate(BaseModel):
     name: str = Field(min_length=1, max_length=200)
     description: str | None = Field(default=None, max_length=1000)
+    project_id: str | None = None
     body: str = Field(min_length=1, max_length=20000)
     variables: list[PromptVariableIn] = Field(default_factory=list)
     tags: list[str] = Field(default_factory=list)
@@ -77,6 +78,8 @@ class PromptUpdateMeta(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=200)
     description: str | None = Field(default=None, max_length=1000)
     tags: list[str] | None = None
+    project_id: str | None = None
+    clear_project: bool = False
 
     @field_validator("tags")
     @classmethod
@@ -105,6 +108,7 @@ class PromptOut(BaseModel):
     id: str
     name: str
     description: str | None
+    project_id: str | None
     body: str
     variables: list[PromptVariableOut]
     tags: list[str]
@@ -117,6 +121,7 @@ class PromptListItemOut(BaseModel):
     id: str
     name: str
     description: str | None
+    project_id: str | None
     tags: list[str]
     version_number: int
     updated_at: datetime

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SearchField } from "@/components/search-field";
+import { ProjectPicker } from "@/features/projects/project-picker";
 import { formatRelativeTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { PromptListItem } from "./api";
@@ -21,6 +22,8 @@ export function PromptSidebar({
   onQueryChange,
   activeTag,
   onTagChange,
+  projectId,
+  onProjectChange,
   onSelect,
   onNew,
   className,
@@ -34,6 +37,8 @@ export function PromptSidebar({
   onQueryChange: (q: string) => void;
   activeTag: string | null;
   onTagChange: (tag: string | null) => void;
+  projectId: string | null;
+  onProjectChange: (projectId: string | null) => void;
   onSelect: (id: string) => void;
   onNew: () => void;
   className?: string;
@@ -50,11 +55,15 @@ export function PromptSidebar({
 
   return (
     <aside className={cn("flex w-full shrink-0 flex-col border-r border-border lg:w-[var(--shell-filter-rail-w)]", className)}>
-      <div className="flex items-center gap-2 border-b border-border p-3">
+      <div className="flex items-center gap-2 border-b border-border p-2">
         <SearchField value={query} onChange={onQueryChange} placeholder="Search prompts…" className="flex-1" />
         <Button size="icon-sm" title="New prompt" onClick={onNew}>
           <Plus className="h-4 w-4" />
         </Button>
+      </div>
+
+      <div className="border-b border-border p-2">
+        <ProjectPicker value={projectId} onChange={onProjectChange} className="w-full" />
       </div>
 
       {allTags.length > 0 ? (
@@ -103,7 +112,7 @@ export function PromptSidebar({
             </div>
           ) : prompts.length === 0 ? (
             <p className="px-2 py-6 text-center text-xs text-muted-foreground">
-              {query || activeTag ? "No prompts match — clear filters." : "No prompts yet."}
+              {query || activeTag || projectId ? "No prompts match — clear filters." : "No prompts yet."}
             </p>
           ) : (
             prompts.map((prompt) => (

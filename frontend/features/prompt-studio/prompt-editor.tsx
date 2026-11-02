@@ -9,6 +9,7 @@ import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ProjectPicker } from "@/features/projects/project-picker";
 import { type Prompt, type PromptVariable, usePromptStudioMutations } from "./api";
 import { PreviewPanel } from "./preview-panel";
 import { PromptBodyEditor } from "./prompt-body-editor";
@@ -101,6 +102,19 @@ export function PromptEditor({
   function handleDescriptionChange(value: string) {
     setDescription(value);
     scheduleMetaSave({ description: value.slice(0, MAX_DESCRIPTION_LENGTH) });
+  }
+
+  function handleProjectChange(projectId: string | null) {
+    // project scoping isn't debounced like the free-text fields - it's a
+    // discrete pick, so persist it immediately. `clear_project` is how the
+    // backend distinguishes "detach" from "left unspecified" (PromptUpdateMeta).
+    updateMeta.mutate(
+      {
+        id: prompt.id,
+        input: projectId ? { project_id: projectId } : { clear_project: true },
+      },
+      { onError: () => toast.error("Couldn't move this prompt.") },
+    );
   }
 
   function handleTagsChange(value: string) {
@@ -197,6 +211,14 @@ export function PromptEditor({
           className="h-7 border-none bg-transparent px-1 text-xs shadow-none focus-visible:ring-0"
         />
         {tagsError ? <p className="px-1 text-[11px] text-destructive">{tagsError}</p> : null}
+        <div className="flex items-center gap-2 px-1">
+          <span className="text-xs text-muted-foreground">Project</span>
+          <ProjectPicker
+            value={prompt.project_id}
+            onChange={handleProjectChange}
+            className="h-7 w-56 text-xs"
+          />
+        </div>
       </div>
 
       <ConfirmDialog

@@ -31,6 +31,7 @@ def _to_out(project: Project, counts: ProjectCounts) -> ProjectOut:
         secret_count=counts.secret_count,
         note_count=counts.note_count,
         document_count=counts.document_count,
+        prompt_count=counts.prompt_count,
         created_at=project.created_at,
         updated_at=project.updated_at,
     )
@@ -45,6 +46,7 @@ def _to_summary(project: Project, counts: ProjectCounts) -> ProjectSummaryOut:
         secret_count=counts.secret_count,
         note_count=counts.note_count,
         document_count=counts.document_count,
+        prompt_count=counts.prompt_count,
         updated_at=project.updated_at,
     )
 

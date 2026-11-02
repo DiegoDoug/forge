@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FileText, KeyRound, StickyNote } from "lucide-react";
+import { FileText, KeyRound, MessageSquareText, StickyNote } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +9,11 @@ import { formatRelativeTime } from "@/lib/format";
 import type { ProjectSummary } from "./api";
 
 export function ProjectCard({ project }: { project: ProjectSummary }) {
-  const isEmpty = project.secret_count === 0 && project.note_count === 0 && project.document_count === 0;
+  const isEmpty =
+    project.secret_count === 0 &&
+    project.note_count === 0 &&
+    project.document_count === 0 &&
+    project.prompt_count === 0;
 
   return (
     <Link href={`/projects/${project.id}`}>
@@ -37,6 +41,9 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
                 </span>
                 <span className="flex items-center gap-1">
                   <FileText className="h-3.5 w-3.5" /> {project.document_count}
+                </span>
+                <span className="flex items-center gap-1">
+                  <MessageSquareText className="h-3.5 w-3.5" /> {project.prompt_count}
                 </span>
               </div>
             )}

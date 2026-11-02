@@ -14,13 +14,14 @@ from app.models.document import Document
 from app.models.model_playground import PlaygroundRun
 from app.models.note import Note
 from app.models.project import Project
+from app.models.prompt_studio import Prompt
 from app.models.secrets import Secret
 from app.schemas.projects import ProjectCreateIn, ProjectUpdateIn
 from app.services import activity
 from app.services.model_playground import runs as model_playground_runs
 from app.services.model_playground.runs import RunTarget
 
-_CHILD_MODELS = (Secret, Note, Document, PlaygroundRun)
+_CHILD_MODELS = (Secret, Note, Document, PlaygroundRun, Prompt)
 
 
 @dataclass
@@ -28,6 +29,7 @@ class ProjectCounts:
     secret_count: int
     note_count: int
     document_count: int
+    prompt_count: int
 
 
 async def _get_or_404(session: AsyncSession, project_id: str) -> Project:
@@ -48,7 +50,15 @@ async def _counts_for(session: AsyncSession, project_id: str) -> ProjectCounts:
     document_count = (
         await session.execute(select(func.count()).select_from(Document).where(Document.project_id == project_id))
     ).scalar_one()
-    return ProjectCounts(secret_count=secret_count, note_count=note_count, document_count=document_count)
+    prompt_count = (
+        await session.execute(select(func.count()).select_from(Prompt).where(Prompt.project_id == project_id))
+    ).scalar_one()
+    return ProjectCounts(
+        secret_count=secret_count,
+        note_count=note_count,
+        document_count=document_count,
+        prompt_count=prompt_count,
+    )
 
 
 async def list_projects(session: AsyncSession, *, archived: bool = False) -> list[tuple[Project, ProjectCounts]]:
