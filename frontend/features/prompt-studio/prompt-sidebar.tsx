@@ -55,7 +55,7 @@ export function PromptSidebar({
 
   return (
     <aside className={cn("flex w-full shrink-0 flex-col border-r border-border lg:w-[var(--shell-filter-rail-w)]", className)}>
-      <div className="flex items-center gap-2 border-b border-border p-3">
+      <div className="flex items-center gap-2 border-b border-border p-2">
         <SearchField value={query} onChange={onQueryChange} placeholder="Search prompts…" className="flex-1" />
         <Button size="icon-sm" title="New prompt" onClick={onNew}>
           <Plus className="h-4 w-4" />
