@@ -19,6 +19,8 @@ This folder documents Forge as it exists today, for anyone deploying, operating,
 | [Database.md](Database.md) | Schema, migrations, data lifecycle |
 | [API.md](API.md) | Endpoint reference |
 | [Security.md](Security.md) | Auth model, encryption at rest, threat model |
+| [crypto-design.md](crypto-design.md) | Secrets vault crypto in detail: root key derivation, cipher, key storage, password hashing, known gaps |
+| [threat-model.md](threat-model.md) | Secrets vault assets, attackers, threats, and mitigation status |
 | [Deployment.md](Deployment.md) | Docker Compose deployment, environment configuration |
 | [Development.md](Development.md) | Local dev setup |
 | [Contributing.md](Contributing.md) | Contribution guidelines |
